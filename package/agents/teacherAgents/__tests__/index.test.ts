@@ -1,4 +1,3 @@
-import 'dotenv/config' //引入环境变量process.env
 // import { Configuration, OpenAIApi, } from "openai";
 import { OpenAI } from "langchain/llms/openai";
 // import { AutoGPT } from "langchain/experimental/autogpt";

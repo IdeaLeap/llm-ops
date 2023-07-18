@@ -1,3 +1,4 @@
+import 'dotenv/config' //引入环境变量process.env
 export const config = {
   basePath: "https://oai.hconeai.com/v1",
   baseOptions: {
