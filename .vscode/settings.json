@@ -1,0 +1,7 @@
+{
+  // "prettier.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "eslint.enable": true,
+}
