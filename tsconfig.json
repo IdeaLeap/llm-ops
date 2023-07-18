@@ -3,11 +3,7 @@
     "outDir": "../dist",
     "rootDir": "./package",
     "target": "ES2021",
-    "lib": [
-      "ES2021",
-      "ES2022.Object",
-      "DOM"
-    ],
+    "lib": ["ES2021", "ES2022.Object", "DOM"],
     "module": "esnext",
     "moduleResolution": "nodenext",
     "esModuleInterop": true,
@@ -21,19 +17,12 @@
     "allowJs": true,
     "strict": true,
     "resolveJsonModule": true,
-    "sourceMap": true,
+    "sourceMap": true
   },
-  "include": [
-    "package/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "docs"
-  ],
+  "include": ["package/**/*.ts"],
+  "exclude": ["node_modules", "dist", "docs"],
   "typedocOptions": {
-    "entryPoints": [
-    ],
+    "entryPoints": [],
     "sort": [
       "kind",
       "visibility",
