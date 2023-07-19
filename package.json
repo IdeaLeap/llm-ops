@@ -26,6 +26,7 @@
     "eslint": "^8.0.1",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-markdownlint": "^0.4.1",
+    "husky": "^8.0.3",
     "langchain": "^0.0.102",
     "prettier": "^3.0.0"
   },
@@ -42,5 +43,10 @@
     "tslib": "^2.6.0",
     "typescript": "*",
     "vitepress": "^1.0.0-beta.5"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }  
   }
 }
