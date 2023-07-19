@@ -12,7 +12,8 @@
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "lint": "eslint --ext .ts,.js ./"
+    "lint": "eslint --ext .ts,.js ./",
+    "build": "ncc build package/index.ts -o dist"
   },
   "author": "",
   "license": "MIT",
@@ -20,6 +21,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
+    "@vercel/ncc": "^0.36.1",
     "dotenv": "^16.3.1",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
