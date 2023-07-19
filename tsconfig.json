@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "../dist",
+    "outDir": "./dist",
     "rootDir": "./package",
     "target": "ES2021",
     "lib": ["ES2021", "ES2022.Object", "DOM"],
@@ -20,7 +20,7 @@
     "sourceMap": true
   },
   "include": ["package/**/*.ts"],
-  "exclude": ["node_modules", "dist", "docs"],
+  "exclude": ["node_modules", "dist", "docs","coverage"],
   "typedocOptions": {
     "entryPoints": [],
     "sort": [
@@ -37,5 +37,6 @@
     "includeVersion": true,
     "readme": "none",
     "out": "docs"
-  }
+  },
+  "ts-node": { "esm": true }
 }

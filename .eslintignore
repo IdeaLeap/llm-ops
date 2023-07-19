@@ -1,0 +1,4 @@
+jest.config.cjs
+.eslintrc.cjs
+dist/
+docs/
