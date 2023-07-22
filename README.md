@@ -17,9 +17,6 @@
 - Eslint
 - Prettier
 - MarkdownLint
-- CommitLint
-- Husky
-- LintStaged
 - Github Actions
 - Vercel Ncc
 
