@@ -1,4 +1,4 @@
-import * as ts from "typescript";
+import ts from "typescript";
 import { Result, success, error } from "../utils/result.js";
 
 const libText = `interface Array<T> { length: number, [n: number]: T }
@@ -136,7 +136,7 @@ export function createJsonValidator<T extends object = object>(
       getNewLine: () => "\n",
       fileExists: (fileName) => fileMap.has(fileName),
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      readFile: (fileName) => "",
+      readFile: (_fileName) => "",
     };
     return ts.createProgram(
       Array.from(fileMap.keys()),

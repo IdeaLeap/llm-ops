@@ -1,15 +1,15 @@
-import { Result, error } from "../utils/result.js";
-import { LLM, LLMSchema } from "../utils/model.js";
+import { Result, error, Error } from "../utils/result.js";
+import { LLMType } from "../utils/model.js";
 import { TypeChatJsonValidator, createJsonValidator } from "./validate.js";
 
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
-export interface TypeChatJsonTranslator<T extends object> {
+export interface TypeScriptChainSchema<T extends object> {
   /**
-   * The associated `LLMSchema`.
+   * The associated `LLM`.
    */
-  fields: LLMSchema;
+  model: LLMType;
   /**
    * The associated `TypeChatJsonValidator<T>`.
    */
@@ -47,10 +47,10 @@ export interface TypeChatJsonTranslator<T extends object> {
    * the language model fails to validate and the `attemptRepair` property is `true`, a second
    * attempt to translate the request will be made. The prompt for the second attempt will include the
    * diagnostics produced for the first attempt. This often helps produce a valid instance.
-   * @param request The natural language request.
+   * @param prompt The natural language request.
    * @returns A promise for the resulting object.
    */
-  translate(request: string): Promise<Result<T>>;
+  call(request: string): Promise<Result<T>>;
 }
 
 /**
@@ -62,20 +62,20 @@ export interface TypeChatJsonTranslator<T extends object> {
  * @param typeName The name of the JSON target type in the schema.
  * @returns A `TypeChatJsonTranslator<T>` instance.
  */
-export function createJsonTranslator<T extends object>(
-  fields: LLMSchema,
+export function TypeScriptChain<T extends object>(
+  model: LLMType,
   schema: string,
   typeName: string,
-): TypeChatJsonTranslator<T> {
+): TypeScriptChainSchema<T> {
   const validator = createJsonValidator<T>(schema, typeName);
-  const typeChat: TypeChatJsonTranslator<T> = {
+  const typeChat: TypeScriptChainSchema<T> = {
     model,
     validator,
     attemptRepair: true,
     stripNulls: false,
     createRequestPrompt,
     createRepairPrompt,
-    translate,
+    call,
   };
   return typeChat;
 
@@ -97,15 +97,14 @@ export function createJsonTranslator<T extends object>(
     );
   }
 
-  async function translate(request: string) {
+  async function call(request: string) {
     let prompt = typeChat.createRequestPrompt(request);
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
-      const response = await model.complete(prompt);
-      if (!response.success) {
-        return response;
+      const responseText = await model.call(prompt);
+      if (!responseText) {
+        return { success: false, message: responseText } as Error;
       }
-      const responseText = response.data;
       const startIndex = responseText.indexOf("{");
       const endIndex = responseText.lastIndexOf("}");
       if (!(startIndex >= 0 && endIndex > startIndex)) {
