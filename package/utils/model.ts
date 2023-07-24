@@ -28,7 +28,7 @@ export function ModerationValidateLLM(
 }
 
 export interface LLMSchema {
-  modelName?: "gpt-3.5-turbo" | "gpt-4";
+  modelName?: "gpt-3.5-turbo" | "gpt-4" | "gpt-4-0613" | "gpt-3.5-turbo-0613";
   verbose?: boolean;
   HELICONE_AUTH_API_KEY?: string;
   OPENAI_API_KEY?: string;
@@ -37,13 +37,13 @@ export interface LLMSchema {
 
 export type LLMType = OpenAI;
 
-export function LLM(
-  OPENAI_API_KEY?: string,
+export function LLM({
+  OPENAI_API_KEY,
   modelName = "gpt-3.5-turbo",
   verbose = false,
-  HELICONE_AUTH_API_KEY?: string,
+  HELICONE_AUTH_API_KEY,
   temperature = 0.7,
-): LLMType {
+}: LLMSchema): LLMType {
   if (!process.env.OPENAI_API_KEY && !OPENAI_API_KEY) {
     missingEnvironmentVariable("OPENAI_API_KEY Missing! 😅 It's not free!");
   }
@@ -74,13 +74,13 @@ export function LLM(
 
 export type ChatLLMType = ChatOpenAI;
 
-export function ChatLLM(
-  OPENAI_API_KEY?: string,
+export function ChatLLM({
+  OPENAI_API_KEY,
   modelName = "gpt-3.5-turbo",
   verbose = false,
-  HELICONE_AUTH_API_KEY?: string,
+  HELICONE_AUTH_API_KEY,
   temperature = 0.7,
-): ChatLLMType {
+}: LLMSchema): ChatLLMType {
   if (!process.env.OPENAI_API_KEY && !OPENAI_API_KEY) {
     missingEnvironmentVariable("OPENAI_API_KEY Missing! 😅 It's not free!");
   }
