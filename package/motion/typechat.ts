@@ -98,7 +98,6 @@ export function TypeScriptChain<T extends object>(
 
   async function call(request: string) {
     let prompt = typeChat.createRequestPrompt(request);
-    console.log(prompt);
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
       let responseText = await model.call(prompt);
