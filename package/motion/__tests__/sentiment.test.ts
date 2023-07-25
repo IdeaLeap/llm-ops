@@ -1,6 +1,6 @@
 import { LLMType, LLM } from "../../utils/model.js";
 import { TypeScriptChain } from "../index.js";
-const model: LLMType = LLM();
+const model: LLMType = LLM({});
 const schema = `
 
 // The following is a schema definition for respond with the most concise words, each word carries rich meaning. The content of the response is a joking expression, reflecting the way some young people express their emotions and attitudes on the internet.

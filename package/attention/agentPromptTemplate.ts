@@ -5,16 +5,14 @@ export type toneStyleType =
   | "Neutral"
   | "Informative"
   | "Friendly"
-  | "Humorous"
-  | string;
+  | "Humorous";
 
 export type communicationStyleType =
   | "Formal"
   | "Textbook"
   | "Layman"
   | "Story Telling"
-  | "Socratic"
-  | string;
+  | "Socratic";
 
 export type levelType =
   | "Elementary (Grade 1-6)"
@@ -25,16 +23,14 @@ export type levelType =
   | "Master's"
   | "Doctoral Candidate (Ph.D Candidate)"
   | "Postdoc"
-  | "Ph.D"
-  | string;
+  | "Ph.D";
 export type reasoningType =
   | "Deductive"
   | "Inductive"
   | "Abductive"
   | "Analogical"
-  | "Causal"
-  | string;
-export type languageType = "English" | "Chinese" | string;
+  | "Causal";
+export type languageType = "English" | "Chinese";
 export interface AgentPromptTemplateSchema {
   role: string;
   desc?: string; //解释角色
@@ -108,6 +104,7 @@ export class AgentPromptTemplate {
     language,
     other,
     requests,
+    evaluate,
   }: AgentPromptTemplateSchema) {
     !!role && (this.role = role);
     !!desc && (this.desc = desc);
@@ -124,6 +121,7 @@ export class AgentPromptTemplate {
     !!language && (this.language = language);
     !!other && (this.other = other);
     !!requests && (this.requests = requests);
+    !!evaluate && (this.evaluate = evaluate);
   }
   format() {
     this.returnPrompt = "";
@@ -166,15 +164,15 @@ export class AgentPromptTemplate {
     !!this.rules &&
       (this.returnPrompt += `You must follow the rules below:\n\`\`\`\n${
         typeof this.rules === "string" ? this.rules : this.rules.join("\n")
-      }\`\`\`\n`);
+      }\n\`\`\`\n`);
     //在进行任务之前，你需要对之前的结果进行反思，从而得出更好的结果：\`\`\`\n{refection.resultTest}\`\`\`\n。
     !!this.reflection &&
       !!this.reflection.resultTest &&
-      (this.returnPrompt += `Before proceeding with the task, you need to reflect on the previous results to come up with a better result: \`\`\`\n${this.reflection.resultTest}\`\`\`\n`);
+      (this.returnPrompt += `Before proceeding with the task, you need to reflect on the previous results to come up with a better result: \`\`\`\n${this.reflection.resultTest}\n\`\`\`\n`);
     //此外，你需要结合用户的反馈:\`\`\`\n{refection.feedback}\`\`\`\n。
     !!this.reflection &&
       !!this.reflection.feedback &&
-      (this.returnPrompt += `In addition, you need to incorporate user feedback:: \`\`\`\n${this.reflection.feedback}\`\`\`\n`);
+      (this.returnPrompt += `In addition, you need to incorporate user feedback:: \`\`\`\n${this.reflection.feedback}\n\`\`\`\n`);
     //相关的一些知识：\`\`\`\n{memory.datas,...}\`\`\`\n。
     !!this.memory &&
       !!this.memory.datas &&
@@ -182,7 +180,7 @@ export class AgentPromptTemplate {
         typeof this.memory.datas === "string"
           ? this.memory.datas
           : this.memory.datas.join("\n")
-      }\`\`\`\n`);
+      }\n\`\`\`\n`);
     //专业领域专家的一些意见:\`\`\`\n{memory.knowledge}\`\`\`\n
     !!this.memory &&
       !!this.memory.knowledge &&
@@ -190,7 +188,7 @@ export class AgentPromptTemplate {
         typeof this.memory.knowledge === "string"
           ? this.memory.knowledge
           : this.memory.knowledge.join("\n")
-      }\`\`\`\n`);
+      }\n\`\`\`\n`);
     //你可以使用以下工具：\`\`\`\n{memory.tools}\`\`\`\n
     !!this.memory &&
       !!this.memory.tools &&
@@ -198,18 +196,19 @@ export class AgentPromptTemplate {
         typeof this.memory.tools === "string"
           ? this.memory.tools
           : this.memory.tools.join("\n")
-      }\`\`\`\n`);
+      }\n\`\`\`\n`);
     //用户请求如下:\n{content,...}
     !!this.requests &&
-      (this.returnPrompt += `User requests as follows:\n${this.requests}\n`);
+      (this.returnPrompt += `User requests as follows:\n\`\`\`${this.requests}\`\`\`\n`);
     !!this.other && (this.returnPrompt += `${this.other}\n`);
+    // console.log(this.returnPrompt);
     return this.returnPrompt;
   }
 
   formatEvaluateItem(items: EvaluateItemSchema[]) {
     let prompt = "";
     items.forEach((item) => {
-      prompt += `${item.name}：${item.desc}\n`;
+      prompt += `{criteria:[${item.name}],\n dscription:${item.desc}}\n`;
     });
     return prompt;
   }
