@@ -146,7 +146,7 @@ export class AgentPromptTemplate {
       (this.returnPrompt += ` Your thinking style is ${this.reasoning}.`);
     //你的母语是{language,Chinese}。
     !!this.language &&
-      (this.returnPrompt += ` Your native language is ${this.language}.`);
+      (this.returnPrompt += ` You must answer the questions in ${this.language}.`);
     this.returnPrompt += "\n";
     //{humanSituation,用户是一名专注于ppt文稿润色的学生}。
     !!this.humanSituation && (this.returnPrompt += `${this.humanSituation}.`);
@@ -208,7 +208,7 @@ export class AgentPromptTemplate {
   formatEvaluateItem(items: EvaluateItemSchema[]) {
     let prompt = "";
     items.forEach((item) => {
-      prompt += `{criteria:[${item.name}],\n dscription:${item.desc}}\n`;
+      prompt += `{criteria:"${item.name}", dscription:${item.desc}}\n`;
     });
     return prompt;
   }

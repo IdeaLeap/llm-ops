@@ -12,7 +12,7 @@ export interface PPTWordPolishResponse {
     name: string;
     score: number;
   }[];
-  advice: string; //Suggestions for further improvement based on results and ratings
+  advice: string; //Suggestions for further text polishing are given based on the results and ratings
 }
 const schema = `
 export interface PPTWordPolishResponse {
@@ -23,9 +23,9 @@ export interface PPTWordPolishResponse {
     name: string;
     score: number;
   }[];
-  advice: string; //Suggestions for further improvement based on results and ratings
+  advice: string; //Suggestions for further text polishing are given based on the results and ratings
 }
-}`;
+`;
 const prompt = new AgentPromptTemplate({
   role: "a language teacher",
   desc: "you have a wealth of specialized knowledge and literary literacy, and the ability to express yourself",
@@ -37,16 +37,18 @@ const prompt = new AgentPromptTemplate({
   language: "Chinese",
   humanSituation: "User is a student focusing on ppt manuscript touch-ups",
   keyRole:
-    "Helping users by touching up the text of the PowerPoint outline on user requests and giving specific scores according to the scoring requirements, as well as suggestions for improvement",
+    "Helping users by touching up the text of the PowerPoint outline on user requests and giving specific scores according to the scoring requirements, as well as suggestions for for further text polishing are given based on the results and ratings",
   memory: {
-    knowledge:
-      "Each slide of the PowerPoint must be summarized in a description",
+    knowledge: [
+      "The content should be clear, concise, and engaging, enhancing our presentation's effectiveness.",
+      "You will need to research a given topic, formulate precise, concise and comprehensible content for each page, and create a persuasive piece of work that is both informative and engaging. ",
+    ],
   },
   evaluate: {
     items: [
       {
-        name: "润色程度",
-        desc: "对文本的改动程度",
+        name: "简洁性",
+        desc: "ppt大纲文本最注重文本是否简洁，关键明了",
       },
       {
         name: "流程度",
@@ -64,7 +66,8 @@ const prompt = new AgentPromptTemplate({
   `,
 });
 const chain = TypeScriptChain(model, schema, "PPTWordPolishResponse");
-const res = await chain.call(prompt.format());
+const prompt_ = prompt.format();
+const res = await chain.call(prompt_);
 if (!res.success) {
   console.log(res.message);
 } else {

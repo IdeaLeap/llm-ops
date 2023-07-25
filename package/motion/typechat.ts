@@ -101,10 +101,11 @@ export function TypeScriptChain<T extends object>(
     console.log(prompt);
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
-      const responseText = await model.call(prompt);
+      let responseText = await model.call(prompt);
       if (!responseText) {
         return { success: false, message: responseText } as Error;
       }
+      responseText = responseText.replace(/\\n/g, "");
       const startIndex = responseText.indexOf("{");
       const endIndex = responseText.lastIndexOf("}");
       if (!(startIndex >= 0 && endIndex > startIndex)) {
