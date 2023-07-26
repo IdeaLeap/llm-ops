@@ -10,7 +10,6 @@
 
 ## 🎨 技术栈
 
-- LangchainJs
 - Jest
 - Typescript
 - Vitepress
