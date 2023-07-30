@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://avatars.githubusercontent.com/u/129276618?s=200&v=4" height="150" width="150" alt="Koori Logo">
+<img src="https://avatars.githubusercontent.com/u/129276618?s=200&v=4" height="150" width="150" alt="IdeaLeap Logo">
 <h1>GWT</h1></div>
 
 <p align="center">
