@@ -35,6 +35,7 @@ module.exports = {
     "@typescript-eslint/no-unsafe-call": "warn",
     "@typescript-eslint/no-unsafe-argument": "warn",
     "@typescript-eslint/no-unsafe-return": "warn",
-    "@typescript-eslint/no-redundant-type-constituents": 0
+    "@typescript-eslint/no-redundant-type-constituents": 0,
+    "no-debugger":0
   },
 };
