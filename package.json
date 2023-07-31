@@ -15,7 +15,7 @@
     "lint": "eslint --ext .ts,.js ./",
     "build": "ncc build package/index.ts -o dist"
   },
-  "author": "",
+  "author": "Marlene && IdeaLeap",
   "license": "MIT",
   "type": "module",
   "dependencies": {
