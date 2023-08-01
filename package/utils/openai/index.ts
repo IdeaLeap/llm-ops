@@ -138,16 +138,6 @@ export class LLM {
     });
   }
 
-  createMessage(
-    role: "system" | "user" | "assistant" | "function",
-    content: string,
-  ) {
-    return {
-      role: role,
-      content: content,
-    };
-  }
-
   printMessage(
     resMessages: OpenAI.Chat.Completions.ChatCompletion.Choice[],
     reqMessages?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[],
