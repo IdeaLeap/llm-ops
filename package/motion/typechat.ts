@@ -1,7 +1,6 @@
-import { Result, error, Error } from "../utils/result.js";
-import { LLMType } from "../utils/model.js";
+import { Result, error, Error, LLM } from "../utils/index.js";
+import { createMessage, messageType } from "../attention/index.js";
 import { TypeChatJsonValidator, createJsonValidator } from "./validate.js";
-
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
@@ -9,7 +8,7 @@ export interface TypeScriptChainSchema<T extends object> {
   /**
    * The associated `LLM`.
    */
-  model: LLMType;
+  llm: LLM;
   /**
    * The associated `TypeChatJsonValidator<T>`.
    */
@@ -32,7 +31,7 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param request The natural language request.
    * @returns A prompt that combines the request with the schema and type name of the underlying validator.
    */
-  createRequestPrompt(request: string): string;
+  createRequestPrompt(): messageType;
   /**
    * Creates a repair prompt to append to an original prompt/response in order to repair a JSON object that
    * failed to validate. This function is called by `completeAndValidate` when `attemptRepair` is true and the
@@ -41,7 +40,7 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param validationError The error message returned by the validator.
    * @returns A repair prompt constructed from the error message.
    */
-  createRepairPrompt(validationError: string): string;
+  createRepairPrompt(validationError: string): messageType;
   /**
    * Translates a natural language request into an object of type `T`. If the JSON object returned by
    * the language model fails to validate and the `attemptRepair` property is `true`, a second
@@ -50,26 +49,30 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param prompt The natural language request.
    * @returns A promise for the resulting object.
    */
-  call(request: string): Promise<Result<T>>;
+  call(
+    request: messageType | string,
+    prompt?: messageType[],
+  ): Promise<Result<T>>;
 }
 
 /**
  * Creates an object that can translate natural language requests into JSON objects of the given type.
  * The specified type argument `T` must be the same type as `typeName` in the given `schema`. The function
  * creates a `TypeChatJsonValidator<T>` and stores it in the `validator` property of the returned instance.
- * @param model The language model to use for translating requests into JSON.
+ * @param llm The language model to use for translating requests into JSON.
  * @param schema A string containing the TypeScript source code for the JSON schema.
  * @param typeName The name of the JSON target type in the schema.
  * @returns A `TypeChatJsonTranslator<T>` instance.
  */
 export function TypeScriptChain<T extends object>(
-  model: LLMType,
+  llm: LLM,
   schema: string,
   typeName: string,
+  verbose = false,
 ): TypeScriptChainSchema<T> {
   const validator = createJsonValidator<T>(schema, typeName);
   const typeChat: TypeScriptChainSchema<T> = {
-    model,
+    llm,
     validator,
     attemptRepair: true,
     stripNulls: false,
@@ -79,28 +82,45 @@ export function TypeScriptChain<T extends object>(
   };
   return typeChat;
 
-  function createRequestPrompt(request: string) {
-    return (
-      `\n${request}\n` +
+  function createRequestPrompt(): messageType {
+    return createMessage(
+      "system",
       `You need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
-      `\`\`\`\n${validator.schema}\`\`\`\n` +
-      `The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n`
+        `\`\`\`\n${validator.schema}\`\`\`\n` +
+        `The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n`,
+      "system_schema",
     );
   }
 
   function createRepairPrompt(validationError: string) {
-    return (
+    return createMessage(
+      "system",
       `The JSON object is invalid for the following reason:\n` +
-      `"""\n${validationError}\n"""\n` +
-      `The following is a revised JSON object:\n`
+        `"""\n${validationError}\n"""\n` +
+        `The following is a revised JSON object:\n`,
+      "system_validation_fix",
     );
   }
 
-  async function call(request: string) {
-    let prompt = typeChat.createRequestPrompt(request);
+  async function call(
+    request: messageType | string,
+    prompt?: messageType[],
+  ): Promise<Result<T>> {
+    !prompt && (prompt = []);
+    const resPrompt = prompt;
+    // 如果是字符串，转换成消息对象
+    if (typeof request === "string") {
+      request = createMessage("user", request);
+    }
+    resPrompt.push(typeChat.createRequestPrompt());
+    resPrompt.push(request);
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
-      let responseText = await model.call(prompt);
+      const response = await llm.chat({ messages: resPrompt });
+      if (verbose) {
+        llm.printMessage(response.choices, resPrompt);
+      }
+      let responseText = response.choices[0].message.content;
       if (!responseText) {
         return { success: false, message: responseText } as Error;
       }
@@ -120,9 +140,8 @@ export function TypeScriptChain<T extends object>(
           `JSON validation failed: ${validation.message}\n${jsonText}`,
         );
       }
-      prompt += `${responseText}\n${typeChat.createRepairPrompt(
-        validation.message,
-      )}`;
+      resPrompt.push(createMessage("user", responseText));
+      resPrompt.push(typeChat.createRepairPrompt(validation.message));
       attemptRepair = false;
     }
   }

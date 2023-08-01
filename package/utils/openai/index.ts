@@ -6,8 +6,10 @@ export interface createLLMSchema {
   OPENAI_API_KEY?: string;
 }
 
-export type messagesType = OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
-export type functionsType = OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Function[];
+export type messagesType =
+  OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
+export type functionsType =
+  OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Function[];
 
 export interface ChatSchema {
   modelName?: "gpt-4-0613" | "gpt-3.5-turbo-0613";
@@ -134,16 +136,6 @@ export class LLM {
       input: input,
       model: "text-moderation-latest",
     });
-  }
-
-  createMessage(
-    role: "system" | "user" | "assistant" | "function",
-    content: string,
-  ) {
-    return {
-      role: role,
-      content: content,
-    };
   }
 
   printMessage(

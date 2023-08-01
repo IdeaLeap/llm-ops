@@ -39,4 +39,5 @@
     "out": "docs"
   },
   "ts-node": { "esm": true },
+  "skipLibCheck": true
 }

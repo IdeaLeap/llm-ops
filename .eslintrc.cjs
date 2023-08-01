@@ -28,14 +28,16 @@ module.exports = {
   rules: {
     "prettier/prettier": "error",
     "@typescript-eslint/no-explicit-any": 0,
-    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-assignment": 0,
     "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/no-empty-function": "warn",
     "no-constant-condition": 0,
-    "@typescript-eslint/no-unsafe-call": "warn",
-    "@typescript-eslint/no-unsafe-argument": "warn",
+    "@typescript-eslint/no-unsafe-call": 0,
+    "@typescript-eslint/no-unsafe-argument": 0,
     "@typescript-eslint/no-unsafe-return": "warn",
     "@typescript-eslint/no-redundant-type-constituents": 0,
-    "no-debugger":0
+    "no-debugger":0,
+    "@typescript-eslint/no-unsafe-member-access":0,
+    "@typescript-eslint/no-unsafe-return":0,
   },
 };
