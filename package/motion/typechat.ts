@@ -8,7 +8,7 @@ export interface TypeScriptChainSchema<T extends object> {
   /**
    * The associated `LLM`.
    */
-  model: LLM;
+  llm: LLM;
   /**
    * The associated `TypeChatJsonValidator<T>`.
    */
@@ -49,26 +49,30 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param prompt The natural language request.
    * @returns A promise for the resulting object.
    */
-  call(prompt: messageType[], request: messageType): Promise<Result<T>>;
+  call(
+    request: messageType | string,
+    prompt?: messageType[],
+  ): Promise<Result<T>>;
 }
 
 /**
  * Creates an object that can translate natural language requests into JSON objects of the given type.
  * The specified type argument `T` must be the same type as `typeName` in the given `schema`. The function
  * creates a `TypeChatJsonValidator<T>` and stores it in the `validator` property of the returned instance.
- * @param model The language model to use for translating requests into JSON.
+ * @param llm The language model to use for translating requests into JSON.
  * @param schema A string containing the TypeScript source code for the JSON schema.
  * @param typeName The name of the JSON target type in the schema.
  * @returns A `TypeChatJsonTranslator<T>` instance.
  */
 export function TypeScriptChain<T extends object>(
-  model: LLM,
+  llm: LLM,
   schema: string,
   typeName: string,
+  verbose = false,
 ): TypeScriptChainSchema<T> {
   const validator = createJsonValidator<T>(schema, typeName);
   const typeChat: TypeScriptChainSchema<T> = {
-    model,
+    llm,
     validator,
     attemptRepair: true,
     stripNulls: false,
@@ -99,15 +103,23 @@ export function TypeScriptChain<T extends object>(
   }
 
   async function call(
-    prompt: messageType[],
-    request: messageType,
+    request: messageType | string,
+    prompt?: messageType[],
   ): Promise<Result<T>> {
+    !prompt && (prompt = []);
     const resPrompt = prompt;
+    // 如果是字符串，转换成消息对象
+    if (typeof request === "string") {
+      request = createMessage("user", request);
+    }
+    resPrompt.push(typeChat.createRequestPrompt());
     resPrompt.push(request);
-    resPrompt.push(createRequestPrompt());
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
-      const response = await model.chat({ messages: resPrompt });
+      const response = await llm.chat({ messages: resPrompt });
+      if (verbose) {
+        llm.printMessage(response.choices, resPrompt);
+      }
       let responseText = response.choices[0].message.content;
       if (!responseText) {
         return { success: false, message: responseText } as Error;

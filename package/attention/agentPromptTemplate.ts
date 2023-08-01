@@ -48,7 +48,6 @@ export interface AgentPromptTemplateSchema {
   humanSituation?: string; //输入情景，例如老师是对学生进行操作
   language?: languageType;
   other?: string;
-  requests?: string;
   evaluate?: TeacherEvaluateSchema;
 }
 
@@ -148,7 +147,8 @@ export class AgentPromptTemplate {
     !!this.language &&
       (systemPrompt += ` You must answer the questions in ${this.language}.`);
 
-    this.returnPrompt.push(createMessage("system", systemPrompt));
+    !!systemPrompt &&
+      this.returnPrompt.push(createMessage("system", systemPrompt));
 
     //{humanSituation,用户是一名专注于ppt文稿润色的学生}。
     !!this.humanSituation &&
@@ -171,7 +171,10 @@ export class AgentPromptTemplate {
         typeof this.rules === "string" ? this.rules : this.rules.join("\n")
       }\n\`\`\`\n`);
 
-    this.returnPrompt.push(createMessage("system", rulePrompt, "system_rules"));
+    !!rulePrompt &&
+      this.returnPrompt.push(
+        createMessage("system", rulePrompt, "system_rules"),
+      );
 
     let feedbackPrompt = "";
     //在进行任务之前，你需要对之前的结果进行反思，从而得出更好的结果：\`\`\`\n{refection.resultTest}\`\`\`\n。
@@ -183,9 +186,10 @@ export class AgentPromptTemplate {
       !!this.reflection.feedback &&
       (feedbackPrompt += `In addition, you need to incorporate user feedback:: \`\`\`\n${this.reflection.feedback}\n\`\`\`\n`);
 
-    this.returnPrompt.push(
-      createMessage("system", feedbackPrompt, "system_feedback"),
-    );
+    !!feedbackPrompt &&
+      this.returnPrompt.push(
+        createMessage("system", feedbackPrompt, "system_feedback"),
+      );
 
     let memoryPrompt = "";
     //相关的一些知识：\`\`\`\n{memory.datas,...}\`\`\`\n。
@@ -212,6 +216,10 @@ export class AgentPromptTemplate {
           ? this.memory.tools
           : this.memory.tools.join("\n")
       }\n\`\`\`\n`);
+    !!memoryPrompt &&
+      this.returnPrompt.push(
+        createMessage("system", memoryPrompt, "system_memory"),
+      );
     !!this.other &&
       this.returnPrompt.push(
         createMessage("system", `${this.other}`, "system_others"),
