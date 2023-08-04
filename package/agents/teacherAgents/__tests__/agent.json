@@ -1,0 +1,57 @@
+{
+  "agents":[
+    {
+      "name":"BaseAgent",
+      "params":{
+        "llmSchema": {},
+        "prompts": {
+          "name":"polishPromptTemplate",
+          "prompt":[],
+          "schema":{
+            "toneStyle": "Encouraging",
+            "language": "Chinese",
+            "evaluate": ["audience_understandability", "logicality"]
+          }
+        },
+        "chainName": "function",
+        "struct":{  "functions":[
+          {
+            "name": "result_evaluation",
+            "description":
+              "Input the scores of PPT speech polishing results and then output the total score and subsequent improvement suggestions",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "polished_result": {
+                  "type": "string",
+                  "description": "PPT speech polishing results"
+                },
+                "audience_understandability": {
+                  "type": "number",
+                  "description": "audience understandability,max score is 100"
+                },
+                "logicality": {
+                  "type": "number",
+                  "description": "logicality,max score is 100."
+                },
+                "suggestion": {
+                  "type": "string",
+                  "description":
+                    "subsequent improvement suggestions of PPT speech polishing.if there is no suggestion,please input 'no suggestion'"
+                }
+              },
+              "required": [
+                "polished_result",
+                "audience_understandability",
+                "logicality",
+                "suggestion"
+              ]
+            }
+          }
+        ],
+        "function_call": { "name": "result_evaluation"}
+      }
+      }
+    }
+  ]
+}
