@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { createMessage } from "./promptTemplate.js";
+import { createMessage, BasePromptTemplate } from "./promptTemplate.js";
 export type InputValues = Record<string, any>;
 
 export type toneStyleType =
@@ -70,7 +70,7 @@ export interface EvaluateItemSchema {
   desc: string;
 }
 
-export class AgentPromptTemplate {
+export class AgentPromptTemplate extends BasePromptTemplate {
   returnPrompt: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
   role: string;
   desc: string;
@@ -105,6 +105,7 @@ export class AgentPromptTemplate {
     other,
     evaluate,
   }: AgentPromptTemplateSchema) {
+    super();
     !!role && (this.role = role);
     !!desc && (this.desc = desc);
     !!toneStyle && (this.toneStyle = toneStyle);

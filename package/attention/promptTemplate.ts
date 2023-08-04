@@ -16,3 +16,7 @@ export function createMessage(
     name: name || undefined,
   };
 }
+
+export abstract class BasePromptTemplate {
+  abstract format(): OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[]; // 抽象方法必须在派生类中实现
+}

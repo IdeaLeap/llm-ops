@@ -31,7 +31,7 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param request The natural language request.
    * @returns A prompt that combines the request with the schema and type name of the underlying validator.
    */
-  createRequestPrompt(): messageType;
+  createRequestPrompt(request?: string): messageType;
   /**
    * Creates a repair prompt to append to an original prompt/response in order to repair a JSON object that
    * failed to validate. This function is called by `completeAndValidate` when `attemptRepair` is true and the
@@ -52,6 +52,7 @@ export interface TypeScriptChainSchema<T extends object> {
   call(
     request: messageType | string,
     prompt?: messageType[],
+    bound?: boolean,
   ): Promise<Result<T>>;
 }
 
@@ -82,10 +83,14 @@ export function TypeScriptChain<T extends object>(
   };
   return typeChat;
 
-  function createRequestPrompt(): messageType {
+  function createRequestPrompt(request?: string): messageType {
     return createMessage(
       "system",
-      `You need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
+      `${
+        request || ""
+      }\nYou need to process user requests and then translates result into JSON objects of type "${
+        validator.typeName
+      }" according to the following TypeScript definitions:\n` +
         `\`\`\`\n${validator.schema}\`\`\`\n` +
         `The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n`,
       "system_schema",
@@ -105,24 +110,47 @@ export function TypeScriptChain<T extends object>(
   async function call(
     request: messageType | string,
     prompt?: messageType[],
+    bound = false,
   ): Promise<Result<T>> {
     !prompt && (prompt = []);
     const resPrompt = prompt;
-    // 如果是字符串，转换成消息对象
-    if (typeof request === "string") {
-      request = createMessage("user", request);
+
+    if (bound) {
+      if (typeof request === "string") {
+        request = createMessage("user", request);
+      }
+      resPrompt.push(request);
+    } else {
+      // 如果是字符串，转换成消息对象
+      if (typeof request === "string") {
+        resPrompt.push(typeChat.createRequestPrompt(request));
+        // request = createMessage("user", request);
+      } else {
+        resPrompt.push(request);
+        resPrompt.push(typeChat.createRequestPrompt());
+      }
     }
-    resPrompt.push(typeChat.createRequestPrompt());
-    resPrompt.push(request);
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
-      const response = await llm.chat({ messages: resPrompt });
+      let response = await llm.chat({ messages: resPrompt });
       if (verbose) {
         llm.printMessage(response.choices, resPrompt);
       }
       let responseText = response.choices[0].message.content;
       if (!responseText) {
         return { success: false, message: responseText } as Error;
+      }
+      if (bound) {
+        resPrompt.push(createMessage("assistant", responseText));
+        resPrompt.push(typeChat.createRequestPrompt());
+        response = await llm.chat({ messages: resPrompt });
+        if (verbose) {
+          llm.printMessage(response.choices, resPrompt);
+        }
+        responseText = response.choices[0].message.content;
+        if (!responseText) {
+          return { success: false, message: responseText } as Error;
+        }
       }
       responseText = responseText.replace(/\\n/g, "");
       const startIndex = responseText.indexOf("{");
