@@ -10,7 +10,7 @@
 
 ## 🎨 技术栈
 
-- openai
+- Openai
 - Jest
 - Typescript
 - Vitepress

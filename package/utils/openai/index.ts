@@ -150,6 +150,16 @@ export class LLM {
     });
   }
 
+  async embedding(
+    input: string | string[] | number[] | number[][],
+  ): Promise<OpenAI.Embedding> {
+    return await this.llm.embeddings.create({
+      input: input,
+      model: "text-embedding-ada-002",
+      user: "GWT",
+    });
+  }
+
   printMessage(
     resMessages: OpenAI.Chat.Completions.ChatCompletion.Choice[],
     reqMessages?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[],
