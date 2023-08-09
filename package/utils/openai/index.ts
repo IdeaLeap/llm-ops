@@ -38,12 +38,34 @@ export interface ChatSchema {
 
 export class LLM {
   llm: OpenAI;
+  tokens: number;
+  messages: messagesType;
+  modelName:
+    | (string & object)
+    | "gpt-4"
+    | "gpt-4-0314"
+    | "gpt-4-0613"
+    | "gpt-4-32k"
+    | "gpt-4-32k-0314"
+    | "gpt-4-32k-0613"
+    | "gpt-3.5-turbo"
+    | "gpt-3.5-turbo-16k"
+    | "gpt-3.5-turbo-0301"
+    | "gpt-3.5-turbo-0613"
+    | "gpt-3.5-turbo-16k-0613";
+  temperature: number;
+  function_call: function_callType;
+  functions: functionsType;
+  choice_num: number | 1;
+  stop: string | null | string[];
 
   constructor({
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
   }: createLLMSchema) {
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
+    this.tokens = 0;
+    this.messages = [];
   }
 
   private _createLLM({
@@ -82,36 +104,43 @@ export class LLM {
     throw new Error(`"Missing environment variable: ${name}`);
   }
 
-  async chat({
-    modelName = "gpt-3.5-turbo-0613",
-    temperature = 0.7,
-    messages,
-    function_call,
-    functions,
-    choice_num,
-    stop,
-  }: ChatSchema): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+  async chat(
+    params: ChatSchema,
+  ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+    const {
+      modelName,
+      temperature,
+      messages,
+      function_call,
+      functions,
+      choice_num,
+      stop,
+    } = params;
     try {
-      const params: OpenAI.Chat.CompletionCreateParams = {
+      if (!messages) {
+        throw new Error("messages is required!");
+      }
+      this.messages.length != 0 &&
+        (this.messages = [...this.messages, ...messages]);
+      this.messages.length == 0 && (this.messages = messages);
+      !!modelName && (this.modelName = modelName);
+      !!temperature && (this.temperature = temperature);
+      !!function_call && (this.function_call = function_call);
+      !!functions && (this.functions = functions);
+      !!choice_num && (this.choice_num = choice_num);
+      !!stop && (this.stop = stop);
+      const params_: OpenAI.Chat.CompletionCreateParams = {
         /**
          * A list of messages comprising the conversation so far.
          * [Example Python code](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb).
          */
-        messages: messages,
+        messages: this.messages,
         /**
          * ID of the model to use. See the
          * [model endpoint compatibility](/docs/models/model-endpoint-compatibility) table
          * for details on which models work with the Chat API.
          */
-        model: modelName,
-        /**
-         * Number between -2.0 and 2.0. Positive values penalize new tokens based on their
-         * existing frequency in the text so far, decreasing the model's likelihood to
-         * repeat the same line verbatim.
-         *
-         * [See more information about frequency and presence penalties.](/docs/api-reference/parameter-details)
-         */
-        frequency_penalty: -2,
+        model: modelName || "gpt-3.5-turbo-0613",
         /**
          * Controls how the model responds to function calls. "none" means the model does
          * not call a function, and responds to the end-user. "auto" means the model can
@@ -131,10 +160,75 @@ export class LLM {
         n: choice_num ? choice_num : 1,
         stop: stop,
         stream: false,
-        temperature: temperature,
+        temperature: temperature || 0.7,
         user: "GWT",
       };
-      return await this.llm.chat.completions.create(params);
+      const res = await this.llm.chat.completions.create(params_);
+      this.tokens += res.usage?.total_tokens || 0;
+      res.choices.length == 1 &&
+        this.messages.push(
+          res.choices[0]
+            .message as OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message,
+        );
+      return res;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  async recall(): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+    try {
+      if (this.messages.length == 0) {
+        throw new Error("can't recall!");
+      }
+      if (this.messages[this.messages.length - 1].role == "assistant") {
+        console.warn("pop assistant message!");
+        this.messages.pop();
+      }
+      const params_: OpenAI.Chat.CompletionCreateParams = {
+        /**
+         * A list of messages comprising the conversation so far.
+         * [Example Python code](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb).
+         */
+        messages: this.messages,
+        /**
+         * ID of the model to use. See the
+         * [model endpoint compatibility](/docs/models/model-endpoint-compatibility) table
+         * for details on which models work with the Chat API.
+         */
+        model: this.modelName || "gpt-3.5-turbo-0613",
+        /**
+         * Controls how the model responds to function calls. "none" means the model does
+         * not call a function, and responds to the end-user. "auto" means the model can
+         * pick between an end-user or calling a function. Specifying a particular function
+         * via `{"name":\ "my_function"}` forces the model to call that function. "none" is
+         * the default when no functions are present. "auto" is the default if functions
+         * are present.
+         */
+        function_call:
+          this.functions && this.function_call ? this.function_call : undefined,
+        /**
+         * A list of functions the model may generate JSON inputs for.
+         */
+        functions: this.functions,
+        /**
+         * How many chat completion choices to generate for each input message.
+         */
+        n: this.choice_num || 1,
+        stop: this.stop,
+        stream: false,
+        temperature: this.temperature || 0.7,
+        user: "GWT",
+      };
+      const res = await this.llm.chat.completions.create(params_);
+      this.tokens += res.usage?.total_tokens || 0;
+      res.choices.length == 1 &&
+        this.messages.push(
+          res.choices[0]
+            .message as OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message,
+        );
+      return res;
     } catch (err) {
       console.error(err);
       throw err;
@@ -161,7 +255,7 @@ export class LLM {
   }
 
   printMessage(
-    resMessages: OpenAI.Chat.Completions.ChatCompletion.Choice[],
+    resMessages?: OpenAI.Chat.Completions.ChatCompletion.Choice[],
     reqMessages?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[],
   ) {
     const roleToColor = {
@@ -171,8 +265,8 @@ export class LLM {
       function: "magenta",
     };
     !!reqMessages && prettyPrintReqMessage(reqMessages);
-    prettyPrintResMessage(resMessages);
-
+    !!resMessages && prettyPrintResMessage(resMessages);
+    !reqMessages && !resMessages && prettyPrintReqMessage(this.messages);
     function prettyPrintReqMessage(
       messages: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[],
     ) {

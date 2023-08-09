@@ -36,8 +36,8 @@ export class BaseAgent<T> {
   llm: LLM;
   prompt?: messageType[];
   chain?: T;
-  constructor(json: object) {
-    const { llmSchema, prompts, chainName, struct } = json as BaseAgentSchema;
+  constructor(params: BaseAgentSchema) {
+    const { llmSchema, prompts, chainName, struct } = params;
     this.llm = new LLM(llmSchema || {});
     switch (prompts?.name) {
       case "polishPromptTemplate":
