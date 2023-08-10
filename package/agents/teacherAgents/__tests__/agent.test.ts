@@ -1,9 +1,7 @@
 import { BaseAgent } from "../agent.js";
 import fetch from "node-fetch";
 const data = (await (
-  await fetch(
-    "https://idealeap-1254110372.cos.ap-shanghai.myqcloud.com/Other/agent.json",
-  )
+  await fetch("https://cos.idealeap.cn/Other/agent.json")
 ).json()) as { agents: any[] };
 const agent = new BaseAgent(data.agents[0].params);
 const res = await agent.call(

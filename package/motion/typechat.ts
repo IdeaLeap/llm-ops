@@ -83,14 +83,10 @@ export function TypeScriptChain<T extends object>(
   };
   return typeChat;
 
-  function createRequestPrompt(request?: string): messageType {
+  function createRequestPrompt(): messageType {
     return createMessage(
       "system",
-      `${
-        request || ""
-      }\nYou need to process user requests and then translates result into JSON objects of type "${
-        validator.typeName
-      }" according to the following TypeScript definitions:\n` +
+      `\nYou need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
         `\`\`\`\n${validator.schema}\`\`\`\n` +
         `The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n`,
       "system_schema",
@@ -123,7 +119,8 @@ export function TypeScriptChain<T extends object>(
     } else {
       // 如果是字符串，转换成消息对象
       if (typeof request === "string") {
-        resPrompt.push(typeChat.createRequestPrompt(request));
+        resPrompt.push(createMessage("user", request));
+        resPrompt.push(typeChat.createRequestPrompt());
         // request = createMessage("user", request);
       } else {
         resPrompt.push(request);
@@ -133,22 +130,22 @@ export function TypeScriptChain<T extends object>(
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
       let response = await llm.chat({ messages: resPrompt });
-      if (verbose) {
-        llm.printMessage(response.choices, resPrompt);
-      }
       let responseText = response.choices[0].message.content;
       if (!responseText) {
+        if (verbose) {
+          llm.printMessage();
+        }
         return { success: false, message: responseText } as Error;
       }
       if (bound) {
         resPrompt.push(createMessage("assistant", responseText));
         resPrompt.push(typeChat.createRequestPrompt());
         response = await llm.chat({ messages: resPrompt });
-        if (verbose) {
-          llm.printMessage(response.choices, resPrompt);
-        }
         responseText = response.choices[0].message.content;
         if (!responseText) {
+          if (verbose) {
+            llm.printMessage();
+          }
           return { success: false, message: responseText } as Error;
         }
       }
@@ -156,14 +153,23 @@ export function TypeScriptChain<T extends object>(
       const startIndex = responseText.indexOf("{");
       const endIndex = responseText.lastIndexOf("}");
       if (!(startIndex >= 0 && endIndex > startIndex)) {
+        if (verbose) {
+          llm.printMessage();
+        }
         return error(`Response is not JSON:\n${responseText}`);
       }
       const jsonText = responseText.slice(startIndex, endIndex + 1);
       const validation = validator.validate(jsonText);
       if (validation.success) {
+        if (verbose) {
+          llm.printMessage();
+        }
         return validation;
       }
       if (!attemptRepair) {
+        if (verbose) {
+          llm.printMessage();
+        }
         return error(
           `JSON validation failed: ${validation.message}\n${jsonText}`,
         );

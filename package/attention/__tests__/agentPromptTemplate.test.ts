@@ -48,16 +48,14 @@ const prompt = new AgentPromptTemplate({
   rules: [
     "The resulting text should not be missing, and only words should be polished without changing the main structure",
     "Don't reply to continuous nonsensical text",
+    "Emphasize important information using bold or italic text.",
   ],
 });
 const chain = TypeScriptChain(llm, schema, "PPTWordPolishResponse", true);
 const prompt_ = prompt.format();
 const res = await chain.call(
   `
-各位评委好，我们数漫蛇山队选的是第三个题目：新闻人物实体对象和相关事件文本抽取
-这道题目是一个NLP领域的题目，也是我们队员从未接触过的领域，但是我们非常想去尝试，也想借此了解到NLP的一些相关知识。
-从确定方案可行到代码实现和完成赛题，我们大概用了一周时间。
-我们队伍三个人一人负责模型构建和训练，一人负责数据处理，还有一人负责模型部署。
+各位评委好，我们数漫蛇山队选的是第三个题目：新闻人物实体对象和相关事件文本抽取\n这道题目是一个NLP领域的题目，也是我们队员从未接触过的领域，但是我们非常想去尝试，也想借此了解到NLP的一些相关知识。\n从确定方案可行到代码实现和完成赛题，我们大概用了一周时间。\n我们队伍三个人一人负责模型构建和训练，一人负责数据处理，还有一人负责模型部署。
 `,
   prompt_,
 );

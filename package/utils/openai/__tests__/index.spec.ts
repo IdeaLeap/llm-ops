@@ -12,12 +12,12 @@ await llm.chat({
     { role: "user", content: "你会不会说话，你就只会骂人是吧！" },
   ],
 });
-await llm.chat({
-  messages: [{ role: "user", content: "好啊好啊！让我见识一下！" }],
-});
-await llm.chat({
-  messages: [{ role: "user", content: "你会不会说话，你就只会骂人是吧！" }],
-});
+// await llm.chat({
+//   messages: [{ role: "user", content: "好啊好啊！让我见识一下！" }],
+// });
+// await llm.chat({
+//   messages: [{ role: "user", content: "你会不会说话，你就只会骂人是吧！" }],
+// });
 
 llm.printMessage();
 debugger;

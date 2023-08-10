@@ -43,7 +43,7 @@ export function FunctionChain<T extends object>(
       function_call: function_call || undefined,
     });
     if (verbose) {
-      llm.printMessage(res.choices, messages);
+      llm.printMessage();
     }
     const responseText = res.choices[0].message.content;
     if (!responseText && !!res.choices[0].message.function_call) {
