@@ -1,34 +1,27 @@
 import { Result, success, Error, LLM } from "../utils/index.js";
 import { createMessage, messageType } from "../attention/index.js";
 import { functionsType, function_callType } from "../utils/index.js";
+export interface FunctionCallSchema {
+  request: messageType | string;
+  prompt?: messageType[];
+  functions?: functionsType;
+  function_call?: function_callType;
+  verbose?: boolean;
+}
 export interface FunctionSchema<T extends object> {
   llm: LLM;
-  function_call?: function_callType;
-  functions?: functionsType;
-  call(
-    request: messageType | string,
-    prompt?: messageType[],
-  ): Promise<Result<T>>;
+  call(params: FunctionCallSchema): Promise<Result<T>>;
 }
 
-export function FunctionChain<T extends object>(
-  llm: LLM,
-  functions?: functionsType,
-  function_call?: function_callType,
-  verbose = false,
-): FunctionSchema<T> {
+export function FunctionChain<T extends object>(llm: LLM): FunctionSchema<T> {
   const Function: FunctionSchema<T> = {
     llm,
-    functions,
-    function_call,
     call,
   };
   return Function;
 
-  async function call(
-    request: messageType | string,
-    prompt?: messageType[],
-  ): Promise<Result<T>> {
+  async function call(params: FunctionCallSchema): Promise<Result<T>> {
+    const { request, prompt, functions, function_call, verbose } = params;
     let messages: messageType[] = [];
     !!prompt && (messages = prompt);
     if (typeof request === "string") {

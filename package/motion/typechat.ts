@@ -4,15 +4,20 @@ import { TypeChatJsonValidator, createJsonValidator } from "./validate.js";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
+
+export interface TypeScriptChainCallSchema {
+  request: messageType | string;
+  prompt?: messageType[];
+  schema?: string;
+  typeName?: string;
+  bound?: boolean;
+  verbose?: boolean;
+}
 export interface TypeScriptChainSchema<T extends object> {
   /**
    * The associated `LLM`.
    */
   llm: LLM;
-  /**
-   * The associated `TypeChatJsonValidator<T>`.
-   */
-  validator: TypeChatJsonValidator<T>;
   /**
    * A boolean indicating whether to attempt repairing JSON objects that fail to validate. The default is `true`,
    * but an application can set the property to `false` to disable repair attempts.
@@ -31,7 +36,7 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param request The natural language request.
    * @returns A prompt that combines the request with the schema and type name of the underlying validator.
    */
-  createRequestPrompt(request?: string): messageType;
+  createRequestPrompt(validator: TypeChatJsonValidator<T>): messageType;
   /**
    * Creates a repair prompt to append to an original prompt/response in order to repair a JSON object that
    * failed to validate. This function is called by `completeAndValidate` when `attemptRepair` is true and the
@@ -49,11 +54,7 @@ export interface TypeScriptChainSchema<T extends object> {
    * @param prompt The natural language request.
    * @returns A promise for the resulting object.
    */
-  call(
-    request: messageType | string,
-    prompt?: messageType[],
-    bound?: boolean,
-  ): Promise<Result<T>>;
+  call(params: TypeScriptChainCallSchema): Promise<Result<T>>;
 }
 
 /**
@@ -67,14 +68,9 @@ export interface TypeScriptChainSchema<T extends object> {
  */
 export function TypeScriptChain<T extends object>(
   llm: LLM,
-  schema: string,
-  typeName: string,
-  verbose = false,
 ): TypeScriptChainSchema<T> {
-  const validator = createJsonValidator<T>(schema, typeName);
   const typeChat: TypeScriptChainSchema<T> = {
     llm,
-    validator,
     attemptRepair: true,
     stripNulls: false,
     createRequestPrompt,
@@ -83,7 +79,9 @@ export function TypeScriptChain<T extends object>(
   };
   return typeChat;
 
-  function createRequestPrompt(): messageType {
+  function createRequestPrompt(
+    validator: TypeChatJsonValidator<T>,
+  ): messageType {
     return createMessage(
       "system",
       `\nYou need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
@@ -103,43 +101,51 @@ export function TypeScriptChain<T extends object>(
     );
   }
 
-  async function call(
-    request: messageType | string,
-    prompt?: messageType[],
-    bound = false,
-  ): Promise<Result<T>> {
-    !prompt && (prompt = []);
-    const resPrompt = prompt;
+  async function call(params: TypeScriptChainCallSchema): Promise<Result<T>> {
+    const { request, prompt, schema, typeName, bound, verbose } = params;
+    let validator: TypeChatJsonValidator<T> | undefined = undefined,
+      resPrompt: messageType[] = [],
+      request_: messageType | string = request;
+    !!schema &&
+      !!typeName &&
+      (validator = createJsonValidator<T>(schema, typeName));
+    !!prompt && (resPrompt = prompt);
 
     if (bound) {
-      if (typeof request === "string") {
-        request = createMessage("user", request);
+      if (typeof request_ === "string") {
+        request_ = createMessage("user", request_);
       }
-      resPrompt.push(request);
+      resPrompt.push(request_);
     } else {
       // 如果是字符串，转换成消息对象
-      if (typeof request === "string") {
-        resPrompt.push(createMessage("user", request));
-        resPrompt.push(typeChat.createRequestPrompt());
-        // request = createMessage("user", request);
+      if (typeof request_ === "string") {
+        resPrompt.push(createMessage("user", request_));
+        !!validator && resPrompt.push(typeChat.createRequestPrompt(validator));
       } else {
-        resPrompt.push(request);
-        resPrompt.push(typeChat.createRequestPrompt());
+        resPrompt.push(request_);
+        !!validator && resPrompt.push(typeChat.createRequestPrompt(validator));
       }
     }
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
       let response = await llm.chat({ messages: resPrompt });
       let responseText = response.choices[0].message.content;
+      // responseText = '{  "sentiment": "play"}';
       if (!responseText) {
         if (verbose) {
           llm.printMessage();
         }
         return { success: false, message: responseText } as Error;
       }
+      if (!validator || !schema || !typeName) {
+        if (verbose) {
+          llm.printMessage();
+        }
+        return { success: true, data: responseText } as unknown as Result<T>;
+      }
       if (bound) {
         resPrompt.push(createMessage("assistant", responseText));
-        resPrompt.push(typeChat.createRequestPrompt());
+        !!validator && resPrompt.push(typeChat.createRequestPrompt(validator));
         response = await llm.chat({ messages: resPrompt });
         responseText = response.choices[0].message.content;
         if (!responseText) {
@@ -174,7 +180,8 @@ export function TypeScriptChain<T extends object>(
           `JSON validation failed: ${validation.message}\n${jsonText}`,
         );
       }
-      resPrompt.push(createMessage("user", responseText));
+      // resPrompt.push(createMessage("user", responseText));
+      resPrompt = []; // 继续对话
       resPrompt.push(typeChat.createRepairPrompt(validation.message));
       attemptRepair = false;
     }
