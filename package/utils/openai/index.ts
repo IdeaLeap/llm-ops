@@ -108,7 +108,7 @@ export class LLM {
     params: ChatSchema,
   ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
     const {
-      modelName,
+      modelName, //TODO 这里需要挪出去
       temperature,
       messages,
       function_call,

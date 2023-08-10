@@ -128,7 +128,9 @@ export function TypeScriptChain<T extends object>(
     }
     let attemptRepair = typeChat.attemptRepair;
     while (true) {
-      let response = await llm.chat({ messages: resPrompt });
+      let response = await llm.chat({
+        messages: resPrompt,
+      });
       let responseText = response.choices[0].message.content;
       // responseText = '{  "sentiment": "play"}';
       if (!responseText) {

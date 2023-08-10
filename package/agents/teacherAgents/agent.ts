@@ -68,9 +68,9 @@ export class BaseAgent<T> {
         }
         this.chain = TypeScriptChain(
           this.llm,
-          struct.schema,
-          struct.typeName,
-          true,
+          // struct.schema,
+          // struct.typeName,
+          // true,
         ) as unknown as T;
         break;
       case "function":
@@ -80,9 +80,9 @@ export class BaseAgent<T> {
         }
         this.chain = FunctionChain(
           this.llm,
-          struct.functions,
-          struct.function_call,
-          true,
+          // struct.functions,
+          // struct.function_call,
+          // true,
         ) as unknown as T;
         break;
     }
@@ -95,7 +95,7 @@ export class BaseAgent<T> {
       this.chain as unknown as {
         call: (
           request: messageType | string,
-          prompt?: messageType[],
+          prompt?: messageType[], //TODO 需要修改
         ) => Promise<Result<T>>;
       }
     ).call(request, this.prompt);

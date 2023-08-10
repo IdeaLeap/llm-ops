@@ -42,17 +42,15 @@ const reqMessages = new PolishPromptTemplate({
   language: "Chinese",
   evaluate: ["audience_understandability", "logicality"],
 });
-const chain = FunctionChain(
-  llm,
+const chain = FunctionChain(llm);
+const res = await chain.call({
+  request: `
+    你好，非常欢迎你来到我身边~我是xxx，我会把最美好的一面呈现给你！`,
+  prompt: reqMessages.format(),
   functions,
-  { name: "result_evaluation" },
-  true,
-);
-const res = await chain.call(
-  `
-你好，非常欢迎你来到我身边~我是xxx，我会把最美好的一面呈现给你！`,
-  reqMessages.format(),
-);
+  function_call: { name: "result_evaluation" },
+  verbose: true,
+});
 if (!res.success) {
   console.error(res.message);
 } else {
