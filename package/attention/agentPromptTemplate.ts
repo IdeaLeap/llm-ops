@@ -71,22 +71,22 @@ export interface EvaluateItemSchema {
 }
 
 export class AgentPromptTemplate extends BasePromptTemplate {
-  returnPrompt: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
-  role: string;
-  desc: string;
-  toneStyle: toneStyleType;
-  communicationStyle: communicationStyleType;
-  level: levelType;
-  field: string;
-  keyRole: string;
-  reasoning: reasoningType;
-  rules: string | string[];
-  reflection: ReflectionPromptTemplateSchema;
-  memory: MemoryPromptTemplateSchema;
-  humanSituation: string;
-  language: languageType;
-  other: string;
-  evaluate: TeacherEvaluateSchema;
+  returnPrompt?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
+  role?: string;
+  desc?: string;
+  toneStyle?: toneStyleType;
+  communicationStyle?: communicationStyleType;
+  level?: levelType;
+  field?: string;
+  keyRole?: string;
+  reasoning?: reasoningType;
+  rules?: string | string[];
+  reflection?: ReflectionPromptTemplateSchema;
+  memory?: MemoryPromptTemplateSchema;
+  humanSituation?: string;
+  language?: languageType;
+  other?: string;
+  evaluate?: TeacherEvaluateSchema;
 
   constructor({
     role,

@@ -32,8 +32,8 @@ export class FunctionChain {
     if (verbose) {
       this.llm.printMessage();
     }
-    const responseText = res.choices[0].message.content;
-    if (!responseText && !!res.choices[0].message.function_call) {
+    const responseText = res.choices[0]?.message.content;
+    if (!responseText && !!res.choices[0]?.message.function_call) {
       const return_res = JSON.parse(
         res.choices[0].message.function_call.arguments as string,
       );

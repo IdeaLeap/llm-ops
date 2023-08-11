@@ -10,7 +10,7 @@ export interface polishPromptTemplateSchema {
 }
 
 export class PolishPromptTemplate extends BasePromptTemplate {
-  returnPrompt: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
+  returnPrompt?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
   toneStyle?: string;
   language?: languageType;
   other?: string;

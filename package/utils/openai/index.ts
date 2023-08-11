@@ -40,7 +40,7 @@ export class LLM {
   llm: OpenAI;
   tokens: number;
   messages: messagesType;
-  modelName:
+  modelName?:
     | (string & object)
     | "gpt-4"
     | "gpt-4-0314"
@@ -53,11 +53,11 @@ export class LLM {
     | "gpt-3.5-turbo-0301"
     | "gpt-3.5-turbo-0613"
     | "gpt-3.5-turbo-16k-0613";
-  temperature: number;
-  function_call: function_callType;
-  functions: functionsType;
-  choice_num: number | 1;
-  stop: string | null | string[];
+  temperature?: number;
+  function_call?: function_callType;
+  functions?: functionsType;
+  choice_num?: number | 1;
+  stop?: string | null | string[];
 
   constructor(params: createLLMSchema) {
     const {
