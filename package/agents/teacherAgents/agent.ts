@@ -14,8 +14,12 @@ import {
 } from "../../attention/index.js";
 export interface BaseAgentSchema {
   llmSchema?: createLLMSchema;
-  prompts?: PromptsSchema;
   chainName?: string;
+}
+
+export interface BaseAgentCallSchema {
+  request: messageType | string;
+  prompts?: PromptsSchema;
   struct?: structSchema;
 }
 
@@ -35,9 +39,25 @@ export class BaseAgent {
   llm: LLM;
   prompt?: messageType[];
   chain?: any;
+  chainName: string;
   constructor(params: BaseAgentSchema) {
-    const { llmSchema, prompts, chainName, struct } = params;
+    const { llmSchema, chainName } = params;
     this.llm = new LLM(llmSchema || {});
+    this.chainName = chainName || "";
+    switch (this.chainName) {
+      case "typeChat":
+        this.chain = new TypeScriptChain(this.llm);
+        break;
+      default:
+        this.chain = new FunctionChain(this.llm);
+        break;
+    }
+  }
+  async call(params: BaseAgentCallSchema): Promise<Result<any>> {
+    const { request, prompts, struct } = params;
+    if (!this.chain) {
+      return error("Chain not initialized");
+    }
     switch (prompts?.name) {
       case "polishPromptTemplate":
         this.prompt = new PolishPromptTemplate(prompts.schema).format();
@@ -55,49 +75,27 @@ export class BaseAgent {
         this.prompt = prompts?.prompt || [];
         break;
     }
-    if (!chainName || !struct) {
-      this.chain = new FunctionChain(this.llm);
-      return;
-    }
-    switch (chainName) {
+    let result = undefined;
+    switch (this.chainName) {
       case "typeChat":
-        if (!struct.schema || !struct.typeName) {
-          this.chain = new FunctionChain(this.llm);
-          break;
-        }
-        this.chain = new TypeScriptChain(
-          this.llm,
-          // struct.schema,
-          // struct.typeName,
-          // true,
-        );
+        result = await this.chain.call({
+          request,
+          prompt: this.prompt,
+          schema: struct?.schema,
+          typeName: struct?.typeName,
+          verbose: true,
+        });
         break;
-      case "function":
-        if (!struct.functions || !struct.function_call) {
-          this.chain = new FunctionChain(this.llm);
-          break;
-        }
-        this.chain = new FunctionChain(
-          this.llm,
-          // struct.functions,
-          // struct.function_call,
-          // true,
-        );
+      default:
+        result = await this.chain.call({
+          request,
+          prompt: this.prompt,
+          functions: struct?.functions,
+          function_call: struct?.function_call,
+          verbose: true,
+        });
         break;
     }
-  }
-  async call(request: messageType | string): Promise<Result<any>> {
-    if (!this.chain) {
-      return error("Chain not initialized");
-    }
-    const result = await (
-      this.chain as unknown as {
-        call: (
-          request: messageType | string,
-          prompt?: messageType[], //TODO 需要修改
-        ) => Promise<Result<any>>;
-      }
-    ).call(request, this.prompt);
     return result;
   }
 }

@@ -51,7 +51,7 @@ const prompt = new AgentPromptTemplate({
     "Emphasize important information using bold or italic text.",
   ],
 });
-const chain = TypeScriptChain(llm);
+const chain = new TypeScriptChain(llm);
 const prompt_ = prompt.format();
 const res = await chain.call({
   request: `

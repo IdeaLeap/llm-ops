@@ -4,9 +4,11 @@ const data = (await (
   await fetch("https://cos.idealeap.cn/Other/agent.json")
 ).json()) as { agents: any[] };
 const agent = new BaseAgent(data.agents[0].params);
-const res = await agent.call(
-  `你好，非常欢迎你来到我身边~我是xxx，我会把最美好的一面呈现给你！`,
-);
+const res = await agent.call({
+  request: `你好，非常欢迎你来到我身边~我是xxx，我会把最美好的一面呈现给你！`,
+  prompts: data.agents[0].params.prompts,
+  struct: data.agents[0].params.struct,
+});
 if (!res.success) {
   console.error(res.message);
 } else {

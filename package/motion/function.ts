@@ -25,7 +25,6 @@ export class FunctionChain {
       messages.push(request);
     }
     const res = await this.llm.chat({
-      modelName: "gpt-3.5-turbo",
       messages: messages,
       functions: functions || undefined,
       function_call: function_call || undefined,

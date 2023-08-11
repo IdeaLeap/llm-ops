@@ -42,7 +42,7 @@ const reqMessages = new PolishPromptTemplate({
   language: "Chinese",
   evaluate: ["audience_understandability", "logicality"],
 });
-const chain = FunctionChain(llm);
+const chain = new FunctionChain(llm);
 const res = await chain.call({
   request: `
     你好，非常欢迎你来到我身边~我是xxx，我会把最美好的一面呈现给你！`,
