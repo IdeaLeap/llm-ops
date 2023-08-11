@@ -31,11 +31,10 @@ export interface structSchema {
   schema?: string;
   typeName?: string;
 }
-// 初始化输入llmSchema，prompt，request，chainName，schema 输出result
-export class BaseAgent<T> {
+export class BaseAgent {
   llm: LLM;
   prompt?: messageType[];
-  chain?: T;
+  chain?: any;
   constructor(params: BaseAgentSchema) {
     const { llmSchema, prompts, chainName, struct } = params;
     this.llm = new LLM(llmSchema || {});
@@ -57,37 +56,37 @@ export class BaseAgent<T> {
         break;
     }
     if (!chainName || !struct) {
-      this.chain = FunctionChain(this.llm) as unknown as T;
+      this.chain = new FunctionChain(this.llm);
       return;
     }
     switch (chainName) {
       case "typeChat":
         if (!struct.schema || !struct.typeName) {
-          this.chain = FunctionChain(this.llm) as unknown as T;
+          this.chain = new FunctionChain(this.llm);
           break;
         }
-        this.chain = TypeScriptChain(
+        this.chain = new TypeScriptChain(
           this.llm,
           // struct.schema,
           // struct.typeName,
           // true,
-        ) as unknown as T;
+        );
         break;
       case "function":
         if (!struct.functions || !struct.function_call) {
-          this.chain = FunctionChain(this.llm) as unknown as T;
+          this.chain = new FunctionChain(this.llm);
           break;
         }
-        this.chain = FunctionChain(
+        this.chain = new FunctionChain(
           this.llm,
           // struct.functions,
           // struct.function_call,
           // true,
-        ) as unknown as T;
+        );
         break;
     }
   }
-  async call(request: messageType | string): Promise<Result<T>> {
+  async call(request: messageType | string): Promise<Result<any>> {
     if (!this.chain) {
       return error("Chain not initialized");
     }
@@ -96,7 +95,7 @@ export class BaseAgent<T> {
         call: (
           request: messageType | string,
           prompt?: messageType[], //TODO 需要修改
-        ) => Promise<Result<T>>;
+        ) => Promise<Result<any>>;
       }
     ).call(request, this.prompt);
     return result;

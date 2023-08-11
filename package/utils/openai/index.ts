@@ -4,6 +4,22 @@ import OpenAI from "openai";
 export interface createLLMSchema {
   HELICONE_AUTH_API_KEY?: string;
   OPENAI_API_KEY?: string;
+  modelName?:
+    | (string & object)
+    | "gpt-4"
+    | "gpt-4-0314"
+    | "gpt-4-0613"
+    | "gpt-4-32k"
+    | "gpt-4-32k-0314"
+    | "gpt-4-32k-0613"
+    | "gpt-3.5-turbo"
+    | "gpt-3.5-turbo-16k"
+    | "gpt-3.5-turbo-0301"
+    | "gpt-3.5-turbo-0613"
+    | "gpt-3.5-turbo-16k-0613";
+  temperature?: number;
+  choice_num?: number | 1;
+  stop?: string | null | string[];
 }
 
 export type messagesType =
@@ -59,13 +75,22 @@ export class LLM {
   choice_num: number | 1;
   stop: string | null | string[];
 
-  constructor({
-    HELICONE_AUTH_API_KEY = undefined,
-    OPENAI_API_KEY = undefined,
-  }: createLLMSchema) {
+  constructor(params: createLLMSchema) {
+    const {
+      HELICONE_AUTH_API_KEY = undefined,
+      OPENAI_API_KEY = undefined,
+      modelName,
+      temperature,
+      choice_num,
+      stop,
+    } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
     this.tokens = 0;
     this.messages = [];
+    this.modelName = modelName || "gpt-3.5-turbo-0613";
+    this.temperature = temperature || 0.7;
+    this.choice_num = choice_num || 1;
+    this.stop = stop || null;
   }
 
   private _createLLM({
@@ -92,8 +117,6 @@ export class LLM {
     return new OpenAI({
       ...config,
       apiKey: openAIApiKey,
-      // maxRetries: 0,
-      // timeout: 20 * 1000,
     });
   }
 
@@ -107,15 +130,7 @@ export class LLM {
   async chat(
     params: ChatSchema,
   ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
-    const {
-      modelName, //TODO 这里需要挪出去
-      temperature,
-      messages,
-      function_call,
-      functions,
-      choice_num,
-      stop,
-    } = params;
+    const { messages, function_call, functions } = params;
     try {
       if (!messages) {
         throw new Error("messages is required!");
@@ -123,12 +138,8 @@ export class LLM {
       this.messages.length != 0 &&
         (this.messages = [...this.messages, ...messages]);
       this.messages.length == 0 && (this.messages = messages);
-      !!modelName && (this.modelName = modelName);
-      !!temperature && (this.temperature = temperature);
       !!function_call && (this.function_call = function_call);
       !!functions && (this.functions = functions);
-      !!choice_num && (this.choice_num = choice_num);
-      !!stop && (this.stop = stop);
       const params_: OpenAI.Chat.CompletionCreateParams = {
         /**
          * A list of messages comprising the conversation so far.
@@ -140,7 +151,7 @@ export class LLM {
          * [model endpoint compatibility](/docs/models/model-endpoint-compatibility) table
          * for details on which models work with the Chat API.
          */
-        model: modelName || "gpt-3.5-turbo-0613",
+        model: this.modelName || "gpt-3.5-turbo-0613",
         /**
          * Controls how the model responds to function calls. "none" means the model does
          * not call a function, and responds to the end-user. "auto" means the model can
@@ -157,10 +168,10 @@ export class LLM {
         /**
          * How many chat completion choices to generate for each input message.
          */
-        n: choice_num ? choice_num : 1,
-        stop: stop,
+        n: this.choice_num || 1,
+        stop: this.stop,
         stream: false,
-        temperature: temperature || 0.7,
+        temperature: this.temperature || 0.7,
         user: "GWT",
       };
       const res = await this.llm.chat.completions.create(params_);
