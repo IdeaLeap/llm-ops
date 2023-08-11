@@ -54,7 +54,7 @@ const reqMessages: messagesType = [
       "Don't make assumptions about what values to plug into functions. Ask for clarification if a user request is ambiguous.",
   },
 ];
-const chain = FunctionChain(llm);
+const chain = new FunctionChain(llm);
 const res = await chain.call({
   request: { role: "user", content: "What's the weather like today" },
   prompt: reqMessages,

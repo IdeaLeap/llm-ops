@@ -1,4 +1,4 @@
-import { Result, success, Error, LLM } from "../utils/index.js";
+import { success, Error, LLM } from "../utils/index.js";
 import { createMessage, messageType } from "../attention/index.js";
 import { functionsType, function_callType } from "../utils/index.js";
 export interface FunctionCallSchema {
@@ -8,19 +8,14 @@ export interface FunctionCallSchema {
   function_call?: function_callType;
   verbose?: boolean;
 }
-export interface FunctionSchema<T extends object> {
+
+export class FunctionChain {
   llm: LLM;
-  call(params: FunctionCallSchema): Promise<Result<T>>;
-}
+  constructor(llm: LLM) {
+    this.llm = llm;
+  }
 
-export function FunctionChain<T extends object>(llm: LLM): FunctionSchema<T> {
-  const Function: FunctionSchema<T> = {
-    llm,
-    call,
-  };
-  return Function;
-
-  async function call(params: FunctionCallSchema): Promise<Result<T>> {
+  async call(params: FunctionCallSchema) {
     const { request, prompt, functions, function_call, verbose } = params;
     let messages: messageType[] = [];
     !!prompt && (messages = prompt);
@@ -29,25 +24,25 @@ export function FunctionChain<T extends object>(llm: LLM): FunctionSchema<T> {
     } else {
       messages.push(request);
     }
-    const res = await llm.chat({
+    const res = await this.llm.chat({
       modelName: "gpt-3.5-turbo",
       messages: messages,
       functions: functions || undefined,
       function_call: function_call || undefined,
     });
     if (verbose) {
-      llm.printMessage();
+      this.llm.printMessage();
     }
     const responseText = res.choices[0].message.content;
     if (!responseText && !!res.choices[0].message.function_call) {
       const return_res = JSON.parse(
         res.choices[0].message.function_call.arguments as string,
       );
-      return success(return_res as T);
+      return success(return_res);
     }
     if (!responseText) {
       return { success: false, message: responseText } as Error;
     }
-    return success(responseText as unknown as T);
+    return success(responseText);
   }
 }
