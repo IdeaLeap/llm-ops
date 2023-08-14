@@ -86,14 +86,14 @@ export class LLM {
         "OPENAI_API_KEY Missing! 😅 It's not free!",
       );
     }
-    const openAIApiKey = process.env.OPENAI_API_KEY || OPENAI_API_KEY;
+    const openAIApiKey = OPENAI_API_KEY || process.env.OPENAI_API_KEY;
     const config =
       process.env.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
         ? {
             baseURL: "https://oai.hconeai.com/v1",
             defaultHeaders: {
               "Helicone-Auth": `Bearer ${
-                process.env.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
+                HELICONE_AUTH_API_KEY || process.env.HELICONE_AUTH_API_KEY
               }`,
             },
           }
