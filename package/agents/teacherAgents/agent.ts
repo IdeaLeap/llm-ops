@@ -6,7 +6,7 @@ import {
   functionsType,
   function_callType,
 } from "../../utils/index.js";
-import { messageType } from "../../attention/index.js";
+import { messageType } from "../../utils/index.js";
 import { FunctionChain, TypeScriptChain } from "../../motion/index.js";
 import {
   PolishPromptTemplate,
@@ -14,8 +14,12 @@ import {
 } from "../../attention/index.js";
 export interface BaseAgentSchema {
   llmSchema?: createLLMSchema;
-  prompts?: PromptsSchema;
   chainName?: string;
+}
+
+export interface BaseAgentCallSchema {
+  request: messageType | string;
+  prompts?: PromptsSchema;
   struct?: structSchema;
 }
 
@@ -31,14 +35,29 @@ export interface structSchema {
   schema?: string;
   typeName?: string;
 }
-// 初始化输入llmSchema，prompt，request，chainName，schema 输出result
-export class BaseAgent<T> {
+export class BaseAgent {
   llm: LLM;
   prompt?: messageType[];
-  chain?: T;
-  constructor(json: object) {
-    const { llmSchema, prompts, chainName, struct } = json as BaseAgentSchema;
+  chain?: any;
+  chainName: string;
+  constructor(params: BaseAgentSchema) {
+    const { llmSchema, chainName } = params;
     this.llm = new LLM(llmSchema || {});
+    this.chainName = chainName || "";
+    switch (this.chainName) {
+      case "typeChat":
+        this.chain = new TypeScriptChain(this.llm);
+        break;
+      default:
+        this.chain = new FunctionChain(this.llm);
+        break;
+    }
+  }
+  async call(params: BaseAgentCallSchema): Promise<Result<any>> {
+    const { request, prompts, struct } = params;
+    if (!this.chain) {
+      return error("Chain not initialized");
+    }
     switch (prompts?.name) {
       case "polishPromptTemplate":
         this.prompt = new PolishPromptTemplate(prompts.schema).format();
@@ -56,49 +75,27 @@ export class BaseAgent<T> {
         this.prompt = prompts?.prompt || [];
         break;
     }
-    if (!chainName || !struct) {
-      this.chain = FunctionChain(this.llm) as unknown as T;
-      return;
-    }
-    switch (chainName) {
+    let result = undefined;
+    switch (this.chainName) {
       case "typeChat":
-        if (!struct.schema || !struct.typeName) {
-          this.chain = FunctionChain(this.llm) as unknown as T;
-          break;
-        }
-        this.chain = TypeScriptChain(
-          this.llm,
-          struct.schema,
-          struct.typeName,
-          true,
-        ) as unknown as T;
+        result = await this.chain.call({
+          request,
+          prompt: this.prompt,
+          schema: struct?.schema,
+          typeName: struct?.typeName,
+          verbose: true,
+        });
         break;
-      case "function":
-        if (!struct.functions || !struct.function_call) {
-          this.chain = FunctionChain(this.llm) as unknown as T;
-          break;
-        }
-        this.chain = FunctionChain(
-          this.llm,
-          struct.functions,
-          struct.function_call,
-          true,
-        ) as unknown as T;
+      default:
+        result = await this.chain.call({
+          request,
+          prompt: this.prompt,
+          functions: struct?.functions,
+          function_call: struct?.function_call,
+          verbose: true,
+        });
         break;
     }
-  }
-  async call(request: messageType | string): Promise<Result<T>> {
-    if (!this.chain) {
-      return error("Chain not initialized");
-    }
-    const result = await (
-      this.chain as unknown as {
-        call: (
-          request: messageType | string,
-          prompt?: messageType[],
-        ) => Promise<Result<T>>;
-      }
-    ).call(request, this.prompt);
     return result;
   }
 }

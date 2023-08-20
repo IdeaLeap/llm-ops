@@ -39,10 +39,9 @@ const reqMessages: messagesType = [
 ];
 
 const res = await llm.chat({
-  choice_num: 3,
   messages: reqMessages,
 });
-llm.printMessage(res.choices, reqMessages);
+llm.printMessage();
 console.log(res);
 debugger;
 
@@ -109,14 +108,22 @@ const reqMessages: messagesType = [
 ];
 
 const res = await llm.chat({
-  choice_num: 3,
   messages: reqMessages,
   functions: functions,
   function_call: { name: "get_current_weather" },
 });
-llm.printMessage(res.choices, reqMessages);
+llm.printMessage();
 console.log(res);
 debugger;
 ```
 
-## Moderation
+## Moderation & Embedding
+
+```ts
+import { LLM } from "../index.js";
+const llm = new LLM({});
+const res = await llm.embedding("hello world");
+console.log(res.data[0].embedding);
+debugger;
+
+```
