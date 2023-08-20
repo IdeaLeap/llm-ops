@@ -1,5 +1,5 @@
-import { Result, error, Error, LLM } from "../utils/index.js";
-import { createMessage, messageType } from "../attention/index.js";
+import { Result, error, Error, LLM, messageType } from "../utils/index.js";
+import { createMessage } from "../attention/index.js";
 import { TypeChatJsonValidator, createJsonValidator } from "./validate.js";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.

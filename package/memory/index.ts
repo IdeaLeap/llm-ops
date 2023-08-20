@@ -1,4 +1,1 @@
-export interface memorySchema {
-  bound?: boolean;
-  verbose?: boolean;
-}
+export * from "./milvus.js";
