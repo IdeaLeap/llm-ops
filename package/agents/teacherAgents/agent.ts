@@ -6,7 +6,7 @@ import {
   functionsType,
   function_callType,
 } from "../../utils/index.js";
-import { messageType } from "../../attention/index.js";
+import { messageType } from "../../utils/index.js";
 import { FunctionChain, TypeScriptChain } from "../../motion/index.js";
 import {
   PolishPromptTemplate,

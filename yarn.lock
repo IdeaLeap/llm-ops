@@ -3877,10 +3877,10 @@ open@^9.1.0:
     is-inside-container "^1.0.0"
     is-wsl "^2.2.0"
 
-openai@4.0.0-beta.6:
-  version "4.0.0-beta.6"
-  resolved "https://registry.yarnpkg.com/openai/-/openai-4.0.0-beta.6.tgz#faf2841f0328d4e57e82eac745383632bc2fa8ca"
-  integrity sha512-sZscRgs6nhBgIt0qcK8XB2PGga6V0Qy9rQn/vKesox/laQDs9tMaOi6rsDhHq15aXQJPROfEB0K9SZoCuyWbSw==
+openai@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/openai/-/openai-4.0.1.tgz#bcf1b4a53ee23f2df0f60e96eadc908c95eed1e2"
+  integrity sha512-UanMv/kCD/ylgOdBrkkRgkoFXdfENrXYWNvYdvPttXZaEJmRVY9MZSknlkWYH7iPMX6tTcz6szbI2d3O04UFag==
   dependencies:
     "@types/node" "^18.11.18"
     "@types/node-fetch" "^2.6.4"

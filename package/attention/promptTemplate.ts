@@ -1,13 +1,13 @@
-import OpenAI from "openai";
-export type funcCallType =
-  OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message.FunctionCall;
-export type messageType =
-  OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message;
+import {
+  messageFunctionCallType,
+  messageType,
+  messagesType,
+} from "../utils/index.js";
 export function createMessage(
   role: "system" | "user" | "assistant" | "function",
   content: string,
   name?: string,
-  function_call?: funcCallType,
+  function_call?: messageFunctionCallType | undefined,
 ): messageType {
   return {
     role: role,
@@ -18,5 +18,5 @@ export function createMessage(
 }
 
 export abstract class BasePromptTemplate {
-  abstract format(): OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[]; // 抽象方法必须在派生类中实现
+  abstract format(): messagesType; // 抽象方法必须在派生类中实现
 }

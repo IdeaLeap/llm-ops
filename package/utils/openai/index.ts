@@ -1,6 +1,23 @@
 import "dotenv/config";
 import OpenAI from "openai";
 
+// only for openai-node ^4.0.0
+export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
+export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
+export type resMessagesType = OpenAI.Chat.Completions.ChatCompletion.Choice[];
+export type functionsType = OpenAI.Chat.CompletionCreateParams.Function[];
+export type function_callType =
+  | "none"
+  | "auto"
+  | OpenAI.Chat.CompletionCreateParams.FunctionCallOption;
+export type messageFunctionCallType =
+  OpenAI.Chat.CreateChatCompletionRequestMessage.FunctionCall;
+export type chatCompletionType = OpenAI.Chat.Completions.ChatCompletion;
+export type llmType = OpenAI;
+export type chatParamsType = OpenAI.Chat.CompletionCreateParams;
+export type resModerationType = OpenAI.ModerationCreateResponse;
+export type resEmbeddingType = OpenAI.CreateEmbeddingResponse;
+
 export interface createLLMSchema {
   HELICONE_AUTH_API_KEY?: string;
   OPENAI_API_KEY?: string;
@@ -21,15 +38,6 @@ export interface createLLMSchema {
   choice_num?: number | 1;
   stop?: string | null | string[];
 }
-
-export type messagesType =
-  OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
-export type functionsType =
-  OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Function[];
-export type function_callType =
-  | "none"
-  | "auto"
-  | OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.FunctionCallOption;
 export interface ChatSchema {
   function_call?: function_callType;
   messages: messagesType;
@@ -37,7 +45,7 @@ export interface ChatSchema {
 }
 
 export class LLM {
-  llm: OpenAI;
+  llm: llmType;
   tokens: number;
   messages: messagesType;
   modelName?:
@@ -80,7 +88,7 @@ export class LLM {
   private _createLLM({
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
-  }: createLLMSchema): OpenAI {
+  }: createLLMSchema): llmType {
     if (!process.env.OPENAI_API_KEY && !OPENAI_API_KEY) {
       this.missingEnvironmentVariable(
         "OPENAI_API_KEY Missing! 😅 It's not free!",
@@ -111,9 +119,7 @@ export class LLM {
     throw new Error(`"Missing environment variable: ${name}`);
   }
 
-  async chat(
-    params: ChatSchema,
-  ): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+  async chat(params: ChatSchema): Promise<chatCompletionType> {
     const { messages, function_call, functions } = params;
     try {
       if (!messages) {
@@ -124,7 +130,7 @@ export class LLM {
       this.messages.length == 0 && (this.messages = messages);
       !!function_call && (this.function_call = function_call);
       !!functions && (this.functions = functions);
-      const params_: OpenAI.Chat.CompletionCreateParams = {
+      const params_: chatParamsType = {
         /**
          * A list of messages comprising the conversation so far.
          * [Example Python code](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb).
@@ -158,13 +164,12 @@ export class LLM {
         temperature: this.temperature || 0.7,
         user: "GWT",
       };
-      const res = await this.llm.chat.completions.create(params_);
+      const res = (await this.llm.chat.completions.create(
+        params_,
+      )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
       res.choices.length == 1 &&
-        this.messages.push(
-          res.choices[0]
-            .message as OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message,
-        );
+        this.messages.push(res.choices[0].message as messageType);
       return res;
     } catch (err) {
       console.error(err);
@@ -172,7 +177,7 @@ export class LLM {
     }
   }
 
-  async recall(): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+  async recall(): Promise<chatCompletionType> {
     try {
       if (this.messages.length == 0) {
         throw new Error("can't recall!");
@@ -181,7 +186,7 @@ export class LLM {
         console.warn("pop assistant message!");
         this.messages.pop();
       }
-      const params_: OpenAI.Chat.CompletionCreateParams = {
+      const params_: chatParamsType = {
         /**
          * A list of messages comprising the conversation so far.
          * [Example Python code](https://github.com/openai/openai-cookbook/blob/main/examples/How_to_format_inputs_to_ChatGPT_models.ipynb).
@@ -216,13 +221,12 @@ export class LLM {
         temperature: this.temperature || 0.7,
         user: "GWT",
       };
-      const res = await this.llm.chat.completions.create(params_);
+      const res = (await this.llm.chat.completions.create(
+        params_,
+      )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
       res.choices.length == 1 &&
-        this.messages.push(
-          res.choices[0]
-            .message as OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message,
-        );
+        this.messages.push(res.choices[0].message as messageType);
       return res;
     } catch (err) {
       console.error(err);
@@ -230,9 +234,7 @@ export class LLM {
     }
   }
 
-  async moderate(
-    input: string | string[],
-  ): Promise<OpenAI.ModerationCreateResponse> {
+  async moderate(input: string | string[]): Promise<resModerationType> {
     return await this.llm.moderations.create({
       input: input,
       model: "text-moderation-latest",
@@ -241,7 +243,7 @@ export class LLM {
 
   async embedding(
     input: string | string[] | number[] | number[][],
-  ): Promise<OpenAI.Embedding> {
+  ): Promise<resEmbeddingType> {
     return await this.llm.embeddings.create({
       input: input,
       model: "text-embedding-ada-002",
@@ -249,10 +251,7 @@ export class LLM {
     });
   }
 
-  printMessage(
-    resMessages?: OpenAI.Chat.Completions.ChatCompletion.Choice[],
-    reqMessages?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[],
-  ) {
+  printMessage(resMessages?: resMessagesType, reqMessages?: messagesType) {
     const roleToColor = {
       system: "red",
       user: "green",
@@ -262,9 +261,7 @@ export class LLM {
     !!reqMessages && prettyPrintReqMessage(reqMessages);
     !!resMessages && prettyPrintResMessage(resMessages);
     !reqMessages && !resMessages && prettyPrintReqMessage(this.messages);
-    function prettyPrintReqMessage(
-      messages: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[],
-    ) {
+    function prettyPrintReqMessage(messages: messagesType) {
       for (const message of messages) {
         if (message.role === "system") {
           console.log(
@@ -299,9 +296,7 @@ export class LLM {
       }
     }
 
-    function prettyPrintResMessage(
-      messages: OpenAI.Chat.Completions.ChatCompletion.Choice[],
-    ) {
+    function prettyPrintResMessage(messages: resMessagesType) {
       for (const message_ of messages) {
         const message = message_.message;
         if (message.role === "system") {

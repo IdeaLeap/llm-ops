@@ -1,4 +1,4 @@
-import OpenAI from "openai";
+import { messagesType } from "../utils/index.js";
 import { createMessage, BasePromptTemplate } from "./promptTemplate.js";
 export type InputValues = Record<string, any>;
 
@@ -52,7 +52,7 @@ export interface AgentPromptTemplateSchema {
 }
 
 export interface MemoryPromptTemplateSchema {
-  datas?: string | string[];
+  data?: string | string[];
   tools?: string | string[];
   knowledge?: string | string[];
 }
@@ -71,7 +71,7 @@ export interface EvaluateItemSchema {
 }
 
 export class AgentPromptTemplate extends BasePromptTemplate {
-  returnPrompt?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
+  returnPrompt?: messagesType;
   role?: string;
   desc?: string;
   toneStyle?: toneStyleType;
@@ -193,13 +193,13 @@ export class AgentPromptTemplate extends BasePromptTemplate {
       );
 
     let memoryPrompt = "";
-    //相关的一些知识：\`\`\`\n{memory.datas,...}\`\`\`\n。
+    //相关的一些知识：\`\`\`\n{memory.data,...}\`\`\`\n。
     !!this.memory &&
-      !!this.memory.datas &&
+      !!this.memory.data &&
       (memoryPrompt += `Some related knowledge:\n\`\`\`\n${
-        typeof this.memory.datas === "string"
-          ? this.memory.datas
-          : this.memory.datas.join("\n")
+        typeof this.memory.data === "string"
+          ? this.memory.data
+          : this.memory.data.join("\n")
       }\n\`\`\`\n`);
     //专业领域专家的一些意见:\`\`\`\n{memory.knowledge}\`\`\`\n
     !!this.memory &&
@@ -232,7 +232,7 @@ export class AgentPromptTemplate extends BasePromptTemplate {
   formatEvaluateItem(items: EvaluateItemSchema[]) {
     let prompt = "";
     items.forEach((item) => {
-      prompt += `{criteria:"${item.name}", dscription:${item.desc}}\n`;
+      prompt += `{criteria:"${item.name}", description:${item.desc}}\n`;
     });
     return prompt;
   }

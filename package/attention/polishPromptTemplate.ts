@@ -1,6 +1,5 @@
-import OpenAI from "openai";
 import { createMessage, BasePromptTemplate } from "./promptTemplate.js";
-
+import { messagesType } from "../utils/index.js";
 type languageType = "English" | "Chinese";
 export interface polishPromptTemplateSchema {
   toneStyle?: string;
@@ -10,7 +9,7 @@ export interface polishPromptTemplateSchema {
 }
 
 export class PolishPromptTemplate extends BasePromptTemplate {
-  returnPrompt?: OpenAI.Chat.CompletionCreateParams.CreateChatCompletionRequestNonStreaming.Message[];
+  returnPrompt?: messagesType;
   toneStyle?: string;
   language?: languageType;
   other?: string;

@@ -1,6 +1,10 @@
 import { success, Error, LLM } from "../utils/index.js";
-import { createMessage, messageType } from "../attention/index.js";
-import { functionsType, function_callType } from "../utils/index.js";
+import { createMessage } from "../attention/index.js";
+import {
+  functionsType,
+  function_callType,
+  messageType,
+} from "../utils/index.js";
 export interface FunctionCallSchema {
   request: messageType | string;
   prompt?: messageType[];
@@ -35,7 +39,7 @@ export class FunctionChain {
     const responseText = res.choices[0]?.message.content;
     if (!responseText && !!res.choices[0]?.message.function_call) {
       const return_res = JSON.parse(
-        res.choices[0].message.function_call.arguments as string,
+        res.choices[0].message.function_call.arguments,
       );
       return success(return_res);
     }
