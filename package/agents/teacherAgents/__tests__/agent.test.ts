@@ -1,5 +1,6 @@
 import { BaseAgent } from "@idealeap/gwt";
-import fetch from "node-fetch";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fetch = require("node-fetch");
 test("参数从远程载入", async () => {
   const data = (await (
     await fetch("https://cos.idealeap.cn/Other/agent.json")
