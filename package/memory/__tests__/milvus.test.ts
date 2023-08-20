@@ -1,8 +1,9 @@
 import { milvusVectorDB, LLM } from "@idealeap/gwt";
+import "dotenv/config";
 test("测试milvus的插入", async () => {
   const llm = new LLM({});
   const db = new milvusVectorDB({
-    address: "milvus.idealeap.cn:19530",
+    address: process.env.MILVUS_ADDRESS || "localhost:19530",
     COLLECTION_NAME: "t",
     llm: llm,
   });
