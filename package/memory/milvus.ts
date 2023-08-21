@@ -83,11 +83,12 @@ export class milvusVectorDB {
     return createCollection;
   }
   async upload(params: milvusVectorDBUploadSchema) {
-    const { fields_data, index } = params;
+    const { fields_data, index, partition_name } = params;
     console.time("Upload time");
     await this.milvusClient.insert({
       collection_name: this.COLLECTION_NAME,
       fields_data: fields_data,
+      partition_name: partition_name || undefined,
     });
     await this.milvusClient.createIndex({
       collection_name: this.COLLECTION_NAME,

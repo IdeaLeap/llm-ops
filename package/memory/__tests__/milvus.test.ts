@@ -4,28 +4,28 @@ test("测试milvus的插入", async () => {
   const llm = new LLM({});
   const db = new milvusVectorDB({
     address: process.env.MILVUS_ADDRESS || "localhost:19530",
-    COLLECTION_NAME: "t",
+    COLLECTION_NAME: "minippt",
     llm: llm,
   });
   const vectorsData = [
-    // {
-    //   annotation: db.generateVector("hello word"),
-    //   type: "index",
-    //   style: "tech",
-    //   tags: { data: ["tech", "index"] },
-    //   annotation_json: {
-    //     data: "hello word",
-    //   },
-    // },
     {
-      vector: await db.generateVector("hello word"),
+      annotation: await db.generateVector("hello word"),
+      type: "太好哩",
+      style: "tech",
+      tags: { data: ["你好", "index"] },
+      annotation_json: {
+        data: "hello word",
+      },
     },
+    // {
+    //   vector: await db.generateVector("hello word"),
+    // },
   ];
   const res = await db.upload({
     fields_data: vectorsData,
     partition_name: "test",
     index: {
-      field_name: "vector",
+      field_name: "annotation",
       metric_type: "L2",
     },
   });
