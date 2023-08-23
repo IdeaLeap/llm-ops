@@ -23,7 +23,7 @@ export interface milvusVectorDBSearchSchema {
 }
 export interface milvusVectorDBPromptTemplateSchema
   extends milvusVectorDBSearchSchema {
-  content: string | null;
+  content?: string | null;
 }
 export interface milvusVectorDBCreateSchema {
   fields: FieldType[];

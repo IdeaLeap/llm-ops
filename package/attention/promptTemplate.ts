@@ -16,6 +16,7 @@ export interface MultiPromptSchema
   extends messageType,
     milvusVectorDBPromptTemplateSchema {
   COLLECTION_NAME?: string;
+  content: string | null;
 }
 
 export const formatPromptTemplate = async (prompts: PromptsSchema) => {
