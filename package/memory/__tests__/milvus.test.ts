@@ -3,7 +3,6 @@ import "dotenv/config";
 test("测试milvus的插入", async () => {
   const llm = new LLM({});
   const db = new milvusVectorDB({
-    address: process.env.MILVUS_ADDRESS || "localhost:19530",
     COLLECTION_NAME: "minippt",
     llm: llm,
   });
@@ -34,11 +33,8 @@ test("测试milvus的插入", async () => {
 });
 
 test("测试milvus的相似度搜索", async () => {
-  const llm = new LLM({});
   const db = new milvusVectorDB({
-    address: process.env.MILVUS_ADDRESS || "localhost:19530",
     COLLECTION_NAME: "minippt",
-    llm: llm,
   });
   const res = await db.search({
     vector: await db.generateVector("hello word"),
@@ -54,11 +50,8 @@ test("测试milvus的相似度搜索", async () => {
 });
 
 test("测试milvus的promptTemplate生成", async () => {
-  const llm = new LLM({});
   const db = new milvusVectorDB({
-    address: process.env.MILVUS_ADDRESS || "localhost:19530",
     COLLECTION_NAME: "minippt",
-    llm: llm,
   });
   const res = await db.generatePromptTemplate({
     vector: await db.generateVector("hello word"),

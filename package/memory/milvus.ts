@@ -1,6 +1,7 @@
 import { MilvusClient, FieldType } from "@zilliz/milvus2-sdk-node";
 import { LLM } from "../utils";
-import { createMessage } from "../attention/promptTemplate.js";
+import "dotenv/config";
+import { createMessage } from "../attention/basePromptTemplate.js";
 export interface milvusVectorDBSchema {
   COLLECTION_NAME: string;
   address?: string;
@@ -16,13 +17,13 @@ export interface milvusVectorDBQuerySchema {
 export interface milvusVectorDBSearchSchema {
   vector: number[];
   filter?: string;
-  output_fields: string[] | string;
+  output_fields?: string[] | string;
   limit?: number;
   consistency_level?: any; //不知道是啥
 }
 export interface milvusVectorDBPromptTemplateSchema
   extends milvusVectorDBSearchSchema {
-  prefix?: string;
+  content: string | null;
 }
 export interface milvusVectorDBCreateSchema {
   fields: FieldType[];
@@ -45,7 +46,7 @@ export class milvusVectorDB {
     !!llm && (this.llm = llm);
     this.COLLECTION_NAME = COLLECTION_NAME;
     this.milvusClient = new MilvusClient({
-      address: address || "localhost:19530",
+      address: address || process.env.MILVUS_ADDRESS || "localhost:19530",
       username: username || undefined,
       password: password || undefined,
     });
@@ -83,7 +84,7 @@ export class milvusVectorDB {
   }
   async generatePromptTemplate(params: milvusVectorDBPromptTemplateSchema) {
     const res = await this.search(params);
-    const { prefix, output_fields } = params;
+    const { output_fields, content } = params;
     if (res.status.error_code == "Success") {
       if (typeof output_fields == "string") {
         const results = res.results;
@@ -95,8 +96,8 @@ export class milvusVectorDB {
             return `${index + 1}. ${item}`;
           })
           .join("\n");
-        const promptTemplate = prefix
-          ? `${prefix}\n${output_fields_value_string}`
+        const promptTemplate = content
+          ? content.replace("{{vector}}", output_fields_value_string)
           : `以下内容为参考的示例：\n${output_fields_value_string}`;
 
         return createMessage("system", promptTemplate, "system_memory");
@@ -139,7 +140,7 @@ export class milvusVectorDB {
   }
   async generateVector(data: string) {
     if (!this.llm) {
-      throw new Error("llm is undefined");
+      this.llm = new LLM({});
     }
     const vector = await this.llm?.embedding(data);
     return vector?.data[0]?.embedding;
