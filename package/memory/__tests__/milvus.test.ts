@@ -36,13 +36,14 @@ test("测试milvus的插入", async () => {
 test("测试milvus的相似度搜索", async () => {
   const llm = new LLM({});
   const db = new milvusVectorDB({
-    address: "milvus.idealeap.cn:19530",
-    COLLECTION_NAME: "t",
+    address: process.env.MILVUS_ADDRESS || "localhost:19530",
+    COLLECTION_NAME: "minippt",
     llm: llm,
   });
   const res = await db.search({
     vector: await db.generateVector("hello word"),
-    output_fields: ["vector", "id"],
+    output_fields: "annotation",
+    limit: 10,
   });
   if (res.status.error_code == "Success") {
     console.log(res.results);
@@ -50,16 +51,20 @@ test("测试milvus的相似度搜索", async () => {
     console.log(res.status.reason);
   }
   debugger;
-  // {
-  //   status: { error_code: 'Success', reason: '' },
-  //   results: [
-  //     { score: 0, id: '443419176591961362', vector: [Array] },
-  //     { score: 0, id: '443419176591961366', vector: [Array] },
-  //     {
-  //       score: 0.0000024025880520639475,
-  //       id: '443419176591961364',
-  //       vector: [Array]
-  //     }
-  //   ]
-  // }
+});
+
+test("测试milvus的promptTemplate生成", async () => {
+  const llm = new LLM({});
+  const db = new milvusVectorDB({
+    address: process.env.MILVUS_ADDRESS || "localhost:19530",
+    COLLECTION_NAME: "minippt",
+    llm: llm,
+  });
+  const res = await db.generatePromptTemplate({
+    vector: await db.generateVector("hello word"),
+    output_fields: "type",
+    limit: 3,
+  });
+  console.log(res.content);
+  debugger;
 });

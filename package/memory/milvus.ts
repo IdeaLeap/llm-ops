@@ -1,6 +1,6 @@
 import { MilvusClient, FieldType } from "@zilliz/milvus2-sdk-node";
 import { LLM } from "../utils";
-
+import { createMessage } from "../attention/promptTemplate.js";
 export interface milvusVectorDBSchema {
   COLLECTION_NAME: string;
   address?: string;
@@ -16,9 +16,13 @@ export interface milvusVectorDBQuerySchema {
 export interface milvusVectorDBSearchSchema {
   vector: number[];
   filter?: string;
-  output_fields: string[];
+  output_fields: string[] | string;
   limit?: number;
   consistency_level?: any; //不知道是啥
+}
+export interface milvusVectorDBPromptTemplateSchema
+  extends milvusVectorDBSearchSchema {
+  prefix?: string;
 }
 export interface milvusVectorDBCreateSchema {
   fields: FieldType[];
@@ -65,12 +69,44 @@ export class milvusVectorDB {
       collection_name: this.COLLECTION_NAME,
       vector: vector,
       filter: filter || undefined,
-      output_fields: output_fields || [],
+      output_fields:
+        typeof output_fields == "object"
+          ? output_fields
+          : typeof output_fields == "string"
+          ? [output_fields]
+          : undefined,
       limit: limit || 100,
       consistency_level: consistency_level || undefined,
     });
     console.timeEnd("Search time");
     return search;
+  }
+  async generatePromptTemplate(params: milvusVectorDBPromptTemplateSchema) {
+    const res = await this.search(params);
+    const { prefix, output_fields } = params;
+    if (res.status.error_code == "Success") {
+      if (typeof output_fields == "string") {
+        const results = res.results;
+        const output_fields_value = results.map((item) => {
+          return item[output_fields];
+        });
+        const output_fields_value_string = output_fields_value
+          .map((item, index) => {
+            return `${index + 1}. ${item}`;
+          })
+          .join("\n");
+        const promptTemplate = prefix
+          ? `${prefix}\n${output_fields_value_string}`
+          : `以下内容为参考的示例：\n${output_fields_value_string}`;
+
+        return createMessage("system", promptTemplate, "system_memory");
+      } else {
+        throw new Error("output_fields is not string");
+      }
+    } else {
+      console.error(res.status.reason);
+      throw new Error(res.status.reason);
+    }
   }
   async createCollection(params: milvusVectorDBCreateSchema) {
     const { fields } = params;
