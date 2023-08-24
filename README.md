@@ -19,6 +19,7 @@
 - MarkdownLint
 - Github Actions
 - Vercel Ncc
+- Milvus
 
 ## Misc
 

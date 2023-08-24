@@ -1,4 +1,4 @@
-import { createMessage, BasePromptTemplate } from "./promptTemplate.js";
+import { createMessage, BasePromptTemplate } from "./basePromptTemplate.js";
 import { messagesType } from "../utils/index.js";
 type languageType = "English" | "Chinese";
 export interface polishPromptTemplateSchema {

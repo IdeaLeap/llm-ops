@@ -1,5 +1,5 @@
 import { messagesType } from "../utils/index.js";
-import { createMessage, BasePromptTemplate } from "./promptTemplate.js";
+import { createMessage, BasePromptTemplate } from "./basePromptTemplate.js";
 export type InputValues = Record<string, any>;
 
 export type toneStyleType =

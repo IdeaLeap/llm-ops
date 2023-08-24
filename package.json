@@ -1,11 +1,23 @@
 {
   "name": "@idealeap/gwt",
-  "version": "0.0.2-beta.1",
-  "description": "",
+  "version": "0.0.2-beta.2",
+  "description": "基于GWT理论构建的 LLM Agent 智能系统框架，不基于LangchainJs!",
+  "main": "package/index.js",
+  "author": "Marlene && IdeaLeap",
+  "license": "MIT",
+  "type": "module",
+  "private": false,
+  "keywords": [
+    "Typescript",
+    "gwt",
+    "gpt",
+    "openai",
+    "llm",
+    "multi-llm"
+  ],
   "engines": {
     "node": ">=18"
   },
-  "main": "package/index.js",
   "scripts": {
     "start": "ts-node --esm ./package/index.ts",
     "test": "jest --coverage",
@@ -13,11 +25,8 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "lint": "eslint --ext .ts,.js ./",
-    "build": "ncc build package/index.ts -o dist"
+    "build": "ncc build package/index.ts -o dist -m"
   },
-  "author": "Marlene && IdeaLeap",
-  "license": "MIT",
-  "type": "module",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.1.0",
     "@typescript-eslint/parser": "^6.1.0",
