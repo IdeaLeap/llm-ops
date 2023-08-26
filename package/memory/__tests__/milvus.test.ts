@@ -57,6 +57,7 @@ test("测试milvus的promptTemplate生成", async () => {
     vector: await db.generateVector("hello word"),
     output_fields: "type",
     limit: 3,
+    content: "有没有可能：\n{{vector}}。\n上面这些才是精品！",
   });
   console.log(res.content);
   debugger;

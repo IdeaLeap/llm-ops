@@ -7,9 +7,9 @@ import {
   messageType,
 } from "@idealeap/gwt";
 export interface PromptsSchema {
-  name: "none" | "polishPromptTemplate" | "agentPromptTemplate";
-  prompt?: MultiPromptSchema[];
-  schema: object;
+  name: "polishPromptTemplate" | "agentPromptTemplate" | string;
+  prompt?: MultiPromptSchema[] | any[];
+  schema?: object;
   COLLECTION_NAME?: string;
 }
 export interface MultiPromptSchema
@@ -61,6 +61,7 @@ export const formatPromptTemplate = async (prompts: PromptsSchema) => {
           //   );
           //   return createMessage(role, newContent, name, function_call);
           // }
+          return prompt;
         })();
       }),
     );
@@ -72,7 +73,7 @@ export const formatPromptTemplate = async (prompts: PromptsSchema) => {
   };
   switch (prompts?.name) {
     case "polishPromptTemplate":
-      return new PolishPromptTemplate(prompts.schema).format();
+      return new PolishPromptTemplate(prompts.schema || {}).format();
     case "agentPromptTemplate":
       if (!prompts?.schema || !("role" in prompts.schema)) {
         return [];

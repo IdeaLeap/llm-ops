@@ -68,7 +68,8 @@ export class milvusVectorDB {
     console.time("Search time");
     const search = await this.milvusClient.search({
       collection_name: this.COLLECTION_NAME,
-      vector: vector,
+      vector:
+        typeof vector == "string" ? await this.generateVector(vector) : vector,
       filter: filter || undefined,
       output_fields:
         typeof output_fields == "object"
