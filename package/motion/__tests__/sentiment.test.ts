@@ -57,3 +57,60 @@ test("测试TSChain的连续对话", async () => {
   }
   debugger;
 });
+
+test("测试Bound", async () => {
+  const llm = new LLM({});
+  const schema = `
+export interface subsection {
+  article: articleSchema[];
+  visual_style: styleType; // PPT的风格
+  useful_scene: sceneType; // 整篇文章的应用场景
+  title: string; // 整篇PPT文稿的标题
+  reason: string; // 为什么要这么分段，必须要符合PPT大纲的逻辑
+}
+export type styleType = "中国风" | "商务风" | "游戏风" | "党政风" | "学术风" | "科技风" | "医疗风" | "插画风" | "节日风";
+export type sceneType = "个人演讲" | "企业介绍" | "年中汇报" | "开题报告" | "推广方案" | "新生班会" | "求职竞聘" | "研究报告" | "产品介绍" | "分析调研" | "年会活动" | "总结汇报" | "政治课件" | "月度汇报" | "活动策划" | "科普介绍" | "产品展示" | "历史课件" | "年终总结";
+export interface articleSchema {
+  content: string; //每一段的文本
+  title: string; // 每一段起一个小标题，非常凝练这一段主要的内容是什么，同时与其他段落保持一个一致性的风格
+}`;
+  const reqMessages: messagesType = [
+    {
+      role: "system",
+      content:
+        "你是一个专职PPT文稿大纲处理的助手，将会对user输入的文稿进行分段，并进行中心点提取成小标题。给出整篇PPT文稿的标题、应用场景、风格和为什么要这么分段的理由",
+    },
+  ];
+  const chain = new TypeScriptChain(llm);
+  const res = await chain.call({
+    request: `
+  assistant: 尊敬的各位评审，非常荣幸能够在这里向大家介绍我们的项目：“ChatPPT”，这是一款创新平台，致力于赋能新时代并引领PPT制作革命。
+ 
+ 首先，我想强调的是，ChatPPT不仅仅是一个创新平台，它更代表着我们对未来技术的展望和追求。我们相信，随着科技的不断进步和社会的快速发展，传统的PPT制作方式已经无法满足人们对于高效、便 
+ 捷、互动性的需求。因此，我们创造了ChatPPT这个平台，以改变人们对于PPT制作的认知和体验。
+ 
+ 现在，请允许我分享一下我们参赛的具体信息。我们代表的是浙江省，参赛组别为本科生创意组，所属高校为杭州电子科技大学。作为一支年轻而富有创造力的团队，我们深深地理解并关注着现代人们在PPT制作过程中所遇到的种种问题。
+ 
+ ChatPPT的核心理念是通过人工智能和自然语言处理技术，实现智能化的PPT制作过程。我们的平台将会提供一个与用户实时对话的界面，用户只需要简单地通过语音或文字输入表达自己的想法和要求，ChatPPT就会自动根据用户的意图进行布局、设计和文本生成，从而大大减轻了用户的制作负担。
+ 
+ 除此之外，ChatPPT还具备丰富的模板库和素材库，用户可以根据自己的需求选择合适的模板和素材，使得PPT的呈现更加丰富多样。而且，ChatPPT还支持多人协作，用户可以邀请团队成员一同参与PPT的 
+ 制作，实现更高效的合作和创作。
+ 
+ 值得一提的是，ChatPPT不仅适用于个人用户，也可满足企业和教育机构的需求。我们的平台可以定制符合企业和教育机构形象的专属模板，并提供数据分析功能，帮助用户更好地了解观众反馈和PPT效果 
+ 。
+ 
+ 总而言之，ChatPPT是一个具有颠覆性意义的创新平台，它将改变人们对于PPT制作的认知和方式。我们相信，通过ChatPPT，每个人都可以轻松地制作出精美、高效的PPT，并在演讲和展示中获得更好的效 
+ 果。谢谢大家！`,
+    schema,
+    typeName: "subsection",
+    bound: true,
+    verbose: true,
+    prompt: reqMessages,
+  });
+  if (!res.success) {
+    console.log(res.message);
+  } else {
+    console.log(res.data);
+  }
+  debugger;
+}, 1000000);

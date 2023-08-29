@@ -83,7 +83,6 @@ export class TypeScriptChain {
         messages: resPrompt,
       });
       let responseText = response.choices[0].message.content;
-      // responseText = '{  "sentiment": "play"}';
       if (!responseText) {
         if (verbose) {
           this.llm.printMessage();
@@ -97,7 +96,7 @@ export class TypeScriptChain {
         return { success: true, data: responseText } as unknown as Result<any>;
       }
       if (bound) {
-        resPrompt.push(createMessage("assistant", responseText));
+        // resPrompt.push(createMessage("assistant", responseText)); //! llm已具有历史对话存储功能
         !!validator && resPrompt.push(this.createRequestPrompt(validator));
         response = await this.llm.chat({ messages: resPrompt });
         responseText = response.choices[0].message.content;
