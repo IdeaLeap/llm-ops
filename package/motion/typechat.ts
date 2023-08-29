@@ -97,6 +97,7 @@ export class TypeScriptChain {
       }
       if (bound) {
         // resPrompt.push(createMessage("assistant", responseText)); //! llm已具有历史对话存储功能
+        resPrompt = [];
         !!validator && resPrompt.push(this.createRequestPrompt(validator));
         response = await this.llm.chat({ messages: resPrompt });
         responseText = response.choices[0].message.content;
