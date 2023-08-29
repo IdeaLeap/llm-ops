@@ -1,1 +1,1 @@
-export * from "./milvus.js";
+export * from "./milvus";
