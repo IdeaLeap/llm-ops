@@ -101,7 +101,11 @@ export class milvusVectorDB {
           ? content.replace("{{vector}}", output_fields_value_string)
           : `以下内容为参考的示例：\n${output_fields_value_string}`;
 
-        return createMessage("system", promptTemplate, "system_memory");
+        return createMessage({
+          role: "system",
+          content: promptTemplate,
+          name: "system_memory",
+        });
       } else {
         throw new Error("output_fields is not string");
       }

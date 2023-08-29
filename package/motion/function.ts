@@ -24,7 +24,12 @@ export class FunctionChain {
     let messages: messageType[] = [];
     !!prompt && (messages = prompt);
     if (typeof request === "string") {
-      messages.push(createMessage("user", request));
+      messages.push(
+        createMessage({
+          role: "user",
+          content: request,
+        }),
+      );
     } else {
       messages.push(request);
     }

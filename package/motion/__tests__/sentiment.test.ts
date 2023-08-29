@@ -103,7 +103,7 @@ export interface articleSchema {
  果。谢谢大家！`,
     schema,
     typeName: "subsection",
-    bound: true,
+    bound: false,
     verbose: true,
     prompt: reqMessages,
   });

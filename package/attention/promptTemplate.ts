@@ -31,7 +31,10 @@ export const formatPromptTemplate = async (prompts: PromptsSchema) => {
       prompts.map((prompt) => {
         return (async () => {
           if (typeof prompt === "string") {
-            return createMessage("user", prompt);
+            return createMessage({
+              role: "user",
+              content: prompt,
+            });
           }
           if (
             typeof prompt === "object" &&

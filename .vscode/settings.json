@@ -3,5 +3,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "eslint.enable": true
+  "eslint.enable": true,
+  "jest.autoRun": "off"
 }

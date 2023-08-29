@@ -33,23 +33,25 @@ export class TypeScriptChain {
   }
 
   createRequestPrompt(validator: TypeChatJsonValidator<any>): messageType {
-    return createMessage(
-      "system",
-      `\nYou need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
+    return createMessage({
+      role: "system",
+      content:
+        `\nYou need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
         `\`\`\`\n${validator.schema}\`\`\`\n` +
         `The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n`,
-      "system_schema",
-    );
+      name: "system_schema",
+    });
   }
 
   createRepairPrompt(validationError: string): messageType {
-    return createMessage(
-      "system",
-      `The JSON object is invalid for the following reason:\n` +
+    return createMessage({
+      role: "system",
+      content:
+        `The JSON object is invalid for the following reason:\n` +
         `"""\n${validationError}\n"""\n` +
         `The following is a revised JSON object:\n`,
-      "system_validation_fix",
-    );
+      name: "system_validation_fix",
+    });
   }
 
   async call(params: TypeScriptChainCallSchema): Promise<Result<any>> {
@@ -64,13 +66,21 @@ export class TypeScriptChain {
 
     if (bound) {
       if (typeof request_ === "string") {
-        request_ = createMessage("user", request_);
+        request_ = createMessage({
+          role: "user",
+          content: request_,
+        });
       }
       resPrompt.push(request_);
     } else {
       // 如果是字符串，转换成消息对象
       if (typeof request_ === "string") {
-        resPrompt.push(createMessage("user", request_));
+        resPrompt.push(
+          createMessage({
+            role: "user",
+            content: request_,
+          }),
+        );
         !!validator && resPrompt.push(this.createRequestPrompt(validator));
       } else {
         resPrompt.push(request_);

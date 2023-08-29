@@ -2,16 +2,23 @@ import {
   messageFunctionCallType,
   messageType,
   messagesType,
-} from "../utils/index.js";
-export function createMessage(
-  role: "system" | "user" | "assistant" | "function",
-  content: string,
-  name?: string,
-  function_call?: messageFunctionCallType | undefined,
-): messageType {
+} from "@idealeap/gwt";
+export interface createMessageSchema {
+  role?: "system" | "user" | "assistant" | "function";
+  content: string;
+  name?: string;
+  function_call?: messageFunctionCallType;
+  contentSlots?: Record<string, any>;
+}
+export function createMessage(params: createMessageSchema): messageType {
+  const { role, content, name, function_call, contentSlots } = params;
+  const newContent = content.replace(
+    /{{(.*?)}}/g,
+    (_, match) => (!!contentSlots && contentSlots[match.trim()]) || "",
+  );
   return {
-    role: role,
-    content: content,
+    role: role || "user",
+    content: newContent,
     function_call: function_call || undefined,
     name: name || undefined,
   };
