@@ -55,7 +55,8 @@ export const formatPromptTemplate = async (prompts: PromptsSchema) => {
               : undefined;
             return res;
           }
-          //!该方法已弃用 // 如果含有role字段，说明是template，获取除了role,content,name,function_call之外的字段，并对这些字段进行遍历处理，对content中{{}}进行替换。若含有vector字段，说明是milvus的promptTemplate，调用milvus的promptTemplate生成函数
+          //!该方法已弃用
+          // 如果含有role字段，说明是template，获取除了role,content,name,function_call之外的字段，并对这些字段进行遍历处理，对content中{{}}进行替换。若含有vector字段，说明是milvus的promptTemplate，调用milvus的promptTemplate生成函数
           // if ("role" in prompt && "content" in prompt && !!prompt.content) {
           //   const { role, content, name, function_call, ...rest } = prompt;
           //   const newContent = content.replace(
@@ -68,7 +69,6 @@ export const formatPromptTemplate = async (prompts: PromptsSchema) => {
         })();
       }),
     );
-    // 确保_中所有元素都有role和content字段，没有直接报错
     if (_.some((item) => !item?.role || !item?.content)) {
       throw new Error(`Invalid prompts: ${JSON.stringify(_)}`);
     }

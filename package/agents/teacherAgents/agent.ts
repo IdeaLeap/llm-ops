@@ -1,6 +1,13 @@
-import { Result, error, messageType } from "../../utils/index.js";
-import { Chain, structSchema, chainSchema } from "../../motion/index.js";
-import { PromptsSchema, formatPromptTemplate } from "../../attention/index.js";
+import {
+  Result,
+  error,
+  messageType,
+  Chain,
+  structSchema,
+  chainSchema,
+  PromptsSchema,
+  formatPromptTemplate,
+} from "@idealeap/gwt";
 export interface BaseAgentCallSchema {
   request: messageType | string;
   prompts?: PromptsSchema;

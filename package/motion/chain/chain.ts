@@ -1,12 +1,12 @@
-import { FunctionChain } from "./function.js";
-import { TypeScriptChain } from "./typechat.js";
 import {
   LLM,
   createLLMSchema,
   messageType,
   functionsType,
   function_callType,
-} from "../utils/index.js";
+  FunctionChain,
+  TypeScriptChain,
+} from "@idealeap/gwt";
 export interface chainSchema {
   llmSchema?: createLLMSchema;
   chainName?: string;

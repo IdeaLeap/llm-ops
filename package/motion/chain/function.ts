@@ -1,10 +1,12 @@
-import { success, Error, LLM } from "../utils/index.js";
-import { createMessage } from "../attention/index.js";
 import {
+  success,
+  Error,
+  LLM,
+  createMessage,
   functionsType,
   function_callType,
   messageType,
-} from "../utils/index.js";
+} from "@idealeap/gwt";
 export interface FunctionCallSchema {
   request: messageType | string;
   prompt?: messageType[];

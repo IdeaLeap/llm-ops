@@ -6,5 +6,4 @@ export * from "./collaboration";
 export * from "./competition";
 export * from "./evaluation";
 export * from "./memory";
-export * from "./motion";
 export * from "./perceptual";

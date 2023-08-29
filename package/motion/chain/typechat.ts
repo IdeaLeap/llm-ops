@@ -1,6 +1,13 @@
-import { Result, error, Error, LLM, messageType } from "../utils/index.js";
-import { createMessage } from "../attention/index.js";
-import { TypeChatJsonValidator, createJsonValidator } from "./validate.js";
+import {
+  Result,
+  error,
+  Error,
+  LLM,
+  messageType,
+  createMessage,
+  TypeChatJsonValidator,
+  createJsonValidator,
+} from "@idealeap/gwt";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
