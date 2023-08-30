@@ -85,7 +85,7 @@ export class milvusVectorDB {
   }
   async generatePromptTemplate(params: milvusVectorDBPromptTemplateSchema) {
     const res = await this.search(params);
-    const { output_fields, content } = params;
+    const { output_fields, content, ...rest } = params;
     if (res.status.error_code == "Success") {
       if (typeof output_fields == "string") {
         const results = res.results;
@@ -105,6 +105,7 @@ export class milvusVectorDB {
           role: "system",
           content: promptTemplate,
           name: "system_memory",
+          contentSlots: rest, //支持插槽
         });
       } else {
         throw new Error("output_fields is not string");

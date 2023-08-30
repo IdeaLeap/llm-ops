@@ -1,3 +1,5 @@
+// 本代码由GPT4生成，具体可见https://pandora.idealeap.cn/share/07ee53fc-e074-46f6-b808-b4f159bb3468
+
 export interface ExecutorConfig {
   timeout?: number;
   logging?: boolean;
