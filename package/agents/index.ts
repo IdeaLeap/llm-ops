@@ -1,1 +1,1 @@
-export * from "./teacherAgents/index.js";
+export * from "./teacherAgents";

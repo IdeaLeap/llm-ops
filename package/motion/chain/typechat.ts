@@ -1,6 +1,13 @@
-import { Result, error, Error, LLM, messageType } from "../utils/index.js";
-import { createMessage } from "../attention/index.js";
-import { TypeChatJsonValidator, createJsonValidator } from "./validate.js";
+import {
+  Result,
+  error,
+  Error,
+  LLM,
+  messageType,
+  createMessage,
+  TypeChatJsonValidator,
+  createJsonValidator,
+} from "@idealeap/gwt";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
@@ -33,23 +40,25 @@ export class TypeScriptChain {
   }
 
   createRequestPrompt(validator: TypeChatJsonValidator<any>): messageType {
-    return createMessage(
-      "system",
-      `\nYou need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
+    return createMessage({
+      role: "system",
+      content:
+        `\nYou need to process user requests and then translates result into JSON objects of type "${validator.typeName}" according to the following TypeScript definitions:\n` +
         `\`\`\`\n${validator.schema}\`\`\`\n` +
         `The following is the user request translated into a JSON object with 2 spaces of indentation and no properties with the value undefined:\n`,
-      "system_schema",
-    );
+      name: "system_schema",
+    });
   }
 
   createRepairPrompt(validationError: string): messageType {
-    return createMessage(
-      "system",
-      `The JSON object is invalid for the following reason:\n` +
+    return createMessage({
+      role: "system",
+      content:
+        `The JSON object is invalid for the following reason:\n` +
         `"""\n${validationError}\n"""\n` +
         `The following is a revised JSON object:\n`,
-      "system_validation_fix",
-    );
+      name: "system_validation_fix",
+    });
   }
 
   async call(params: TypeScriptChainCallSchema): Promise<Result<any>> {
@@ -64,13 +73,21 @@ export class TypeScriptChain {
 
     if (bound) {
       if (typeof request_ === "string") {
-        request_ = createMessage("user", request_);
+        request_ = createMessage({
+          role: "user",
+          content: request_,
+        });
       }
       resPrompt.push(request_);
     } else {
       // 如果是字符串，转换成消息对象
       if (typeof request_ === "string") {
-        resPrompt.push(createMessage("user", request_));
+        resPrompt.push(
+          createMessage({
+            role: "user",
+            content: request_,
+          }),
+        );
         !!validator && resPrompt.push(this.createRequestPrompt(validator));
       } else {
         resPrompt.push(request_);
@@ -83,7 +100,6 @@ export class TypeScriptChain {
         messages: resPrompt,
       });
       let responseText = response.choices[0].message.content;
-      // responseText = '{  "sentiment": "play"}';
       if (!responseText) {
         if (verbose) {
           this.llm.printMessage();
@@ -97,7 +113,8 @@ export class TypeScriptChain {
         return { success: true, data: responseText } as unknown as Result<any>;
       }
       if (bound) {
-        resPrompt.push(createMessage("assistant", responseText));
+        // resPrompt.push(createMessage("assistant", responseText)); //! llm已具有历史对话存储功能
+        resPrompt = [];
         !!validator && resPrompt.push(this.createRequestPrompt(validator));
         response = await this.llm.chat({ messages: resPrompt });
         responseText = response.choices[0].message.content;

@@ -1,13 +1,14 @@
-import { FunctionChain } from "./function.js";
-import { TypeScriptChain } from "./typechat.js";
 import {
   LLM,
   createLLMSchema,
   messageType,
   functionsType,
   function_callType,
-} from "../utils/index.js";
+  FunctionChain,
+  TypeScriptChain,
+} from "@idealeap/gwt";
 export interface chainSchema {
+  llm?: LLM;
   llmSchema?: createLLMSchema;
   chainName?: string;
 }
@@ -27,8 +28,8 @@ export class Chain {
   chainName?: string;
   chain: FunctionChain | TypeScriptChain;
   constructor(params: chainSchema) {
-    const { llmSchema, chainName } = params;
-    this.llm = new LLM(llmSchema || {});
+    const { llmSchema, chainName, llm } = params;
+    this.llm = llm || new LLM(llmSchema || {});
     this.chainName = chainName || "";
     switch (this.chainName) {
       case "typeChat":

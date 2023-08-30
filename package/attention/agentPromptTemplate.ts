@@ -149,11 +149,21 @@ export class AgentPromptTemplate extends BasePromptTemplate {
       (systemPrompt += ` You must answer the questions in ${this.language}.`);
 
     !!systemPrompt &&
-      this.returnPrompt.push(createMessage("system", systemPrompt));
+      this.returnPrompt.push(
+        createMessage({
+          role: "system",
+          content: systemPrompt,
+        }),
+      );
 
     //{humanSituation,用户是一名专注于ppt文稿润色的学生}。
     !!this.humanSituation &&
-      this.returnPrompt.push(createMessage("user", `${this.humanSituation}.`));
+      this.returnPrompt.push(
+        createMessage({
+          role: "user",
+          content: `${this.humanSituation}.`,
+        }),
+      );
 
     let rulePrompt = "";
     //你目前的任务是{keyRole,帮助用户，对用户请求润色ppt大纲文本，并根据评分要求分别给出具体分数,还有改进意见}。
@@ -174,7 +184,11 @@ export class AgentPromptTemplate extends BasePromptTemplate {
 
     !!rulePrompt &&
       this.returnPrompt.push(
-        createMessage("system", rulePrompt, "system_rules"),
+        createMessage({
+          role: "system",
+          content: rulePrompt,
+          name: "system_rules",
+        }),
       );
 
     let feedbackPrompt = "";
@@ -189,7 +203,11 @@ export class AgentPromptTemplate extends BasePromptTemplate {
 
     !!feedbackPrompt &&
       this.returnPrompt.push(
-        createMessage("system", feedbackPrompt, "system_feedback"),
+        createMessage({
+          role: "system",
+          content: feedbackPrompt,
+          name: "system_feedback",
+        }),
       );
 
     let memoryPrompt = "";
@@ -219,11 +237,19 @@ export class AgentPromptTemplate extends BasePromptTemplate {
       }\n\`\`\`\n`);
     !!memoryPrompt &&
       this.returnPrompt.push(
-        createMessage("system", memoryPrompt, "system_memory"),
+        createMessage({
+          role: "system",
+          content: memoryPrompt,
+          name: "system_memory",
+        }),
       );
     !!this.other &&
       this.returnPrompt.push(
-        createMessage("system", `${this.other}`, "system_others"),
+        createMessage({
+          role: "system",
+          content: `${this.other}`,
+          name: "system_others",
+        }),
       );
     // console.log(this.returnPrompt);
     return this.returnPrompt;

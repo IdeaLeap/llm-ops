@@ -68,7 +68,8 @@ export class milvusVectorDB {
     console.time("Search time");
     const search = await this.milvusClient.search({
       collection_name: this.COLLECTION_NAME,
-      vector: vector,
+      vector:
+        typeof vector == "string" ? await this.generateVector(vector) : vector,
       filter: filter || undefined,
       output_fields:
         typeof output_fields == "object"
@@ -84,7 +85,7 @@ export class milvusVectorDB {
   }
   async generatePromptTemplate(params: milvusVectorDBPromptTemplateSchema) {
     const res = await this.search(params);
-    const { output_fields, content } = params;
+    const { output_fields, content, ...rest } = params;
     if (res.status.error_code == "Success") {
       if (typeof output_fields == "string") {
         const results = res.results;
@@ -100,7 +101,12 @@ export class milvusVectorDB {
           ? content.replace("{{vector}}", output_fields_value_string)
           : `以下内容为参考的示例：\n${output_fields_value_string}`;
 
-        return createMessage("system", promptTemplate, "system_memory");
+        return createMessage({
+          role: "system",
+          content: promptTemplate,
+          name: "system_memory",
+          contentSlots: rest, //支持插槽
+        });
       } else {
         throw new Error("output_fields is not string");
       }

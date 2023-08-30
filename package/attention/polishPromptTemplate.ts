@@ -48,11 +48,20 @@ export class PolishPromptTemplate extends BasePromptTemplate {
     systemPrompt += `Finally, according to the score and results, the next improvement suggestions are given.`;
 
     !!systemPrompt &&
-      this.returnPrompt.push(createMessage("system", systemPrompt));
+      this.returnPrompt.push(
+        createMessage({
+          role: "system",
+          content: systemPrompt,
+        }),
+      );
 
     !!this.other &&
       this.returnPrompt.push(
-        createMessage("system", `${this.other}`, "system_others"),
+        createMessage({
+          role: "system",
+          content: `${this.other}`,
+          name: "system_others",
+        }),
       );
 
     // console.log(this.returnPrompt);

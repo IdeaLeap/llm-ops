@@ -1,4 +1,1 @@
-export interface collaborationSchema {
-  bound?: boolean;
-  verbose?: boolean;
-}
+export * from "./batch";

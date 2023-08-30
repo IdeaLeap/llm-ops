@@ -1,10 +1,12 @@
-import { success, Error, LLM } from "../utils/index.js";
-import { createMessage } from "../attention/index.js";
 import {
+  success,
+  Error,
+  LLM,
+  createMessage,
   functionsType,
   function_callType,
   messageType,
-} from "../utils/index.js";
+} from "@idealeap/gwt";
 export interface FunctionCallSchema {
   request: messageType | string;
   prompt?: messageType[];
@@ -24,7 +26,12 @@ export class FunctionChain {
     let messages: messageType[] = [];
     !!prompt && (messages = prompt);
     if (typeof request === "string") {
-      messages.push(createMessage("user", request));
+      messages.push(
+        createMessage({
+          role: "user",
+          content: request,
+        }),
+      );
     } else {
       messages.push(request);
     }
