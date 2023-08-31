@@ -1,9 +1,11 @@
+type AsyncOrSync<T> = Promise<T> | T;
+
 interface PipeOptions<T, R> {
   id: string;
   description: string;
   dependencies?: string[];
-  onData?: (input: T, context: ChainPipeContext) => T;
-  onResult?: (result: R) => R;
+  onData?: (input: T, context: ChainPipeContext) => AsyncOrSync<T>;
+  onResult?: (result: R) => AsyncOrSync<R>;
   onError?: (error: any) => void;
   onStepComplete?: (
     result: R,
@@ -23,7 +25,7 @@ interface ChainPipeOptions {
 
 class Pipe<T, R> {
   constructor(
-    private callback: (input: T, context: ChainPipeContext) => Promise<R> | R,
+    private callback: (input: T, context: ChainPipeContext) => AsyncOrSync<R>,
     public options: PipeOptions<T, R>,
   ) {}
 
@@ -34,7 +36,6 @@ class Pipe<T, R> {
     totalSteps: number,
   ): Promise<R> {
     try {
-      // Process dependencies
       if (this.options.dependencies) {
         for (const dep of this.options.dependencies) {
           if (!context.stepResults.has(dep)) {
@@ -44,13 +45,13 @@ class Pipe<T, R> {
       }
 
       const processedInput = this.options.onData
-        ? this.options.onData(input, context)
+        ? await Promise.resolve(this.options.onData(input, context))
         : input;
       const result = await Promise.resolve(
         this.callback(processedInput, context),
       );
       const finalResult = this.options.onResult
-        ? this.options.onResult(result)
+        ? await Promise.resolve(this.options.onResult(result))
         : result;
 
       context.stepResults.set(this.options.id, finalResult);
@@ -68,10 +69,9 @@ class Pipe<T, R> {
     }
   }
 
-  // Configuration import/export
   static fromConfig<T, R>(
     config: PipeOptions<T, R>,
-    callback: (input: T, context: ChainPipeContext) => Promise<R> | R,
+    callback: (input: T, context: ChainPipeContext) => AsyncOrSync<R>,
   ): Pipe<T, R> {
     return new Pipe(callback, config);
   }
@@ -93,7 +93,6 @@ async function chainPipes(
     const pipe = pipes[i];
     try {
       input = await pipe.execute(input, context, i + 1, total);
-      // Trigger the onProgress here
       options?.onProgress?.(i + 1, total);
     } catch (error) {
       throw new Error(
