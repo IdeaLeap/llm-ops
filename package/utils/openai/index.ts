@@ -37,6 +37,7 @@ export interface createLLMSchema {
   temperature?: number;
   choice_num?: number | 1;
   stop?: string | null | string[];
+  cache?: boolean;
 }
 export interface ChatSchema {
   function_call?: function_callType;
@@ -66,6 +67,7 @@ export class LLM {
   functions?: functionsType;
   choice_num?: number | 1;
   stop?: string | null | string[];
+  cache?: boolean;
 
   constructor(params: createLLMSchema) {
     const {
@@ -75,6 +77,7 @@ export class LLM {
       temperature,
       choice_num,
       stop,
+      cache = true,
     } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
     this.tokens = 0;
@@ -83,6 +86,7 @@ export class LLM {
     this.temperature = temperature || 0.7;
     this.choice_num = choice_num || 1;
     this.stop = stop || null;
+    this.cache = cache;
   }
 
   private _createLLM({
@@ -125,9 +129,11 @@ export class LLM {
       if (!messages) {
         throw new Error("messages is required!");
       }
-      this.messages.length != 0 &&
+      !!this.cache &&
+        this.messages.length != 0 &&
         (this.messages = [...this.messages, ...messages]);
-      this.messages.length == 0 && (this.messages = messages);
+      !this.cache && (this.messages = messages);
+      !!this.cache && this.messages.length == 0 && (this.messages = messages);
       !!function_call && (this.function_call = function_call);
       !!functions && (this.functions = functions);
       const params_: chatParamsType = {
@@ -168,7 +174,8 @@ export class LLM {
         params_,
       )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
-      res.choices.length == 1 &&
+      !!this.cache &&
+        res.choices.length == 1 &&
         this.messages.push(res.choices[0].message as messageType);
       return res;
     } catch (err) {
@@ -182,7 +189,10 @@ export class LLM {
       if (this.messages.length == 0) {
         throw new Error("can't recall!");
       }
-      if (this.messages[this.messages.length - 1].role == "assistant") {
+      if (
+        !!this.cache &&
+        this.messages[this.messages.length - 1].role == "assistant"
+      ) {
         console.warn("pop assistant message!");
         this.messages.pop();
       }
@@ -225,7 +235,8 @@ export class LLM {
         params_,
       )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
-      res.choices.length == 1 &&
+      !!this.cache &&
+        res.choices.length == 1 &&
         this.messages.push(res.choices[0].message as messageType);
       return res;
     } catch (err) {
