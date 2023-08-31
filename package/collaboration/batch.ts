@@ -73,20 +73,3 @@ export function batchDecorator<T, R>(
     return allResults;
   };
 }
-
-export function batchClassDecorator<T, R>(
-  target: any,
-  methodName: string,
-  descriptor: PropertyDescriptor,
-  options?: BatchOptions<T, R>,
-): PropertyDescriptor {
-  const originalMethod = descriptor.value;
-
-  descriptor.value = async function (
-    input: T | T[],
-  ): Promise<Awaited<R> | Awaited<R>[]> {
-    return batchDecorator(originalMethod.bind(this), options)(input);
-  };
-
-  return descriptor;
-}
