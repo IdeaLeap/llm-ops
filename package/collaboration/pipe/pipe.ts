@@ -1,7 +1,6 @@
-type AsyncOrSync<T> = Promise<T> | T;
+export type AsyncOrSync<T> = Promise<T> | T;
 
-// 使用一个简单的事件广播器
-class EventEmitter {
+export class EventEmitter {
   private events: Record<string, any[]> = {};
 
   on(event: string, listener: any) {
@@ -16,24 +15,25 @@ class EventEmitter {
   }
 }
 
-interface PipeOptions<T, R> {
+export interface PipeOptions<T, R> {
   id: string;
   description: string;
   dependencies?: string[];
-  onData?: (input: T, context: ChainPipeContext) => AsyncOrSync<T>;
+  preProcess?: (input: T, context: ChainPipeContext) => AsyncOrSync<T>;
+  postProcess?: (result: R, context: ChainPipeContext) => AsyncOrSync<R>;
   onError?: (error: any) => void;
 }
 
-interface ChainPipeContext {
+export interface ChainPipeContext {
   stepResults: Map<string, any>;
   emitter: EventEmitter;
 }
 
-interface ChainPipeOptions {
+export interface ChainPipeOptions {
   onProgress?: (completed: number, total: number) => void;
 }
 
-class Pipe<T, R> extends EventEmitter {
+export class Pipe<T, R> extends EventEmitter {
   constructor(
     private callback: (input: T, context: ChainPipeContext) => AsyncOrSync<R>,
     public options: PipeOptions<T, R>,
@@ -56,24 +56,28 @@ class Pipe<T, R> extends EventEmitter {
         }
       }
 
-      const processedInput = this.options.onData
-        ? await Promise.resolve(this.options.onData(input, context))
+      const preProcessedInput = this.options.preProcess
+        ? await Promise.resolve(this.options.preProcess(input, context))
         : input;
 
       const result = await Promise.resolve(
-        this.callback(processedInput, context),
+        this.callback(preProcessedInput, context),
       );
 
-      context.stepResults.set(this.options.id, result);
+      const postProcessedResult = this.options.postProcess
+        ? await Promise.resolve(this.options.postProcess(result, context))
+        : result;
+
+      context.stepResults.set(this.options.id, postProcessedResult);
       context.emitter.emit(
         "stepComplete",
-        result,
+        postProcessedResult,
         step,
         totalSteps,
         context.stepResults,
       );
 
-      return result;
+      return postProcessedResult;
     } catch (error) {
       this.options.onError?.(error);
       context.emitter.emit("error", error);
@@ -82,7 +86,7 @@ class Pipe<T, R> extends EventEmitter {
   }
 }
 
-async function chainPipes(
+export async function chainPipes(
   pipes: Pipe<any, any>[],
   input: any,
   options?: ChainPipeOptions,
@@ -107,38 +111,3 @@ async function chainPipes(
 
   return context.stepResults;
 }
-
-const pipe1 = new Pipe<number, number>(
-  (input) => {
-    return input + 1;
-  },
-  { id: "pipe1", description: "Increment" },
-);
-
-const pipe2 = new Pipe<number, number>(
-  (input) => {
-    return input * 2;
-  },
-  { id: "pipe2", description: "Multiply by 2" },
-);
-
-// 订阅事件
-pipe1.on("stepComplete", (result: any, step: any, totalSteps: any) => {
-  console.log(`Step ${step}/${totalSteps} completed with result ${result}`);
-});
-
-pipe2.on("stepComplete", (result: any, step: any, totalSteps: any) => {
-  console.log(`Step ${step}/${totalSteps} completed with result ${result}`);
-});
-
-const run = async () => {
-  const results = await chainPipes([pipe1, pipe2], 1, {
-    onProgress: (completed, total) => {
-      console.log(`${completed}/${total} steps completed.`);
-    },
-  });
-
-  console.log("All pipes completed:", results);
-};
-
-run().catch((error) => console.error(error));
