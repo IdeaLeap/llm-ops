@@ -9,8 +9,7 @@ import {
 test("Pipe", async () => {
   // 创建Pipe实例
   const pipe1Options: PipeOptions<number, number> = { id: "pipe1" };
-  const pipe1 = new Pipe<number, number>((input, context) => {
-    console.log("context:", context);
+  const pipe1 = new Pipe<number, number>((input) => {
     return input * 2;
   }, pipe1Options);
 

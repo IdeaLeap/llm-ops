@@ -1,3 +1,5 @@
+// 本代码由GPT4生成，具体可见https://pandora.idealeap.cn/share/33072598-a95f-4188-9003-76ccc5d964cb
+
 // 基础类型定义和接口
 export type AsyncOrSync<T> = Promise<T> | T;
 

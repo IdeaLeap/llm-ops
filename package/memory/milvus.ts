@@ -1,7 +1,5 @@
 import { MilvusClient, FieldType } from "@zilliz/milvus2-sdk-node";
-import { LLM } from "../utils";
-import "dotenv/config";
-import { createMessage } from "../attention/basePromptTemplate.js";
+import { LLM, createMessage, GWT_CONFIG } from "@idealeap/gwt";
 export interface milvusVectorDBSchema {
   COLLECTION_NAME: string;
   address?: string;
@@ -46,7 +44,7 @@ export class milvusVectorDB {
     !!llm && (this.llm = llm);
     this.COLLECTION_NAME = COLLECTION_NAME;
     this.milvusClient = new MilvusClient({
-      address: address || process.env.MILVUS_ADDRESS || "localhost:19530",
+      address: address || GWT_CONFIG.MILVUS_ADDRESS || "localhost:19530",
       username: username || undefined,
       password: password || undefined,
     });

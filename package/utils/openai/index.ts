@@ -1,6 +1,5 @@
-import "dotenv/config";
 import OpenAI from "openai";
-
+import { GWT_CONFIG } from "@idealeap/gwt";
 // only for openai-node ^4.0.0
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
@@ -68,6 +67,12 @@ export class LLM {
   choice_num?: number | 1;
   stop?: string | null | string[];
   cache?: boolean;
+  roleToColor = {
+    system: "red",
+    user: "green",
+    assistant: "blue",
+    function: "magenta",
+  };
 
   constructor(params: createLLMSchema) {
     const {
@@ -93,22 +98,15 @@ export class LLM {
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
   }: createLLMSchema): llmType {
-    if (!process.env.OPENAI_API_KEY && !OPENAI_API_KEY) {
+    if (!GWT_CONFIG.OPENAI_API_KEY && !OPENAI_API_KEY) {
       this.missingEnvironmentVariable(
         "OPENAI_API_KEY Missing! 😅 It's not free!",
       );
     }
-    const openAIApiKey = OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+    const openAIApiKey = OPENAI_API_KEY || GWT_CONFIG.OPENAI_API_KEY;
     const config =
-      process.env.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
-        ? {
-            baseURL: "https://oai.hconeai.com/v1",
-            defaultHeaders: {
-              "Helicone-Auth": `Bearer ${
-                HELICONE_AUTH_API_KEY || process.env.HELICONE_AUTH_API_KEY
-              }`,
-            },
-          }
+      GWT_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
+        ? GWT_CONFIG.OPEN_PATH
         : {};
     return new OpenAI({
       ...config,
@@ -262,81 +260,78 @@ export class LLM {
     });
   }
 
-  printMessage(resMessages?: resMessagesType, reqMessages?: messagesType) {
-    const roleToColor = {
-      system: "red",
-      user: "green",
-      assistant: "blue",
-      function: "magenta",
-    };
-    !!reqMessages && prettyPrintReqMessage(reqMessages);
-    !!resMessages && prettyPrintResMessage(resMessages);
-    !reqMessages && !resMessages && prettyPrintReqMessage(this.messages);
-    function prettyPrintReqMessage(messages: messagesType) {
-      for (const message of messages) {
-        if (message.role === "system") {
-          console.log(
-            `%c system ${message.name ? "(" + message.name + ")" : ""}: ${
-              message.content
-            } \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "user") {
-          console.log(
-            `%c user: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && message.function_call) {
-          console.log(
-            `%c assistant: ${JSON.stringify(message.function_call)} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && !message.function_call) {
-          console.log(
-            `%c assistant: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "function") {
-          console.log(
-            `%c function (${
-              message.name // response message has not `name`
-            }): ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        }
+  log(...args: string[]) {
+    console.log(args);
+  }
+  prettyPrintReqMessage(messages: messagesType) {
+    for (const message of messages) {
+      if (message.role === "system") {
+        this.log(
+          `%c system ${message.name ? "(" + message.name + ")" : ""}: ${
+            message.content
+          } \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "user") {
+        this.log(
+          `%c user: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && message.function_call) {
+        this.log(
+          `%c assistant: ${JSON.stringify(message.function_call)} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && !message.function_call) {
+        this.log(
+          `%c assistant: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "function") {
+        this.log(
+          `%c function (${
+            message.name // response message has not `name`
+          }): ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
       }
     }
+  }
+  prettyPrintResMessage(messages: resMessagesType) {
+    for (const message_ of messages) {
+      const message = message_.message;
+      if (message.role === "system") {
+        this.log(
+          `%c system: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "user") {
+        this.log(
+          `%c user: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && message.function_call) {
+        this.log(
+          `%c assistant: ${JSON.stringify(message.function_call)} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && !message.function_call) {
+        this.log(
+          `%c assistant: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "function") {
+        this.log(
+          `%c function : ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      }
+    }
+  }
 
-    function prettyPrintResMessage(messages: resMessagesType) {
-      for (const message_ of messages) {
-        const message = message_.message;
-        if (message.role === "system") {
-          console.log(
-            `%c system: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "user") {
-          console.log(
-            `%c user: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && message.function_call) {
-          console.log(
-            `%c assistant: ${JSON.stringify(message.function_call)} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && !message.function_call) {
-          console.log(
-            `%c assistant: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "function") {
-          console.log(
-            `%c function : ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        }
-      }
-    }
+  printMessage(resMessages?: resMessagesType, reqMessages?: messagesType) {
+    !!reqMessages && this.prettyPrintReqMessage(reqMessages);
+    !!resMessages && this.prettyPrintResMessage(resMessages);
+    !reqMessages && !resMessages && this.prettyPrintReqMessage(this.messages);
   }
 }
