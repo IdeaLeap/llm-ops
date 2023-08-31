@@ -260,35 +260,35 @@ export class LLM {
     });
   }
 
-  log(...args: string[]) {
+  static log(...args: string[]) {
     console.log(args);
   }
   prettyPrintReqMessage(messages: messagesType) {
     for (const message of messages) {
       if (message.role === "system") {
-        this.log(
+        LLM.log(
           `%c system ${message.name ? "(" + message.name + ")" : ""}: ${
             message.content
           } \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "user") {
-        this.log(
+        LLM.log(
           `%c user: ${message.content} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "assistant" && message.function_call) {
-        this.log(
+        LLM.log(
           `%c assistant: ${JSON.stringify(message.function_call)} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "assistant" && !message.function_call) {
-        this.log(
+        LLM.log(
           `%c assistant: ${message.content} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "function") {
-        this.log(
+        LLM.log(
           `%c function (${
             message.name // response message has not `name`
           }): ${message.content} \n`,
@@ -301,27 +301,27 @@ export class LLM {
     for (const message_ of messages) {
       const message = message_.message;
       if (message.role === "system") {
-        this.log(
+        LLM.log(
           `%c system: ${message.content} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "user") {
-        this.log(
+        LLM.log(
           `%c user: ${message.content} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "assistant" && message.function_call) {
-        this.log(
+        LLM.log(
           `%c assistant: ${JSON.stringify(message.function_call)} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "assistant" && !message.function_call) {
-        this.log(
+        LLM.log(
           `%c assistant: ${message.content} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
       } else if (message.role === "function") {
-        this.log(
+        LLM.log(
           `%c function : ${message.content} \n`,
           `color: ${this.roleToColor[message.role]}`,
         );
