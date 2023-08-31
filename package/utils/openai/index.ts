@@ -263,7 +263,7 @@ export class LLM {
   static log(...args: string[]) {
     console.log(args);
   }
-  prettyPrintReqMessage(messages: messagesType) {
+  private prettyPrintReqMessage(messages: messagesType) {
     for (const message of messages) {
       if (message.role === "system") {
         LLM.log(
@@ -297,7 +297,7 @@ export class LLM {
       }
     }
   }
-  prettyPrintResMessage(messages: resMessagesType) {
+  private prettyPrintResMessage(messages: resMessagesType) {
     for (const message_ of messages) {
       const message = message_.message;
       if (message.role === "system") {
