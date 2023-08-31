@@ -1,9 +1,10 @@
+// 基础类型定义和接口
 export type AsyncOrSync<T> = Promise<T> | T;
 
 export class EventEmitter {
-  private events: Record<string, any[]> = {};
+  private events: Record<string, ((args?: any) => void)[]> = {};
 
-  on(event: string, listener: any) {
+  on(event: string, listener: (...args: any) => void) {
     if (!this.events[event]) {
       this.events[event] = [];
     }
@@ -17,11 +18,11 @@ export class EventEmitter {
 
 export interface PipeOptions<T, R> {
   id: string;
-  description: string;
+  description?: string;
   dependencies?: string[];
   preProcess?: (input: T, context: ChainPipeContext) => AsyncOrSync<T>;
   postProcess?: (result: R, context: ChainPipeContext) => AsyncOrSync<R>;
-  onError?: (error: any) => void;
+  onError?: (error: any, context: ChainPipeContext) => void;
 }
 
 export interface ChainPipeContext {
@@ -31,15 +32,15 @@ export interface ChainPipeContext {
 
 export interface ChainPipeOptions {
   onProgress?: (completed: number, total: number) => void;
+  emitter?: EventEmitter;
 }
 
-export class Pipe<T, R> extends EventEmitter {
+// 主逻辑
+export class Pipe<T, R> {
   constructor(
     private callback: (input: T, context: ChainPipeContext) => AsyncOrSync<R>,
     public options: PipeOptions<T, R>,
-  ) {
-    super();
-  }
+  ) {}
 
   async execute(
     input: T,
@@ -71,17 +72,16 @@ export class Pipe<T, R> extends EventEmitter {
       context.stepResults.set(this.options.id, postProcessedResult);
       context.emitter.emit(
         "stepComplete",
-        postProcessedResult,
         step,
         totalSteps,
-        context.stepResults,
+        postProcessedResult,
       );
 
       return postProcessedResult;
     } catch (error) {
-      this.options.onError?.(error);
+      this.options.onError?.(error, context);
       context.emitter.emit("error", error);
-      throw new Error(`Pipe ${this.options.id} failed: ${String(error)}`);
+      throw error;
     }
   }
 }
@@ -89,22 +89,22 @@ export class Pipe<T, R> extends EventEmitter {
 export async function chainPipes(
   pipes: Pipe<any, any>[],
   input: any,
-  options?: ChainPipeOptions,
-): Promise<any> {
+  options: ChainPipeOptions = {},
+): Promise<Map<string, any>> {
+  const emitter = options.emitter || new EventEmitter();
   const context: ChainPipeContext = {
     stepResults: new Map(),
-    emitter: new EventEmitter(),
+    emitter,
   };
-  const total = pipes.length;
 
-  for (let i = 0; i < total; i++) {
-    const pipe = pipes[i];
+  for (let i = 0; i < pipes.length; i++) {
     try {
-      input = await pipe.execute(input, context, i + 1, total);
-      options?.onProgress?.(i + 1, total);
+      const pipe = pipes[i];
+      input = await pipe.execute(input, context, i + 1, pipes.length);
+      options.onProgress?.(i + 1, pipes.length);
     } catch (error) {
       throw new Error(
-        `Chaining failed at Pipe ${pipe.options.id}: ${String(error)}`,
+        `Chaining failed at pipe ${pipes[i].options.id}: ${String(error)}`,
       );
     }
   }
