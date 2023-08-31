@@ -1,4 +1,4 @@
-import { batchDecorator } from "@idealeap/gwt";
+import { batchDecorator, BaseAgent } from "@idealeap/gwt";
 test("batchDecorator", async () => {
   // 使用示例
 
@@ -57,4 +57,25 @@ test("onBatchResult", async () => {
   })(["a", "b", "c"]);
   console.log(res);
   expect(res).toEqual(`*["_-a-_","_-b-_","_-c-_"]*`);
+});
+
+test("onBatchResult with Prompt", async () => {
+  const data = (await (
+    await fetch("https://cos.idealeap.cn/Other/agent.json")
+  ).json()) as { agents: any[] };
+  const fn = async (data: Record<string, any>) => {
+    const agent = new BaseAgent(data.agents[0].params);
+    const res = await agent.call({
+      request: `你好，非常欢迎你来到我身边~我是xxx，我会把最美好的一面呈现给你！`,
+      prompts: data.agents[0].params.prompts,
+      struct: data.agents[0].params.struct,
+    });
+    if (!res.success) {
+      return res.message;
+    } else {
+      return res.data;
+    }
+  };
+  const res = await batchDecorator(fn, {})(Array(3).fill(data));
+  console.log(res);
 });

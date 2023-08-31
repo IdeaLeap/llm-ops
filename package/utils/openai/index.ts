@@ -1,6 +1,5 @@
-import "dotenv/config";
 import OpenAI from "openai";
-
+import { GWT_CONFIG } from "@idealeap/gwt";
 // only for openai-node ^4.0.0
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
@@ -37,6 +36,7 @@ export interface createLLMSchema {
   temperature?: number;
   choice_num?: number | 1;
   stop?: string | null | string[];
+  cache?: boolean;
 }
 export interface ChatSchema {
   function_call?: function_callType;
@@ -66,6 +66,13 @@ export class LLM {
   functions?: functionsType;
   choice_num?: number | 1;
   stop?: string | null | string[];
+  cache?: boolean;
+  roleToColor = {
+    system: "red",
+    user: "green",
+    assistant: "blue",
+    function: "magenta",
+  };
 
   constructor(params: createLLMSchema) {
     const {
@@ -75,6 +82,7 @@ export class LLM {
       temperature,
       choice_num,
       stop,
+      cache = true,
     } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
     this.tokens = 0;
@@ -83,28 +91,22 @@ export class LLM {
     this.temperature = temperature || 0.7;
     this.choice_num = choice_num || 1;
     this.stop = stop || null;
+    this.cache = cache;
   }
 
   private _createLLM({
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
   }: createLLMSchema): llmType {
-    if (!process.env.OPENAI_API_KEY && !OPENAI_API_KEY) {
+    if (!GWT_CONFIG.OPENAI_API_KEY && !OPENAI_API_KEY) {
       this.missingEnvironmentVariable(
         "OPENAI_API_KEY Missing! 😅 It's not free!",
       );
     }
-    const openAIApiKey = OPENAI_API_KEY || process.env.OPENAI_API_KEY;
+    const openAIApiKey = OPENAI_API_KEY || GWT_CONFIG.OPENAI_API_KEY;
     const config =
-      process.env.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
-        ? {
-            baseURL: "https://oai.hconeai.com/v1",
-            defaultHeaders: {
-              "Helicone-Auth": `Bearer ${
-                HELICONE_AUTH_API_KEY || process.env.HELICONE_AUTH_API_KEY
-              }`,
-            },
-          }
+      GWT_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
+        ? GWT_CONFIG.OPEN_PATH
         : {};
     return new OpenAI({
       ...config,
@@ -125,9 +127,11 @@ export class LLM {
       if (!messages) {
         throw new Error("messages is required!");
       }
-      this.messages.length != 0 &&
+      !!this.cache &&
+        this.messages.length != 0 &&
         (this.messages = [...this.messages, ...messages]);
-      this.messages.length == 0 && (this.messages = messages);
+      !this.cache && (this.messages = messages);
+      !!this.cache && this.messages.length == 0 && (this.messages = messages);
       !!function_call && (this.function_call = function_call);
       !!functions && (this.functions = functions);
       const params_: chatParamsType = {
@@ -168,7 +172,8 @@ export class LLM {
         params_,
       )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
-      res.choices.length == 1 &&
+      !!this.cache &&
+        res.choices.length == 1 &&
         this.messages.push(res.choices[0].message as messageType);
       return res;
     } catch (err) {
@@ -182,7 +187,10 @@ export class LLM {
       if (this.messages.length == 0) {
         throw new Error("can't recall!");
       }
-      if (this.messages[this.messages.length - 1].role == "assistant") {
+      if (
+        !!this.cache &&
+        this.messages[this.messages.length - 1].role == "assistant"
+      ) {
         console.warn("pop assistant message!");
         this.messages.pop();
       }
@@ -225,7 +233,8 @@ export class LLM {
         params_,
       )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
-      res.choices.length == 1 &&
+      !!this.cache &&
+        res.choices.length == 1 &&
         this.messages.push(res.choices[0].message as messageType);
       return res;
     } catch (err) {
@@ -251,81 +260,78 @@ export class LLM {
     });
   }
 
-  printMessage(resMessages?: resMessagesType, reqMessages?: messagesType) {
-    const roleToColor = {
-      system: "red",
-      user: "green",
-      assistant: "blue",
-      function: "magenta",
-    };
-    !!reqMessages && prettyPrintReqMessage(reqMessages);
-    !!resMessages && prettyPrintResMessage(resMessages);
-    !reqMessages && !resMessages && prettyPrintReqMessage(this.messages);
-    function prettyPrintReqMessage(messages: messagesType) {
-      for (const message of messages) {
-        if (message.role === "system") {
-          console.log(
-            `%c system ${message.name ? "(" + message.name + ")" : ""}: ${
-              message.content
-            } \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "user") {
-          console.log(
-            `%c user: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && message.function_call) {
-          console.log(
-            `%c assistant: ${JSON.stringify(message.function_call)} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && !message.function_call) {
-          console.log(
-            `%c assistant: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "function") {
-          console.log(
-            `%c function (${
-              message.name // response message has not `name`
-            }): ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        }
+  static log(...args: string[]) {
+    console.log(args);
+  }
+  private prettyPrintReqMessage(messages: messagesType) {
+    for (const message of messages) {
+      if (message.role === "system") {
+        LLM.log(
+          `%c system ${message.name ? "(" + message.name + ")" : ""}: ${
+            message.content
+          } \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "user") {
+        LLM.log(
+          `%c user: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && message.function_call) {
+        LLM.log(
+          `%c assistant: ${JSON.stringify(message.function_call)} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && !message.function_call) {
+        LLM.log(
+          `%c assistant: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "function") {
+        LLM.log(
+          `%c function (${
+            message.name // response message has not `name`
+          }): ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
       }
     }
+  }
+  private prettyPrintResMessage(messages: resMessagesType) {
+    for (const message_ of messages) {
+      const message = message_.message;
+      if (message.role === "system") {
+        LLM.log(
+          `%c system: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "user") {
+        LLM.log(
+          `%c user: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && message.function_call) {
+        LLM.log(
+          `%c assistant: ${JSON.stringify(message.function_call)} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "assistant" && !message.function_call) {
+        LLM.log(
+          `%c assistant: ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      } else if (message.role === "function") {
+        LLM.log(
+          `%c function : ${message.content} \n`,
+          `color: ${this.roleToColor[message.role]}`,
+        );
+      }
+    }
+  }
 
-    function prettyPrintResMessage(messages: resMessagesType) {
-      for (const message_ of messages) {
-        const message = message_.message;
-        if (message.role === "system") {
-          console.log(
-            `%c system: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "user") {
-          console.log(
-            `%c user: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && message.function_call) {
-          console.log(
-            `%c assistant: ${JSON.stringify(message.function_call)} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "assistant" && !message.function_call) {
-          console.log(
-            `%c assistant: ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        } else if (message.role === "function") {
-          console.log(
-            `%c function : ${message.content} \n`,
-            `color: ${roleToColor[message.role]}`,
-          );
-        }
-      }
-    }
+  printMessage(resMessages?: resMessagesType, reqMessages?: messagesType) {
+    !!reqMessages && this.prettyPrintReqMessage(reqMessages);
+    !!resMessages && this.prettyPrintResMessage(resMessages);
+    !reqMessages && !resMessages && this.prettyPrintReqMessage(this.messages);
   }
 }
