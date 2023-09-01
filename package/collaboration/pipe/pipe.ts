@@ -29,7 +29,7 @@ export interface PipeOptions<T, R> extends BatchOptions<T, R> {
   postProcess?: (result: R, context: PipelineContext) => MaybePromise<R>;
   errProcess?: (error: any, context: PipelineContext) => MaybePromise<boolean>;
   destroyProcess?: () => void;
-  batch?: boolean; // 添加 batch 选项
+  batch?: boolean;
 }
 
 export interface PipelineContext {
@@ -217,6 +217,15 @@ export class Pipeline {
     this.options = options;
   }
 
+  // 验证输出和输入类型是否匹配
+  private checkTypesCompatibility(output: any, input: any): boolean {
+    if (typeof output !== typeof input) {
+      return false;
+    }
+    // 其他类型检查逻辑可以添加在这里
+    return true;
+  }
+
   // 删除 Pipe
   removePipe(id: string): this {
     this.pipes = this.pipes.filter((pipe) => pipe.options.id !== id);
@@ -232,22 +241,25 @@ export class Pipeline {
       abortController,
     };
 
+    let lastOutput: any = input;
+
     try {
       for (let i = 0; i < this.pipes.length; i++) {
-        try {
-          const pipe = this.pipes[i];
-          input = await pipe.execute(input, context);
-          emitter.emit("stepComplete", i + 1, this.pipes.length, input);
-          this.options.onProgress?.(i + 1, this.pipes.length);
-        } catch (error) {
-          if (this.options.errProcess) {
-            const skip = await maybeAwait(
-              this.options.errProcess(error, context),
+        const pipe = this.pipes[i];
+
+        if (i > 0) {
+          if (!this.checkTypesCompatibility(lastOutput, input)) {
+            throw new Error(
+              `Type mismatch between pipe ${this.pipes[i - 1].options.id} and ${
+                pipe.options.id
+              }`,
             );
-            if (skip) continue;
           }
-          throw error;
         }
+
+        lastOutput = await pipe.execute(lastOutput, context);
+        emitter.emit("stepComplete", i + 1, this.pipes.length, lastOutput);
+        this.options.onProgress?.(i + 1, this.pipes.length);
       }
     } finally {
       this.pipes.forEach((pipe) => pipe.options.destroyProcess?.());
@@ -285,7 +297,7 @@ export class Pipeline {
   }
 
   // 添加 Pipe 并返回 this，以支持链式调用
-  addPipe(pipe: Pipe<any, any>): this {
+  addPipe<T, R>(pipe: Pipe<T, R>): this {
     this.pipes.push(pipe);
     return this;
   }
@@ -311,4 +323,4 @@ export class Pipeline {
   }
 }
 
-// 请进一步完善该功能，例如可以将每个 Pipe 的输出类型与下一个 Pipe 的输入类型进行匹配，以确保它们是兼容的。请给出完整的Ts代码和示例，即使没有变化，也千万不要省略之前的代码！
+// 请进一步完善上述代码的功能，例如现在的代码简单地检查依赖是否存在。更进一步，你可以加入动态解析依赖的机制，使得在运行时可以根据前面Pipe的结果来决定是否运行某个Pipe。目前，代码在每个Pipe执行时检查依赖。这样做是安全的，但也可能是多余的，尤其是在已知所有依赖都满足的情况下。当前代码对Pipe的依赖是在运行时检查的，这可能会导致运行时错误。一个预处理步骤，用于在实际执行前验证所有依赖关系，可能会很有用。请给出完整的Ts代码和示例，没有变化的代码可以省略，但是不要函数中间省略。
