@@ -22,17 +22,17 @@ export interface PipeOptions<T, R> {
   id: string;
   description?: string;
   dependencies?: string[];
-  preProcess?: (input: T, context: ChainPipeContext) => AsyncOrSync<T>;
-  postProcess?: (result: R, context: ChainPipeContext) => AsyncOrSync<R>;
-  onError?: (error: any, context: ChainPipeContext) => void;
+  preProcess?: (input: T, context: PipelineContext) => AsyncOrSync<T>;
+  postProcess?: (result: R, context: PipelineContext) => AsyncOrSync<R>;
+  onError?: (error: any, context: PipelineContext) => void;
 }
 
-export interface ChainPipeContext {
+export interface PipelineContext {
   stepResults: Map<string, any>;
   emitter: EventEmitter;
 }
 
-export interface ChainPipeOptions {
+export interface PipelineOptions {
   onProgress?: (completed: number, total: number) => void;
   emitter?: EventEmitter;
 }
@@ -40,13 +40,13 @@ export interface ChainPipeOptions {
 // 主逻辑
 export class Pipe<T, R> {
   constructor(
-    private callback: (input: T, context: ChainPipeContext) => AsyncOrSync<R>,
+    private callback: (input: T, context: PipelineContext) => AsyncOrSync<R>,
     public options: PipeOptions<T, R>,
   ) {}
 
   async execute(
     input: T,
-    context: ChainPipeContext,
+    context: PipelineContext,
     step: number,
     totalSteps: number,
   ): Promise<R> {
@@ -88,13 +88,13 @@ export class Pipe<T, R> {
   }
 }
 
-export async function chainPipes(
+export async function Pipeline(
   pipes: Pipe<any, any>[],
   input: any,
-  options: ChainPipeOptions = {},
+  options: PipelineOptions = {},
 ): Promise<Map<string, any>> {
   const emitter = options.emitter || new EventEmitter();
-  const context: ChainPipeContext = {
+  const context: PipelineContext = {
     stepResults: new Map(),
     emitter,
   };
@@ -113,3 +113,5 @@ export async function chainPipes(
 
   return context.stepResults;
 }
+
+//https://pandora.idealeap.cn/share/e8d8f417-d6b2-4096-84db-e72309ee21b3

@@ -1,6 +1,6 @@
 import { LLM, GWT_CONFIG } from "@idealeap/gwt";
 test("测试LLM的对话 & 替换log函数", async () => {
-  LLM.prototype.log = (...args: string[]) => {
+  LLM.log = (...args: string[]) => {
     console.log("test:", args);
   };
   const llm = new LLM({});
