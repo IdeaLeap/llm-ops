@@ -1,4 +1,9 @@
-import { Pipe, Pipeline, SerializablePipelineOptions } from "@idealeap/gwt"; // 请替换成你的模块导入方式
+import {
+  Pipe,
+  Pipeline,
+  SerializablePipelineOptions,
+  PipeRegistry,
+} from "@idealeap/gwt"; // 请替换成你的模块导入方式
 
 test("Pipe", async () => {
   const pipe1 = new Pipe<number, number>(
@@ -71,6 +76,45 @@ test("Pipeline with 链式调用", async () => {
 
   // 执行
   await pipeline.execute(1).then((result) => {
+    console.log("Final result:", result);
+  });
+
+  // 序列化为 JSON
+  const jsonConfig = JSON.stringify(pipeline.toJSON());
+  console.log("Serialized config:", jsonConfig);
+});
+
+test("pipeRegistry", async () => {
+  const pipeRegistry = PipeRegistry.init();
+  // 注册预定义的 Pipe 类型
+  pipeRegistry.register("FetchData", async () => {
+    // 这里用一个简单的 setTimeout 来模拟异步数据获取
+    return new Promise((resolve) =>
+      setTimeout(() => resolve("fetched data"), 1000),
+    );
+  });
+
+  pipeRegistry.register("TransformData", () => {
+    // 这里只是简单地返回一个字符串，实际情况可能涉及到更复杂的数据转换
+    // console.log(input, context);
+    return "transformed data";
+  });
+
+  const pipelineJson = {
+    pipes: [
+      {
+        id: "FetchData",
+        type: "FetchData",
+      },
+      {
+        id: "TransformData",
+        type: "TransformData",
+      },
+    ],
+  };
+
+  const pipeline = Pipeline.fromJSON(pipelineJson, {}, pipeRegistry);
+  await pipeline.execute(undefined).then((result) => {
     console.log("Final result:", result);
   });
 

@@ -1,5 +1,5 @@
 // 本代码由GPT4生成，具体可见https://pandora.idealeap.cn/share/33072598-a95f-4188-9003-76ccc5d964cb
-import { batchDecorator, BatchOptions } from "@idealeap/gwt";
+import { batchDecorator, BatchOptions, PipeRegistryType } from "@idealeap/gwt";
 // 类型和接口定义
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -30,6 +30,7 @@ export interface PipeOptions<T, R> extends BatchOptions<T, R> {
   errProcess?: (error: any, context: PipelineContext) => MaybePromise<boolean>;
   destroyProcess?: () => void;
   batch?: boolean;
+  type?: string;
 }
 
 export interface PipelineContext {
@@ -165,11 +166,19 @@ export class Pipe<T, R> {
   static fromJSON<T, R>(
     json: SerializablePipeOptions,
     callback: (input: T, context: PipelineContext) => MaybePromise<R>,
+    predefinedTypes?: PipeRegistryType,
   ): Pipe<T, R> {
+    if (json.type && predefinedTypes) {
+      const predefinedCallback = predefinedTypes.get(json.type);
+      if (predefinedCallback) {
+        return new Pipe(predefinedCallback, json as PipeOptions<T, R>);
+      }
+    }
+
     if (!json.id) {
       throw new Error("JSON configuration for Pipe must contain an 'id' field");
     }
-    // 这里你可以添加更多验证逻辑
+
     return new Pipe(callback, json as PipeOptions<T, R>);
   }
 
@@ -205,6 +214,14 @@ export class Pipe<T, R> {
     this.options.retries = retries;
     return this;
   }
+
+  // 添加一个动态依赖检查函数，返回一个布尔值以确定是否应执行该 Pipe
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  shouldExecute(context: PipelineContext): boolean {
+    // 自定义逻辑，例如：
+    // return context.stepResults.get('someDependency') !== 'someValue';
+    return true;
+  }
 }
 
 // 主函数
@@ -217,12 +234,20 @@ export class Pipeline {
     this.options = options;
   }
 
-  // 验证输出和输入类型是否匹配
-  private checkTypesCompatibility(output: any, input: any): boolean {
-    if (typeof output !== typeof input) {
-      return false;
+  // 预处理步骤，用于在实际执行前验证所有依赖关系
+  verifyDependencies(): boolean {
+    const existingPipeIds = new Set(this.pipes.map((pipe) => pipe.options.id));
+    for (const pipe of this.pipes) {
+      if (pipe.options.dependencies) {
+        for (const dep of pipe.options.dependencies) {
+          if (!existingPipeIds.has(dep)) {
+            throw new Error(
+              `Dependency ${dep} for pipe ${pipe.options.id} not found.`,
+            );
+          }
+        }
+      }
     }
-    // 其他类型检查逻辑可以添加在这里
     return true;
   }
 
@@ -233,6 +258,7 @@ export class Pipeline {
   }
 
   async execute(input: any): Promise<Map<string, any> | Map<string, any>[]> {
+    this.verifyDependencies(); // 在执行前验证依赖关系
     const emitter = this.options.emitter || new EventEmitter();
     const abortController = new AbortController();
     const context: PipelineContext = {
@@ -247,14 +273,8 @@ export class Pipeline {
       for (let i = 0; i < this.pipes.length; i++) {
         const pipe = this.pipes[i];
 
-        if (i > 0) {
-          if (!this.checkTypesCompatibility(lastOutput, input)) {
-            throw new Error(
-              `Type mismatch between pipe ${this.pipes[i - 1].options.id} and ${
-                pipe.options.id
-              }`,
-            );
-          }
+        if (!pipe.shouldExecute(context)) {
+          continue;
         }
 
         lastOutput = await pipe.execute(lastOutput, context);
@@ -275,17 +295,22 @@ export class Pipeline {
       string,
       (input: any, context: PipelineContext) => MaybePromise<any>
     >,
+    predefinedTypes?: PipeRegistryType,
   ): Pipeline {
     if (!Array.isArray(json.pipes)) {
       throw new Error("Invalid JSON configuration: 'pipes' must be an array");
     }
 
     const pipes = json.pipes.map((pipeJson: SerializablePipeOptions) => {
-      const fn = fnMap[pipeJson.id];
+      const fn =
+        fnMap[pipeJson.id] ||
+        (predefinedTypes && pipeJson.type
+          ? predefinedTypes.get(pipeJson.type)
+          : undefined);
       if (!fn) {
         throw new Error(`Function not found for id: ${pipeJson.id}`);
       }
-      return Pipe.fromJSON(pipeJson, fn);
+      return Pipe.fromJSON(pipeJson, fn, predefinedTypes);
     });
 
     return new Pipeline(pipes, json);
@@ -323,4 +348,6 @@ export class Pipeline {
   }
 }
 
-// 请进一步完善上述代码的功能，例如现在的代码简单地检查依赖是否存在。更进一步，你可以加入动态解析依赖的机制，使得在运行时可以根据前面Pipe的结果来决定是否运行某个Pipe。目前，代码在每个Pipe执行时检查依赖。这样做是安全的，但也可能是多余的，尤其是在已知所有依赖都满足的情况下。当前代码对Pipe的依赖是在运行时检查的，这可能会导致运行时错误。一个预处理步骤，用于在实际执行前验证所有依赖关系，可能会很有用。请给出完整的Ts代码和示例，没有变化的代码可以省略，但是不要函数中间省略。
+// 请进一步完善上述代码的功能，例如
+
+// 请给出完整的Ts代码和示例，没有变化的代码可以省略，但是不要函数中间省略。
