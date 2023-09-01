@@ -1,5 +1,4 @@
 export type Awaited<T> = T extends PromiseLike<infer U> ? U : T;
-
 // 批处理选项
 export interface BatchOptions<T, R> {
   onData?: (input: T) => T;
@@ -65,9 +64,6 @@ export function batchDecorator<T, R>(
     if (onBatchResult) {
       const finalBatchResult = onBatchResult(allResults);
       return finalBatchResult;
-      // return Array.isArray(finalBatchResult)
-      //   ? finalBatchResult
-      //   : Array(total).fill(finalBatchResult);
     }
 
     return allResults;

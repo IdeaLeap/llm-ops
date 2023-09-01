@@ -1,5 +1,5 @@
 // 本代码由GPT4生成，具体可见https://pandora.idealeap.cn/share/33072598-a95f-4188-9003-76ccc5d964cb
-
+import { batchDecorator, BatchOptions } from "@idealeap/gwt";
 // 类型和接口定义
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -19,7 +19,7 @@ export class EventEmitter {
   }
 }
 
-export interface PipeOptions<T, R> {
+export interface PipeOptions<T, R> extends BatchOptions<T, R> {
   id: string;
   description?: string;
   dependencies?: string[];
@@ -27,8 +27,9 @@ export interface PipeOptions<T, R> {
   timeout?: number;
   preProcess?: (input: T, context: PipelineContext) => MaybePromise<T>;
   postProcess?: (result: R, context: PipelineContext) => MaybePromise<R>;
-  onError?: (error: any, context: PipelineContext) => MaybePromise<boolean>;
-  onDestroy?: () => void;
+  errProcess?: (error: any, context: PipelineContext) => MaybePromise<boolean>;
+  destroyProcess?: () => void;
+  batch?: boolean; // 添加 batch 选项
 }
 
 export interface PipelineContext {
@@ -40,8 +41,8 @@ export interface PipelineContext {
 export interface PipelineOptions {
   onProgress?: (completed: number, total: number) => void;
   emitter?: EventEmitter;
-  onDestroy?: () => void;
-  onError?: (error: any, context: PipelineContext) => MaybePromise<boolean>;
+  destroyProcess?: () => void;
+  errProcess?: (error: any, context: PipelineContext) => MaybePromise<boolean>;
 }
 
 const maybeAwait = async <T>(input: MaybePromise<T>) =>
@@ -83,7 +84,25 @@ export class Pipe<T, R> {
       : result;
   }
 
-  async execute(input: T, context: PipelineContext): Promise<R> {
+  async execute(input: T | T[], context: PipelineContext): Promise<R | R[]> {
+    if (this.options.batch) {
+      const batchedFunction = batchDecorator(
+        (input: T) => this.handleExecution(input, context),
+        this.options,
+      ) as (input: T | T[]) => Promise<R | R[]>;
+      return await batchedFunction(input);
+    } else {
+      if (Array.isArray(input)) {
+        throw new Error("Batch mode is not enabled for this pipe.");
+      }
+      return await this.handleExecution(input, context);
+    }
+  }
+
+  private async handleExecution(
+    input: T,
+    context: PipelineContext,
+  ): Promise<R> {
     let retries = this.options.retries || 0;
     while (true) {
       try {
@@ -119,8 +138,10 @@ export class Pipe<T, R> {
         return postProcessedResult;
       } catch (error) {
         retries--;
-        if (this.options.onError) {
-          const skip = await maybeAwait(this.options.onError(error, context));
+        if (this.options.errProcess) {
+          const skip = await maybeAwait(
+            this.options.errProcess(error, context),
+          );
           if (skip) return input as unknown as R;
         }
         if (retries < 0) {
@@ -151,7 +172,7 @@ export class Pipeline {
     this.pipes = this.pipes.filter((pipe) => pipe.options.id !== id);
   }
 
-  async execute(input: any): Promise<Map<string, any>> {
+  async execute(input: any): Promise<Map<string, any> | Map<string, any>[]> {
     const emitter = this.options.emitter || new EventEmitter();
     const abortController = new AbortController();
     const context: PipelineContext = {
@@ -168,16 +189,18 @@ export class Pipeline {
           emitter.emit("stepComplete", i + 1, this.pipes.length, input);
           this.options.onProgress?.(i + 1, this.pipes.length);
         } catch (error) {
-          if (this.options.onError) {
-            const skip = await maybeAwait(this.options.onError(error, context));
+          if (this.options.errProcess) {
+            const skip = await maybeAwait(
+              this.options.errProcess(error, context),
+            );
             if (skip) continue;
           }
           throw error;
         }
       }
     } finally {
-      this.pipes.forEach((pipe) => pipe.options.onDestroy?.());
-      this.options.onDestroy?.();
+      this.pipes.forEach((pipe) => pipe.options.destroyProcess?.());
+      this.options.destroyProcess?.();
     }
 
     return context.stepResults;
