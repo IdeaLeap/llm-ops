@@ -15,7 +15,8 @@
         "--loader",
         "ts-node/esm",
         "-r",
-        "ts-node/register"
+        "ts-node/register",
+        "--experimental-specifier-resolution=node"
       ],
       "cwd": "${workspaceRoot}",
       "protocol": "inspector",
