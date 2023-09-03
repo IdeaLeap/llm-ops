@@ -25,7 +25,8 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "lint": "eslint --ext .ts,.js ./",
-    "build": "ncc build package/index.ts -o dist -m"
+    "build": "ncc build package/index.ts -o dist -m -e *.test.ts",
+    "publish": "cp README.md dist/ && cd dist && npm publish --access public"
   },
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^6.1.0",

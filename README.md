@@ -26,11 +26,7 @@
 发包时由于使用 ES module，Node.js 内置的 __filename 与__dirname 就变得不可用了，需要使用 url 模块的 fileURLToPath 方法将 import.meta.url 转换为文件路径，然后再使用 path 模块的 dirname 方法获取文件所在目录的路径。
 
 ```js
-import {fileURLToPath} from 'url';
-import path from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import {fileURLToPath} from 'url';import path from 'path';const __filename = fileURLToPath(import.meta.url);const __dirname = path.dirname(__filename);
 
 ```
 
