@@ -1,5 +1,4 @@
-import { messagesType } from "../utils/index.js";
-import { createMessage, BasePromptTemplate } from "./basePromptTemplate.js";
+import { messagesType, createMessage, BasePromptTemplate } from "@idealeap/gwt";
 export type InputValues = Record<string, any>;
 
 export type toneStyleType =

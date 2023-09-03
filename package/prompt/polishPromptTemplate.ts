@@ -1,5 +1,4 @@
-import { createMessage, BasePromptTemplate } from "./basePromptTemplate.js";
-import { messagesType } from "../utils/index.js";
+import { createMessage, BasePromptTemplate, messagesType } from "@idealeap/gwt";
 type languageType = "English" | "Chinese";
 export interface polishPromptTemplateSchema {
   toneStyle?: string;
