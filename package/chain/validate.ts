@@ -1,5 +1,5 @@
 import ts from "typescript";
-import { Result, success, error } from "@idealeap/gwt";
+import { Result, success, error } from "@idealeap/gwt/utils/index";
 
 const libText = `interface Array<T> { length: number, [n: number]: T }
 interface Object { toString(): string }

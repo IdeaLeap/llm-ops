@@ -8,9 +8,7 @@ module.exports = {
   extends: [
     "eslint:recommended",
     "plugin:prettier/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-type-checked",
-    "plugin:@typescript-eslint/stylistic",
+    "plugin:@typescript-eslint",
   ],
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint"],
@@ -21,16 +19,16 @@ module.exports = {
     },
     {
       files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
+        "**/__tests__/*.{j,t}s?(x)",
+        "**/tests/unit/**/*.spec.{j,t}s?(x)",
       ],
       env: {
-        jest: true
-      }
+        jest: true,
+      },
     },
   ],
   parserOptions: {
-    project: './tsconfig.json',
+    project: "./tsconfig.json",
     sourceType: "module",
   },
   root: true,
@@ -45,8 +43,8 @@ module.exports = {
     "@typescript-eslint/no-unsafe-argument": 0,
     "@typescript-eslint/no-unsafe-return": 0,
     "@typescript-eslint/no-redundant-type-constituents": 0,
-    "no-debugger":0,
-    "@typescript-eslint/no-unsafe-member-access":0,
-    "@typescript-eslint/no-unsafe-return":0,
+    "no-debugger": 0,
+    "@typescript-eslint/no-unsafe-member-access": 0,
+    "@typescript-eslint/no-unsafe-return": 0,
   },
 };

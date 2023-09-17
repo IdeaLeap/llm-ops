@@ -1,12 +1,11 @@
 import {
-  success,
-  Error,
   LLM,
-  createMessage,
   functionsType,
   function_callType,
   messageType,
-} from "@idealeap/gwt";
+} from "@idealeap/gwt/llm/index";
+import { success, Error } from "@idealeap/gwt/utils/index";
+import { createMessage } from "@idealeap/gwt/prompt/index";
 export interface FunctionCallSchema {
   request: messageType | string;
   prompt?: messageType[];

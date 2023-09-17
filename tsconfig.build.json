@@ -1,0 +1,32 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["dist/package"],
+  "exclude": ["**/__tests__/**"],
+  "compilerOptions": {
+    "rootDir": "./dist/package",
+    "paths": {
+      "@idealeap/gwt": ["dist/package/index.ts"]
+    },
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "dist",
+    "pretty": true,
+    "sourceMap": true
+  },
+  "tsc-alias": {
+    "fileExtensions": {
+      "inputGlob": "{mjs,cjs,js,jsx,mts,cts,ts,tsx}"
+    },
+    "replacers": {
+      "replace-self-referencing-imports": {
+        "enabled": true,
+        "file": "./scripts/replace-self-referencing-imports.cjs"
+      },
+      "resolve-full-paths": {
+        "enabled": true,
+        "file": "./scripts/resolve-full-paths.cjs"
+      }
+    }
+  }
+}

@@ -1,11 +1,13 @@
 import {
   milvusVectorDB,
   milvusVectorDBPromptTemplateSchema,
+} from "@idealeap/gwt/db/index";
+import {
   createMessageSchema,
   PolishPromptTemplate,
   AgentPromptTemplate,
   createMessage,
-} from "@idealeap/gwt";
+} from "@idealeap/gwt/prompt/index";
 export interface PromptsSchema {
   name: "polishPromptTemplate" | "agentPromptTemplate" | string;
   prompt?: MultiPromptSchema[] | any[];

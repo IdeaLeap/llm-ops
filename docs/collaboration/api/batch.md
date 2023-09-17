@@ -58,10 +58,10 @@ export function batchDecorator<T, R>(
 
 ```typescript
 async function runSingle<T, R>(
-      data: T,
-      f: (input: T) => Promise<R> | R,
-      options: BatchOptions<T, R>,
-    ): Promise<Awaited<R> | null>
+  data: T,
+  f: (input: T) => Promise<R> | R,
+  options: BatchOptions<T, R>,
+): Promise<Awaited<R> | null>;
 ```
 
 #### 参数
