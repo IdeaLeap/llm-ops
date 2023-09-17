@@ -1,4 +1,8 @@
-import { messagesType, createMessage, BasePromptTemplate } from "@idealeap/gwt";
+import { messagesType } from "@idealeap/gwt/llm/index";
+import {
+  BasePromptTemplate,
+  createMessage,
+} from "@idealeap/gwt/prompt/basePromptTemplate";
 export type InputValues = Record<string, any>;
 
 export type toneStyleType =

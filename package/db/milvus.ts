@@ -1,5 +1,7 @@
 import { MilvusClient, FieldType } from "@zilliz/milvus2-sdk-node";
-import { LLM, createMessage, GWT_CONFIG } from "@idealeap/gwt";
+import { createMessage } from "@idealeap/gwt/prompt/index";
+import { GWT_CONFIG } from "@idealeap/gwt/utils/index";
+import { LLM } from "@idealeap/gwt/llm/index";
 export interface milvusVectorDBSchema {
   COLLECTION_NAME: string;
   address?: string;

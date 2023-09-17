@@ -1,13 +1,10 @@
+import { Chain, structSchema, chainSchema } from "@idealeap/gwt/chain/index";
+import { messageType } from "@idealeap/gwt/llm/index";
+import { Result, error } from "@idealeap/gwt/utils/index";
 import {
-  Result,
-  error,
-  messageType,
-  Chain,
-  structSchema,
-  chainSchema,
   PromptsSchema,
   formatPromptTemplate,
-} from "@idealeap/gwt";
+} from "@idealeap/gwt/prompt/index";
 export interface BaseAgentCallSchema {
   request: messageType | string;
   prompts?: PromptsSchema;

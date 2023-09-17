@@ -1,13 +1,10 @@
+import { LLM, messageType } from "@idealeap/gwt/llm/index";
+import { Result, error, Error } from "@idealeap/gwt/utils/index";
+import { createMessage } from "@idealeap/gwt/prompt/index";
 import {
-  Result,
-  error,
-  Error,
-  LLM,
-  messageType,
-  createMessage,
   TypeChatJsonValidator,
   createJsonValidator,
-} from "@idealeap/gwt";
+} from "@idealeap/gwt/chain/index";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
@@ -99,7 +96,7 @@ export class TypeScriptChain {
       let response = await this.llm.chat({
         messages: resPrompt,
       });
-      let responseText = response.choices[0].message.content;
+      let responseText = response.choices[0]?.message.content;
       if (!responseText) {
         if (verbose) {
           this.llm.printMessage();
@@ -117,7 +114,7 @@ export class TypeScriptChain {
         resPrompt = [];
         !!validator && resPrompt.push(this.createRequestPrompt(validator));
         response = await this.llm.chat({ messages: resPrompt });
-        responseText = response.choices[0].message.content;
+        responseText = response.choices[0]?.message.content;
         if (!responseText) {
           if (verbose) {
             this.llm.printMessage();

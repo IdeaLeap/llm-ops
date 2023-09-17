@@ -21,8 +21,6 @@ if (!res.success) {
   console.log(res.data);
 }
 debugger;
-
-
 ```
 
 ```plaintext

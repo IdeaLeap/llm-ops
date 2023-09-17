@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { GWT_CONFIG } from "@idealeap/gwt";
+import { GWT_CONFIG } from "@idealeap/gwt/utils/index";
 // only for openai-node ^4.0.0
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
@@ -98,12 +98,12 @@ export class LLM {
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
   }: createLLMSchema): llmType {
-    if (!GWT_CONFIG.OPENAI_API_KEY && !OPENAI_API_KEY) {
+    const openAIApiKey = OPENAI_API_KEY || GWT_CONFIG.OPENAI_API_KEY;
+    if (!openAIApiKey) {
       this.missingEnvironmentVariable(
         "OPENAI_API_KEY Missing! 😅 It's not free!",
       );
     }
-    const openAIApiKey = OPENAI_API_KEY || GWT_CONFIG.OPENAI_API_KEY;
     const config =
       GWT_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
         ? GWT_CONFIG.OPEN_PATH
@@ -174,7 +174,7 @@ export class LLM {
       this.tokens += res.usage?.total_tokens || 0;
       !!this.cache &&
         res.choices.length == 1 &&
-        this.messages.push(res.choices[0].message as messageType);
+        this.messages.push(res.choices[0]?.message as messageType);
       return res;
     } catch (err) {
       console.error(err);
@@ -189,7 +189,7 @@ export class LLM {
       }
       if (
         !!this.cache &&
-        this.messages[this.messages.length - 1].role == "assistant"
+        this.messages[this.messages.length - 1]?.role == "assistant"
       ) {
         console.warn("pop assistant message!");
         this.messages.pop();
@@ -235,7 +235,7 @@ export class LLM {
       this.tokens += res.usage?.total_tokens || 0;
       !!this.cache &&
         res.choices.length == 1 &&
-        this.messages.push(res.choices[0].message as messageType);
+        this.messages.push(res.choices[0]?.message as messageType);
       return res;
     } catch (err) {
       console.error(err);

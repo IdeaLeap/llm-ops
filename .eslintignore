@@ -1,4 +1,3 @@
-jest.config.cjs
-.eslintrc.cjs
+*.cjs
 dist/
 docs/
