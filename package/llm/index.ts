@@ -4,13 +4,44 @@ import { GWT_CONFIG } from "@idealeap/gwt/utils/index";
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
 export type resMessagesType = OpenAI.Chat.Completions.ChatCompletion.Choice[];
-export type functionsType = OpenAI.Chat.CompletionCreateParams.Function[];
+export interface FunctionCallOption {
+  /**
+   * The name of the function to call.
+   */
+  name: string;
+}
+export interface FunctionInterface {
+  /**
+   * The name of the function to be called. Must be a-z, A-Z, 0-9, or contain
+   * underscores and dashes, with a maximum length of 64.
+   */
+  name: string;
+
+  /**
+   * The parameters the functions accepts, described as a JSON Schema object. See the
+   * [guide](https://platform.openai.com/docs/guides/gpt/function-calling) for
+   * examples, and the
+   * [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for
+   * documentation about the format.
+   *
+   * To describe a function that accepts no parameters, provide the value
+   * `{"type": "object", "properties": {}}`.
+   */
+  parameters: Record<string, unknown>;
+
+  /**
+   * A description of what the function does, used by the model to choose when and
+   * how to call the function.
+   */
+  description?: string;
+}
+export type functionsType = FunctionInterface[];
 export type function_callType =
   | "none"
   | "auto"
-  | OpenAI.Chat.CompletionCreateParams.FunctionCallOption;
+  | FunctionCallOption;
 export type messageFunctionCallType =
-  OpenAI.Chat.CreateChatCompletionRequestMessage.FunctionCall;
+  OpenAI.Chat.ChatCompletionMessage.FunctionCall;
 export type chatCompletionType = OpenAI.Chat.Completions.ChatCompletion;
 export type llmType = OpenAI;
 export type chatParamsType = OpenAI.Chat.CompletionCreateParams;

@@ -8,7 +8,6 @@
 </p>
 <p align="center">基于GWT理论构建的 LLM Agent 智能系统框架.</p>
 
-
 ## 🎨 技术栈
 
 - Openai

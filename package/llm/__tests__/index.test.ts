@@ -28,7 +28,7 @@ test("测试LLM的对话 & 替换log函数", async () => {
 });
 
 test("全局设置Config", async () => {
-  // GWT_CONFIG.OPENAI_API_KEY = "";
+  GWT_CONFIG.OPENAI_API_KEY = "";
   class testA {
     async a() {
       const llm = new LLM({});

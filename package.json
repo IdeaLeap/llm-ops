@@ -30,7 +30,7 @@
     "tsn": "ts-node -r tsconfig-paths/register",
     "format": "prettier --write --cache  --cache-strategy metadata . !dist",
     "build": "bash ./build",
-    "publish":"cd dist && npm publish --access public"
+    "publish": "cd dist && npm publish --access public"
   },
   "dependencies": {
     "@idealeap/pipeline": "^1.1.1",
