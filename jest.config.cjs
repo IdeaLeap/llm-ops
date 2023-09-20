@@ -21,4 +21,5 @@ module.exports = {
   ],
   setupFiles: ["dotenv/config"],
   testTimeout: 20_000,
+  testMatch: ['<rootDir>/**/*.{spec,test}.ts'],
 };

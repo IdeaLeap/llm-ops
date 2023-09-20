@@ -2,12 +2,11 @@
   "name": "@idealeap/gwt",
   "version": "0.0.3",
   "description": "基于GWT理论构建的 LLM Agent 智能系统框架，不基于LangchainJs!",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "package/index.js",
   "author": "Marlene && IdeaLeap",
   "repository": "github:idealeap/GWT",
   "license": "MIT",
-  "type": "commonjs",
+  "type": "module",
   "private": false,
   "keywords": [
     "Typescript",
@@ -19,29 +18,6 @@
   ],
   "engines": {
     "node": ">=18"
-  },
-  "exports": {
-    ".": {
-      "require": {
-        "types": "./index.d.ts",
-        "default": "./index.js"
-      },
-      "types": "./index.d.mts",
-      "default": "./index.mjs"
-    },
-    "./*.mjs": {
-      "types": "./*.d.ts",
-      "default": "./*.mjs"
-    },
-    "./*.js": {
-      "types": "./*.d.ts",
-      "default": "./*.js"
-    },
-    "./*": {
-      "types": "./*.d.ts",
-      "require": "./*.js",
-      "default": "./*.mjs"
-    }
   },
   "scripts": {
     "start": "ts-node --esm ./package/index.ts",
