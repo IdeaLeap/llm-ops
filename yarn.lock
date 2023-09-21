@@ -671,10 +671,10 @@
   version "0.0.0"
   uid ""
 
-"@idealeap/pipeline@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@idealeap/pipeline/-/pipeline-1.1.1.tgz#2c330708537c79746847e645f29a52a6534af73b"
-  integrity sha512-LsrlhEorFdew1gwEKJtxVZD8Rr2mz1qpzpzk316LrYSBuDhYDVO/RLsmWmo27u5ew8PptwsptDU8vadpHGNcBA==
+"@idealeap/pipeline@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@idealeap/pipeline/-/pipeline-1.1.2.tgz#8b03d84d751a6e3d1787c98f8d5d521710840e62"
+  integrity sha512-fM9D8WpoYDPdG4y2sk+luTMEUTRN+Hhd55L86zGdyjywnyiWWAS2+W1yezjzNHVv78wgEloFo7q9yvBIArck5w==
   dependencies:
     dotenv "^16.3.1"
 

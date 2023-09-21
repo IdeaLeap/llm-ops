@@ -68,6 +68,7 @@ export interface createLLMSchema {
   choice_num?: number | 1;
   stop?: string | null | string[];
   cache?: boolean;
+  user?:string;
 }
 export interface ChatSchema {
   function_call?: function_callType;
@@ -104,6 +105,7 @@ export class LLM {
     assistant: "blue",
     function: "magenta",
   };
+  user:string;
 
   constructor(params: createLLMSchema) {
     const {
@@ -114,6 +116,7 @@ export class LLM {
       choice_num,
       stop,
       cache = true,
+      user="GWT",
     } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
     this.tokens = 0;
@@ -123,6 +126,7 @@ export class LLM {
     this.choice_num = choice_num || 1;
     this.stop = stop || null;
     this.cache = cache;
+    this.user = user;
   }
 
   private _createLLM({
@@ -197,7 +201,7 @@ export class LLM {
         stop: this.stop,
         stream: false,
         temperature: this.temperature || 0.7,
-        user: "GWT",
+        user: this.user,
       };
       const res = (await this.llm.chat.completions.create(
         params_,
@@ -258,7 +262,7 @@ export class LLM {
         stop: this.stop,
         stream: false,
         temperature: this.temperature || 0.7,
-        user: "GWT",
+        user: this.user,
       };
       const res = (await this.llm.chat.completions.create(
         params_,
@@ -287,7 +291,7 @@ export class LLM {
     return await this.llm.embeddings.create({
       input: input,
       model: "text-embedding-ada-002",
-      user: "GWT",
+      user: this.user,
     });
   }
 
