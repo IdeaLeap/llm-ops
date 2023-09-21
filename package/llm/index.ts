@@ -69,6 +69,8 @@ export interface createLLMSchema {
   stop?: string | null | string[];
   cache?: boolean;
   user?:string;
+  history?:messagesType;
+  tokens?:number;
 }
 export interface ChatSchema {
   function_call?: function_callType;
@@ -115,18 +117,24 @@ export class LLM {
       temperature,
       choice_num,
       stop,
-      cache = true,
-      user="GWT",
+      cache,
+      user,
+      history,
+      tokens
     } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
-    this.tokens = 0;
-    this.messages = [];
+    this.tokens = tokens || 0;
+    this.messages = history || [];
     this.modelName = modelName || "gpt-3.5-turbo-0613";
     this.temperature = temperature || 0.7;
     this.choice_num = choice_num || 1;
     this.stop = stop || null;
-    this.cache = cache;
-    this.user = user;
+    this.cache = cache || true;
+    this.user = user || "GWT";
+  }
+
+  exportHistory(){
+    return this.messages
   }
 
   private _createLLM({

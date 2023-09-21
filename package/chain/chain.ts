@@ -40,6 +40,9 @@ export class Chain {
         break;
     }
   }
+  exportHistory(){
+    return this.chain.exportHistory();
+  }
   async call(params: chainCallSchema) {
     const { request, prompt, struct } = params;
     switch (this.chainName) {

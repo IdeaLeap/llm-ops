@@ -58,6 +58,13 @@ export class TypeScriptChain {
     });
   }
 
+  exportHistory(){
+    //剔除 system_validation_fix和system_schema记录
+    return this.llm.exportHistory().filter((item)=>{
+      return item.name !== "system_validation_fix" && item.name !== "system_schema";
+    });
+  }
+
   async call(params: TypeScriptChainCallSchema): Promise<Result<any>> {
     const { request, prompt, schema, typeName, bound, verbose } = params;
     let validator: TypeChatJsonValidator<any> | undefined = undefined,
