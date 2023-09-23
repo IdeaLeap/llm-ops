@@ -1,4 +1,4 @@
-import { LLM, TypeScriptChain, AgentPromptTemplate } from "@idealeap/gwt";
+import { LLM, TypeScriptChain, AgentPromptTemplate } from "llm-ops";
 test("test AgentPromptTemplate", async () => {
   const llm = new LLM({});
   const schema = `

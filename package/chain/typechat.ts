@@ -1,10 +1,10 @@
-import { LLM, messageType } from "@idealeap/gwt/llm/index";
-import { Result, error, Error } from "@idealeap/gwt/utils/index";
-import { createMessage } from "@idealeap/gwt/prompt/index";
+import { LLM, messageType } from "llm-ops/llm/index";
+import { Result, error, Error } from "llm-ops/utils/index";
+import { createMessage } from "llm-ops/prompt/index";
 import {
   TypeChatJsonValidator,
   createJsonValidator,
-} from "@idealeap/gwt/chain/index";
+} from "llm-ops/chain/index";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */

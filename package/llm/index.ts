@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { GWT_CONFIG } from "@idealeap/gwt/utils/index";
+import { LLM_OPS_CONFIG } from "llm-ops/utils/index";
 // only for openai-node ^4.0.0
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
@@ -130,7 +130,7 @@ export class LLM {
     this.choice_num = choice_num || 1;
     this.stop = stop || null;
     this.cache = cache || true;
-    this.user = user || "GWT";
+    this.user = user || "LLM Ops";
   }
 
   exportHistory(){
@@ -141,15 +141,15 @@ export class LLM {
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
   }: createLLMSchema): llmType {
-    const openAIApiKey = OPENAI_API_KEY || GWT_CONFIG.OPENAI_API_KEY;
+    const openAIApiKey = OPENAI_API_KEY || LLM_OPS_CONFIG.OPENAI_API_KEY;
     if (!openAIApiKey) {
       this.missingEnvironmentVariable(
         "OPENAI_API_KEY Missing! 😅 It's not free!",
       );
     }
     const config =
-      GWT_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
-        ? GWT_CONFIG.OPEN_PATH
+    LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
+        ? LLM_OPS_CONFIG.OPEN_PATH
         : {};
     return new OpenAI({
       ...config,

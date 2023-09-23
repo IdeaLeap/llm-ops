@@ -1,4 +1,4 @@
-import { FunctionChain, LLM, messagesType, functionsType } from "@idealeap/gwt";
+import { FunctionChain, LLM, messagesType, functionsType } from "llm-ops";
 test("测试FunctionChain的格式化输出", async () => {
   const llm = new LLM({});
   const functions: functionsType = [

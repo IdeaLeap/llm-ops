@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "GWT"
-  text: "llm agents framwork based on gwt"
+  name: "LLM Ops"
+  text: "高效制作llm workflow的低代码框架"
   tagline: My great project tagline
   actions:
     - theme: brand

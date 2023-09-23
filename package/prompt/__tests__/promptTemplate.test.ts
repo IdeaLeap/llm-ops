@@ -1,4 +1,4 @@
-import { formatPromptTemplate } from "@idealeap/gwt";
+import { formatPromptTemplate } from "llm-ops";
 
 test("formatPromptTemplate", async () => {
   const res = await formatPromptTemplate({

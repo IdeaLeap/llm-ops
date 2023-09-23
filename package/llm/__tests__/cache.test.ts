@@ -1,4 +1,4 @@
-import { LLM, GWT_CONFIG } from "@idealeap/gwt";
+import { LLM, LLM_OPS_CONFIG } from "llm-ops";
 test("测试LLM的缓存开关", async () => {
   LLM.log = (...args: string[]) => {
     console.log("test:", args);

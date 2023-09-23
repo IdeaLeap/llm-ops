@@ -1,5 +1,5 @@
-import { LLM, GWT_CONFIG } from "@idealeap/gwt";
-import {PipelineContext} from "@idealeap/pipeline";
+import { LLM, LLM_OPS_CONFIG, createMessage } from "llm-ops";
+import { PipelineContext } from "@idealeap/pipeline";
 test("测试LLM的对话 & 替换log函数", async () => {
   LLM.log = (...args: string[]) => {
     console.log("test:", args);
@@ -29,7 +29,7 @@ test("测试LLM的对话 & 替换log函数", async () => {
 });
 
 test("全局设置Config", async () => {
-  GWT_CONFIG.OPENAI_API_KEY = "";
+  LLM_OPS_CONFIG.OPENAI_API_KEY = "";
   class testA {
     async a() {
       const llm = new LLM({});
@@ -52,10 +52,4 @@ test("全局设置Config", async () => {
   const a = new testA();
   await a.a();
   debugger;
-});
-test("LLM端到端测试", async () => {
-  const GLLM = async (input: any, context: PipelineContext) => {
-  const llm = new LLM({...context.stepParams,cache:false});
-  const _ = await llm.chat({messages:input,
-    ...context.stepParams});}
 });

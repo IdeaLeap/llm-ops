@@ -3,7 +3,7 @@ import {
   PolishPromptTemplate,
   LLM,
   functionsType,
-} from "@idealeap/gwt";
+} from "llm-ops";
 test("test PolishPromptTemplate", async () => {
   const llm = new LLM({});
   const functions: functionsType = [

@@ -1,16 +1,16 @@
 {
-  "name": "@idealeap/gwt",
+  "name": "llm-ops",
   "version": "0.0.3",
-  "description": "基于GWT理论构建的 LLM Agent 智能系统框架，不基于LangchainJs!",
+  "description": "高效制作llm workflow的低代码框架",
   "main": "package/index.js",
   "author": "Marlene && IdeaLeap",
-  "repository": "github:idealeap/GWT",
+  "repository": "github:idealeap/llm-ops",
   "license": "MIT",
   "type": "module",
   "private": false,
   "keywords": [
     "Typescript",
-    "gwt",
+    "ops",
     "gpt",
     "openai",
     "llm",
@@ -33,7 +33,7 @@
     "publish": "cd dist && npm publish --access public"
   },
   "dependencies": {
-    "@idealeap/pipeline": "^1.1.2",
+    "@idealeap/pipeline": "^1.1.3",
     "@zilliz/milvus2-sdk-node": "^2.2.24",
     "dotenv": "^16.3.1",
     "openai": "4.8.0"
@@ -45,7 +45,7 @@
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "@idealeap/gwt": "link:./package",
+    "llm-ops": "link:./package",
     "@types/jest": "^29.5.3",
     "@types/node": "^20.4.2",
     "eslint-plugin-import": "^2.25.2",

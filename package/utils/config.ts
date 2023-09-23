@@ -1,5 +1,5 @@
 import "dotenv/config";
-export class GWT_CONFIG {
+export class LLM_OPS_CONFIG {
   static OPEN_PATH = {
     baseURL: "https://oai.hconeai.com/v1",
     defaultHeaders: {

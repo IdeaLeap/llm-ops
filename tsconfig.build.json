@@ -5,7 +5,7 @@
   "compilerOptions": {
     "rootDir": "./dist/package",
     "paths": {
-      "@idealeap/gwt": ["dist/package/index.ts"]
+      "llm-ops": ["dist/package/index.ts"]
     },
     "noEmit": false,
     "declaration": true,

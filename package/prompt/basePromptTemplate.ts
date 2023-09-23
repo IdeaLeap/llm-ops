@@ -2,7 +2,7 @@ import {
   messageFunctionCallType,
   messageType,
   messagesType,
-} from "@idealeap/gwt/llm/index";
+} from "llm-ops/llm/index";
 export interface createMessageSchema {
   role?: "system" | "user" | "assistant" | "function";
   content: string;

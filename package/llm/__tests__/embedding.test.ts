@@ -1,4 +1,4 @@
-import { LLM } from "@idealeap/gwt";
+import { LLM } from "llm-ops";
 test("测试Openai的embedding", async () => {
   const llm = new LLM({});
   const res = await llm.embedding("你好世界");

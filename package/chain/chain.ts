@@ -4,9 +4,9 @@ import {
   messageType,
   functionsType,
   function_callType,
-} from "@idealeap/gwt/llm/index";
-import { FunctionChain } from "@idealeap/gwt/chain/function";
-import { TypeScriptChain } from "@idealeap/gwt/chain/typechat";
+} from "llm-ops/llm/index";
+import { FunctionChain } from "llm-ops/chain/function";
+import { TypeScriptChain } from "llm-ops/chain/typechat";
 export interface chainSchema {
   llm?: LLM;
   llmSchema?: createLLMSchema;

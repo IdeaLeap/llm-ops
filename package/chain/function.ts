@@ -3,9 +3,9 @@ import {
   functionsType,
   function_callType,
   messageType,
-} from "@idealeap/gwt/llm/index";
-import { success, Error } from "@idealeap/gwt/utils/index";
-import { createMessage } from "@idealeap/gwt/prompt/index";
+} from "llm-ops/llm/index";
+import { success, Error } from "llm-ops/utils/index";
+import { createMessage } from "llm-ops/prompt/index";
 export interface FunctionCallSchema {
   request: messageType | string;
   prompt?: messageType[];
