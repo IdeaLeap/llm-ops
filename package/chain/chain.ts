@@ -41,11 +41,11 @@ export class Chain {
         break;
     }
   }
-  exportHistory(){
+  exportHistory() {
     return this.chain.exportHistory();
   }
   async call(params: chainCallSchema) {
-    const { request, prompt, struct, verbose} = params;
+    const { request, prompt, struct, verbose } = params;
     switch (this.chainName) {
       case "typeChat":
         return await this.chain.call({

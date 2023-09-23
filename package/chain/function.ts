@@ -54,7 +54,7 @@ export class FunctionChain {
     }
     return success(responseText);
   }
-  exportHistory(){
+  exportHistory() {
     return this.llm.exportHistory();
   }
 }

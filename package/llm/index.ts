@@ -36,10 +36,7 @@ export interface FunctionInterface {
   description?: string;
 }
 export type functionsType = FunctionInterface[];
-export type function_callType =
-  | "none"
-  | "auto"
-  | FunctionCallOption;
+export type function_callType = "none" | "auto" | FunctionCallOption;
 export type messageFunctionCallType =
   OpenAI.Chat.ChatCompletionMessage.FunctionCall;
 export type chatCompletionType = OpenAI.Chat.Completions.ChatCompletion;
@@ -68,9 +65,9 @@ export interface createLLMSchema {
   choice_num?: number | 1;
   stop?: string | null | string[];
   cache?: boolean;
-  user?:string;
-  history?:messagesType;
-  tokens?:number;
+  user?: string;
+  history?: messagesType;
+  tokens?: number;
 }
 export interface ChatSchema {
   function_call?: function_callType;
@@ -107,7 +104,7 @@ export class LLM {
     assistant: "blue",
     function: "magenta",
   };
-  user:string;
+  user: string;
 
   constructor(params: createLLMSchema) {
     const {
@@ -120,7 +117,7 @@ export class LLM {
       cache,
       user,
       history,
-      tokens
+      tokens,
     } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
     this.tokens = tokens || 0;
@@ -133,8 +130,8 @@ export class LLM {
     this.user = user || "LLM Ops";
   }
 
-  exportHistory(){
-    return this.messages
+  exportHistory() {
+    return this.messages;
   }
 
   private _createLLM({
@@ -148,7 +145,7 @@ export class LLM {
       );
     }
     const config =
-    LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
+      LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
         ? LLM_OPS_CONFIG.OPEN_PATH
         : {};
     return new OpenAI({

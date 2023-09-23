@@ -1,8 +1,4 @@
-import {
-  Pipeline,
-  PipeRegistry,
-  EventEmitter,
-} from "llm-ops";
+import { Pipeline, PipeRegistry, EventEmitter } from "llm-ops";
 
 test("Pipeline", async () => {
   const globalEmitter = new EventEmitter();
@@ -10,9 +6,9 @@ test("Pipeline", async () => {
     "stepComplete",
     (step: any, totalSteps: any, result: any) => {
       console.log(
-        `Step ${step}/${totalSteps} completed with result: ${result}`
+        `Step ${step}/${totalSteps} completed with result: ${result}`,
       );
-    }
+    },
   );
   globalEmitter.on("error", (error) => {
     console.log(`An error occurred: ${error}`);
@@ -57,7 +53,7 @@ export interface articleSchema {
         use: "chain",
         params: {
           chainName: "typeChat",
-          struct:{
+          struct: {
             schema,
             typeName: "subsectionSchema",
           },
@@ -68,11 +64,10 @@ export interface articleSchema {
     ],
   };
   const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
-  const res = await pipeline
-    .execute(
-      `尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。
+  const res = (await pipeline.execute(
+    `尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。
   我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。
-  现在，请允许我分享一下我们参赛的具体信息。我们代表的是浙江省，参赛组别为本科生创意组，所属高校为杭州电子科技大学。`
-    ) as Record<string, any>;
+  现在，请允许我分享一下我们参赛的具体信息。我们代表的是浙江省，参赛组别为本科生创意组，所属高校为杭州电子科技大学。`,
+  )) as Record<string, any>;
   console.log(JSON.stringify(res["subsection"]));
 }, 1000000);

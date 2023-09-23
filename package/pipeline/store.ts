@@ -11,17 +11,16 @@ OriginalPipeline.PipeRegistry.customFn = {
     let request = input;
     const params = context.stepParams["self_params"];
     if (typeof input === "string") {
-      request = 
-        createMessage({
-          role: "user",
-          content: input,
-        });
+      request = createMessage({
+        role: "user",
+        content: input,
+      });
     }
     const llm = new LLM({
       ...params,
       cache: false,
     });
-    if (!!params.messages){
+    if (!!params.messages) {
       //将request添加到message中
       params.messages.push(request);
     }
@@ -39,11 +38,10 @@ OriginalPipeline.PipeRegistry.customFn = {
     let request = input;
     if (typeof input === "string") {
       request = {
-        request: 
-          createMessage({
-            role: "user",
-            content: input,
-          }),
+        request: createMessage({
+          role: "user",
+          content: input,
+        }),
       };
     }
     const _ = await chain.call({
@@ -61,7 +59,7 @@ OriginalPipeline.PipeRegistry.customFn = {
     const params = context.stepParams["self_params"];
     const agent = new BaseAgent(params);
     const _ = await agent.call({
-      request:input,
+      request: input,
       ...params,
     });
     if (!_.success) {
@@ -71,17 +69,23 @@ OriginalPipeline.PipeRegistry.customFn = {
       return _.data;
     }
   },
-  promptTemplate: async (input: any, context: OriginalPipeline.PipelineContext) => {
+  promptTemplate: async (
+    input: any,
+    context: OriginalPipeline.PipelineContext,
+  ) => {
     const params = context.stepParams["self_params"];
     const _ = await formatPromptTemplate(params);
     return _;
   },
-  milvusSearch: async (input: any, context: OriginalPipeline.PipelineContext) => {
+  milvusSearch: async (
+    input: any,
+    context: OriginalPipeline.PipelineContext,
+  ) => {
     const params = context.stepParams["self_params"];
     const db = new milvusVectorDB(params);
     const res = await db.search({
       vector: await db.generateVector(input),
-      ...params
+      ...params,
     });
     if (res.status.error_code == "Success") {
       console.log(res.results);
@@ -90,10 +94,11 @@ OriginalPipeline.PipeRegistry.customFn = {
       console.log(res.status.reason);
       throw new Error(res.status.reason);
     }
-  }
+  },
 };
 
 export class PipeRegistry extends OriginalPipeline.PipeRegistry {
   constructor() {
     super();
-  }}
+  }
+}

@@ -19,9 +19,7 @@ export default defineConfig({
       "/guide": [
         {
           text: "LLM Ops",
-          items: [
-            { text: "model", link: "/guide/model" },
-          ],
+          items: [{ text: "model", link: "/guide/model" }],
         },
       ],
     },

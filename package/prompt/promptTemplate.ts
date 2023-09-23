@@ -1,7 +1,7 @@
 import {
   milvusVectorDB,
   milvusVectorDBPromptTemplateSchema,
-  milvusVectorDBSchema
+  milvusVectorDBSchema,
 } from "llm-ops/db/index";
 import {
   createMessageSchema,
@@ -9,7 +9,8 @@ import {
   AgentPromptTemplate,
   createMessage,
 } from "llm-ops/prompt/index";
-export interface PromptsSchema extends Omit<milvusVectorDBSchema,"COLLECTION_NAME" | "llm"> {
+export interface PromptsSchema
+  extends Omit<milvusVectorDBSchema, "COLLECTION_NAME" | "llm"> {
   name: "polishPromptTemplate" | "agentPromptTemplate" | string;
   prompt?: MultiPromptSchema[] | any[];
   schema?: Record<string, any>;
@@ -17,7 +18,7 @@ export interface PromptsSchema extends Omit<milvusVectorDBSchema,"COLLECTION_NAM
 }
 export interface MultiPromptSchema
   extends createMessageSchema,
-  Omit<milvusVectorDBPromptTemplateSchema,"content"> {
+    Omit<milvusVectorDBPromptTemplateSchema, "content"> {
   COLLECTION_NAME?: string;
 }
 

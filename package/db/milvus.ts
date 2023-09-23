@@ -149,7 +149,7 @@ export class milvusVectorDB {
       this.llm = new LLM({});
     }
     const vector = await this.llm?.embedding(data);
-    if(!vector?.data[0]?.embedding){
+    if (!vector?.data[0]?.embedding) {
       throw new Error("生成向量失败");
     }
     return vector?.data[0]?.embedding;
