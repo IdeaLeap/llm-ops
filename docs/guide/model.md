@@ -5,7 +5,7 @@
 ### Chat mode
 
 ```ts
-import { LLM, messagesType, functionsType } from "../index.js";
+import { LLM, messagesType, functionsType } from "llm-ops";
 const llm = new LLM({});
 const reqMessages: messagesType = [
   {
@@ -52,7 +52,7 @@ debugger;
 ### Openai Funtions Call
 
 ```ts
-import { LLM, messagesType, functionsType } from "../index.js";
+import { LLM, messagesType, functionsType } from "llm-ops";
 const llm = new LLM({});
 const functions: functionsType = [
   {
@@ -122,7 +122,7 @@ debugger;
 ## Moderation & Embedding
 
 ```ts
-import { LLM } from "../index.js";
+import { LLM } from "llm-ops";
 const llm = new LLM({});
 const res = await llm.embedding("hello world");
 console.log(res.data[0].embedding);

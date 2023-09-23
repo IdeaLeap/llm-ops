@@ -131,3 +131,7 @@ docs/.vitepress/cache
 .pnp.*
 package-lock.json
 .DS_Store
+
+temp/
+etc/
+package/tsdoc-metadata.json

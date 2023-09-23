@@ -11,7 +11,7 @@ module.exports = {
     "plugin:@typescript-eslint",
   ],
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "eslint-plugin-tsdoc"],
   overrides: [
     {
       files: ["*.js"],
@@ -46,5 +46,6 @@ module.exports = {
     "no-debugger": 0,
     "@typescript-eslint/no-unsafe-member-access": 0,
     "@typescript-eslint/no-unsafe-return": 0,
+    "tsdoc/syntax": "warn",
   },
 };

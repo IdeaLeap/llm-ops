@@ -4,5 +4,6 @@
     "source.fixAll": true
   },
   "eslint.enable": true,
-  "jest.autoRun": "off"
+  "jest.autoRun": "off",
+  "files.associations": { "*.json": "jsonc" }
 }

@@ -15,6 +15,8 @@ for (const key of ["types", "main", "module"]) {
 }
 pkgJson["main"] = "dist/index.js";
 pkgJson["types"] = "dist/index.d.ts";
+pkgJson["typings"] = "dist/index.d.ts";
+pkgJson["typing"] = "dist/index.d.ts";
 pkgJson["type"] = "commonjs";
 pkgJson["exports"] = {
   ".": {

@@ -21,3 +21,8 @@ npm exec prettier -- --loglevel=warn --write .
 # import the output ESM
 (cd dist && node -e 'require("llm-ops")')
 (cd dist && node -e 'import("llm-ops")' --input-type=module)
+
+# Path: build-docs
+api-extractor run --local --verbose
+rm -rf docs/api;mkdir -p docs/api
+npx api-documenter markdown --input-folder './temp' --output-folder './docs/api'
