@@ -58,10 +58,12 @@ export class TypeScriptChain {
     });
   }
 
-  exportHistory(){
+  exportHistory() {
     //剔除 system_validation_fix和system_schema记录
-    return this.llm.exportHistory().filter((item)=>{
-      return item.name !== "system_validation_fix" && item.name !== "system_schema";
+    return this.llm.exportHistory().filter((item) => {
+      return (
+        item.name !== "system_validation_fix" && item.name !== "system_schema"
+      );
     });
   }
 

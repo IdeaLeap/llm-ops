@@ -4,7 +4,7 @@ test("测试LLM的缓存开关", async () => {
     console.log("test:", args);
   };
   const llm = new LLM({
-    cache:false
+    cache: false,
   });
   await llm.chat({
     messages: [

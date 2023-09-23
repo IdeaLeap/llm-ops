@@ -47,8 +47,8 @@ export class milvusVectorDB {
     this.COLLECTION_NAME = COLLECTION_NAME;
     this.milvusClient = new MilvusClient({
       address: address || LLM_OPS_CONFIG.MILVUS_ADDRESS || "localhost:19530",
-      username: username || undefined,
-      password: password || undefined,
+      username: username || LLM_OPS_CONFIG.MILVUS_USERNAME || undefined,
+      password: password || LLM_OPS_CONFIG.MILVUS_PASSWORD || undefined,
     });
   }
   async query(params: milvusVectorDBQuerySchema) {
@@ -144,11 +144,14 @@ export class milvusVectorDB {
     console.timeEnd("Upload time");
     return upload;
   }
-  async generateVector(data: string) {
+  async generateVector(data: string): Promise<number[]> {
     if (!this.llm) {
       this.llm = new LLM({});
     }
     const vector = await this.llm?.embedding(data);
+    if (!vector?.data[0]?.embedding) {
+      throw new Error("生成向量失败");
+    }
     return vector?.data[0]?.embedding;
   }
 }
