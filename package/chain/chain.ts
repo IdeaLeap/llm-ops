@@ -22,6 +22,7 @@ export interface chainCallSchema {
   request: messageType | string;
   prompt?: messageType[];
   struct?: structSchema;
+  verbose?: boolean;
 }
 export class Chain {
   llm: LLM;
@@ -44,7 +45,7 @@ export class Chain {
     return this.chain.exportHistory();
   }
   async call(params: chainCallSchema) {
-    const { request, prompt, struct } = params;
+    const { request, prompt, struct, verbose} = params;
     switch (this.chainName) {
       case "typeChat":
         return await this.chain.call({
@@ -52,7 +53,7 @@ export class Chain {
           prompt: prompt || [],
           schema: struct?.schema,
           typeName: struct?.typeName,
-          verbose: true,
+          verbose: verbose || false,
         });
       default:
         return await this.chain.call({
@@ -60,7 +61,7 @@ export class Chain {
           prompt: prompt || [],
           functions: struct?.functions,
           function_call: struct?.function_call,
-          verbose: true,
+          verbose: verbose || false,
         });
     }
   }

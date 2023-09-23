@@ -667,10 +667,10 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@idealeap/pipeline@^1.1.3":
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/@idealeap/pipeline/-/pipeline-1.1.3.tgz#b6e8e79de3fb475d2260dc5fca89e5015617721e"
-  integrity sha512-1cZbgBd/M8iiiUQvypJXrq9D+2Q4WG1KbrH5Cw88mGjmViMcyrzmuFchgk9QJfnr17zq9lESnnQmpvU/V25Y+A==
+"@idealeap/pipeline@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@idealeap/pipeline/-/pipeline-1.1.5.tgz#b8e93752e7fb690ebe20733cb1f78221bcc11837"
+  integrity sha512-dRFfQ4/Unb9RyVBN2VP1nVI8fO0dodx7rtSUKtJnOJeu7ZIr6PNFDH9yNEnhuvCULBFW6aJtHUzohmdTwFeqYA==
   dependencies:
     dotenv "^16.3.1"
     lodash "^4.17.21"
