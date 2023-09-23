@@ -7,7 +7,7 @@
 <a href="./LICENSE"><img src="https://img.shields.io/github/license/idealeap/llm-ops.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="License"></a>
 </p>
 
-`LLM Ops` 是一款高效制作`llm workflow`的低代码框架.
+`LLM Ops` 是一款高效制作`llm workflow`的低代码框架。
 
 ## 快速上手
 
