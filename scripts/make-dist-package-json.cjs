@@ -13,7 +13,32 @@ for (const key of ["types", "main", "module"]) {
   if (typeof pkgJson[key] === "string")
     pkgJson[key] = pkgJson[key].replace(/^(\.\/)?dist\//, "./");
 }
-
+pkgJson["main"] = "dist/index.js";
+pkgJson["types"] = "dist/index.d.ts";
+pkgJson["type"] = "commonjs";
+pkgJson["exports"] = {
+  ".": {
+    require: {
+      types: "./index.d.ts",
+      default: "./index.js",
+    },
+    types: "./index.d.mts",
+    default: "./index.mjs",
+  },
+  "./*.mjs": {
+    types: "./*.d.ts",
+    default: "./*.mjs",
+  },
+  "./*.js": {
+    types: "./*.d.ts",
+    default: "./*.js",
+  },
+  "./*": {
+    types: "./*.d.ts",
+    require: "./*.js",
+    default: "./*.mjs",
+  },
+};
 delete pkgJson.devDependencies;
 delete pkgJson.scripts["docs:build"];
 delete pkgJson.scripts["docs:dev"];

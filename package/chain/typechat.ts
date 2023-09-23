@@ -1,10 +1,10 @@
-import { LLM, messageType } from "@idealeap/gwt/llm/index";
-import { Result, error, Error } from "@idealeap/gwt/utils/index";
-import { createMessage } from "@idealeap/gwt/prompt/index";
+import { LLM, messageType } from "llm-ops/llm/index";
+import { Result, error, Error } from "llm-ops/utils/index";
+import { createMessage } from "llm-ops/prompt/index";
 import {
   TypeChatJsonValidator,
   createJsonValidator,
-} from "@idealeap/gwt/chain/index";
+} from "llm-ops/chain/index";
 /**
  * Represents an object that can translate natural language requests in JSON objects of the given type.
  */
@@ -55,6 +55,13 @@ export class TypeScriptChain {
         `"""\n${validationError}\n"""\n` +
         `The following is a revised JSON object:\n`,
       name: "system_validation_fix",
+    });
+  }
+
+  exportHistory(){
+    //剔除 system_validation_fix和system_schema记录
+    return this.llm.exportHistory().filter((item)=>{
+      return item.name !== "system_validation_fix" && item.name !== "system_schema";
     });
   }
 

@@ -1,8 +1,8 @@
-import { messagesType } from "@idealeap/gwt/llm/index";
+import { messagesType } from "llm-ops/llm/index";
 import {
   createMessage,
   BasePromptTemplate,
-} from "@idealeap/gwt/prompt/basePromptTemplate";
+} from "llm-ops/prompt/basePromptTemplate";
 type languageType = "English" | "Chinese";
 export interface polishPromptTemplateSchema {
   toneStyle?: string;

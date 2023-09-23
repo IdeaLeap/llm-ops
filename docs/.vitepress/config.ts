@@ -2,8 +2,8 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "GWT",
-  description: "llm agents framwork based on gwt",
+  title: "LLM Ops",
+  description: "高效制作llm workflow的低代码框架",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

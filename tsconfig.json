@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@idealeap/gwt": ["package/index.ts"]
+      "llm-ops": ["package/index.ts"]
     },
     "target": "ES2022",
     "module": "commonjs",

@@ -1,16 +1,47 @@
 import OpenAI from "openai";
-import { GWT_CONFIG } from "@idealeap/gwt/utils/index";
+import { LLM_OPS_CONFIG } from "llm-ops/utils/index";
 // only for openai-node ^4.0.0
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
 export type resMessagesType = OpenAI.Chat.Completions.ChatCompletion.Choice[];
-export type functionsType = OpenAI.Chat.CompletionCreateParams.Function[];
+export interface FunctionCallOption {
+  /**
+   * The name of the function to call.
+   */
+  name: string;
+}
+export interface FunctionInterface {
+  /**
+   * The name of the function to be called. Must be a-z, A-Z, 0-9, or contain
+   * underscores and dashes, with a maximum length of 64.
+   */
+  name: string;
+
+  /**
+   * The parameters the functions accepts, described as a JSON Schema object. See the
+   * [guide](https://platform.openai.com/docs/guides/gpt/function-calling) for
+   * examples, and the
+   * [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for
+   * documentation about the format.
+   *
+   * To describe a function that accepts no parameters, provide the value
+   * `{"type": "object", "properties": {}}`.
+   */
+  parameters: Record<string, unknown>;
+
+  /**
+   * A description of what the function does, used by the model to choose when and
+   * how to call the function.
+   */
+  description?: string;
+}
+export type functionsType = FunctionInterface[];
 export type function_callType =
   | "none"
   | "auto"
-  | OpenAI.Chat.CompletionCreateParams.FunctionCallOption;
+  | FunctionCallOption;
 export type messageFunctionCallType =
-  OpenAI.Chat.CreateChatCompletionRequestMessage.FunctionCall;
+  OpenAI.Chat.ChatCompletionMessage.FunctionCall;
 export type chatCompletionType = OpenAI.Chat.Completions.ChatCompletion;
 export type llmType = OpenAI;
 export type chatParamsType = OpenAI.Chat.CompletionCreateParams;
@@ -37,6 +68,9 @@ export interface createLLMSchema {
   choice_num?: number | 1;
   stop?: string | null | string[];
   cache?: boolean;
+  user?:string;
+  history?:messagesType;
+  tokens?:number;
 }
 export interface ChatSchema {
   function_call?: function_callType;
@@ -73,6 +107,7 @@ export class LLM {
     assistant: "blue",
     function: "magenta",
   };
+  user:string;
 
   constructor(params: createLLMSchema) {
     const {
@@ -82,31 +117,39 @@ export class LLM {
       temperature,
       choice_num,
       stop,
-      cache = true,
+      cache,
+      user,
+      history,
+      tokens
     } = params;
     this.llm = this._createLLM({ HELICONE_AUTH_API_KEY, OPENAI_API_KEY });
-    this.tokens = 0;
-    this.messages = [];
+    this.tokens = tokens || 0;
+    this.messages = history || [];
     this.modelName = modelName || "gpt-3.5-turbo-0613";
     this.temperature = temperature || 0.7;
     this.choice_num = choice_num || 1;
     this.stop = stop || null;
-    this.cache = cache;
+    this.cache = cache || true;
+    this.user = user || "LLM Ops";
+  }
+
+  exportHistory(){
+    return this.messages
   }
 
   private _createLLM({
     HELICONE_AUTH_API_KEY = undefined,
     OPENAI_API_KEY = undefined,
   }: createLLMSchema): llmType {
-    const openAIApiKey = OPENAI_API_KEY || GWT_CONFIG.OPENAI_API_KEY;
+    const openAIApiKey = OPENAI_API_KEY || LLM_OPS_CONFIG.OPENAI_API_KEY;
     if (!openAIApiKey) {
       this.missingEnvironmentVariable(
         "OPENAI_API_KEY Missing! 😅 It's not free!",
       );
     }
     const config =
-      GWT_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
-        ? GWT_CONFIG.OPEN_PATH
+    LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
+        ? LLM_OPS_CONFIG.OPEN_PATH
         : {};
     return new OpenAI({
       ...config,
@@ -166,7 +209,7 @@ export class LLM {
         stop: this.stop,
         stream: false,
         temperature: this.temperature || 0.7,
-        user: "GWT",
+        user: this.user,
       };
       const res = (await this.llm.chat.completions.create(
         params_,
@@ -227,7 +270,7 @@ export class LLM {
         stop: this.stop,
         stream: false,
         temperature: this.temperature || 0.7,
-        user: "GWT",
+        user: this.user,
       };
       const res = (await this.llm.chat.completions.create(
         params_,
@@ -256,7 +299,7 @@ export class LLM {
     return await this.llm.embeddings.create({
       input: input,
       model: "text-embedding-ada-002",
-      user: "GWT",
+      user: this.user,
     });
   }
 

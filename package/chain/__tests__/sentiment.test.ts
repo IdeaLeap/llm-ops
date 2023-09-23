@@ -1,4 +1,4 @@
-import { LLM, TypeScriptChain, messagesType } from "@idealeap/gwt";
+import { LLM, TypeScriptChain, messagesType } from "llm-ops";
 test("测试TSChain的格式化输出", async () => {
   const llm = new LLM({});
   const schema = `

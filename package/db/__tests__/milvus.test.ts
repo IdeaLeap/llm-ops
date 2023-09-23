@@ -1,4 +1,4 @@
-import { milvusVectorDB, LLM } from "@idealeap/gwt";
+import { milvusVectorDB, LLM } from "llm-ops";
 import "dotenv/config";
 test("测试milvus的插入", async () => {
   const llm = new LLM({});

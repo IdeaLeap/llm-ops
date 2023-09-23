@@ -1,4 +1,4 @@
-import { createMessage } from "@idealeap/gwt";
+import { createMessage } from "llm-ops";
 
 test("createMessage", () => {
   const res = createMessage({
