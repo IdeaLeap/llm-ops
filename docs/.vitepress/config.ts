@@ -1,25 +1,25 @@
 import { defineConfig } from "vitepress";
 
-// https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "LLM Ops",
-  description: "高效制作llm workflow的低代码框架",
-  lang: "en-US",
+  description: "助力AIGC落地应用、高效开发llm workflow的低代码TS框架",
+  lang: "zh-CN",
   lastUpdated: true,
   markdown: { attrs: { disable: true } },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: "Home", link: "/" },
-      { text: "Guide", link: "/guide/model" },
+      { text: "Guide", link: "/guide/" },
       { text: "API", link: "/api/" },
+      { text: "Preview", link: "https://preview.idealeap.cn/"}
     ],
 
     sidebar: {
       "/guide": [
         {
-          text: "LLM Ops",
-          items: [{ text: "model", link: "/guide/model" }],
+          text: "开始",
+          items: [{ text: "简介", link: "/guide/" },{ text: "快速上手", link: "/guide/start" }],
         },
       ],
     },

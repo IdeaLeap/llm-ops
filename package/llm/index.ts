@@ -141,13 +141,26 @@ export class LLM {
     const openAIApiKey = OPENAI_API_KEY || LLM_OPS_CONFIG.OPENAI_API_KEY;
     if (!openAIApiKey) {
       this.missingEnvironmentVariable(
-        "OPENAI_API_KEY Missing! 😅 It's not free!",
+        "OPENAI_API_KEY Missing! 😅 It's not free!"
       );
     }
-    const config =
-      LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY || HELICONE_AUTH_API_KEY
-        ? LLM_OPS_CONFIG.OPEN_PATH
-        : {};
+    const config = !!HELICONE_AUTH_API_KEY
+      ? {
+          baseURL: "https://oai.hconeai.com/v1",
+          defaultHeaders: {
+            "Helicone-Auth": `Bearer ${process.env["HELICONE_AUTH_API_KEY"]}`,
+          },
+        }
+      : !!LLM_OPS_CONFIG.OPEN_PATH
+      ? LLM_OPS_CONFIG.OPEN_PATH
+      : LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY
+      ? {
+          baseURL: "https://oai.hconeai.com/v1",
+          defaultHeaders: {
+            "Helicone-Auth": `Bearer ${LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY}`,
+          },
+        }
+      : {};
     return new OpenAI({
       ...config,
       apiKey: openAIApiKey,
@@ -209,7 +222,7 @@ export class LLM {
         user: this.user,
       };
       const res = (await this.llm.chat.completions.create(
-        params_,
+        params_
       )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
       !!this.cache &&
@@ -270,7 +283,7 @@ export class LLM {
         user: this.user,
       };
       const res = (await this.llm.chat.completions.create(
-        params_,
+        params_
       )) as chatCompletionType;
       this.tokens += res.usage?.total_tokens || 0;
       !!this.cache &&
@@ -291,7 +304,7 @@ export class LLM {
   }
 
   async embedding(
-    input: string | string[] | number[] | number[][],
+    input: string | string[] | number[] | number[][]
   ): Promise<resEmbeddingType> {
     return await this.llm.embeddings.create({
       input: input,
@@ -310,29 +323,29 @@ export class LLM {
           `%c system ${message.name ? "(" + message.name + ")" : ""}: ${
             message.content
           } \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "user") {
         LLM.log(
           `%c user: ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "assistant" && message.function_call) {
         LLM.log(
           `%c assistant: ${JSON.stringify(message.function_call)} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "assistant" && !message.function_call) {
         LLM.log(
           `%c assistant: ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "function") {
         LLM.log(
           `%c function (${
             message.name // response message has not `name`
           }): ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       }
     }
@@ -343,27 +356,27 @@ export class LLM {
       if (message.role === "system") {
         LLM.log(
           `%c system: ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "user") {
         LLM.log(
           `%c user: ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "assistant" && message.function_call) {
         LLM.log(
           `%c assistant: ${JSON.stringify(message.function_call)} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "assistant" && !message.function_call) {
         LLM.log(
           `%c assistant: ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       } else if (message.role === "function") {
         LLM.log(
           `%c function : ${message.content} \n`,
-          `color: ${this.roleToColor[message.role]}`,
+          `color: ${this.roleToColor[message.role]}`
         );
       }
     }
