@@ -12,14 +12,17 @@ export default defineConfig({
       { text: "Home", link: "/" },
       { text: "Guide", link: "/guide/" },
       { text: "API", link: "/api/" },
-      { text: "Preview", link: "https://preview.idealeap.cn/"}
+      { text: "Preview", link: "https://preview.idealeap.cn/" },
     ],
 
     sidebar: {
       "/guide": [
         {
           text: "开始",
-          items: [{ text: "简介", link: "/guide/" },{ text: "快速上手", link: "/guide/start" }],
+          items: [
+            { text: "简介", link: "/guide/" },
+            { text: "快速上手", link: "/guide/start" },
+          ],
         },
       ],
     },
