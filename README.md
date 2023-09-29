@@ -1,4 +1,4 @@
-![llmops](https://github.com/IdeaLeap/llm-ops/assets/49270362/58faaf56-e581-45cf-8915-6368041dc68c)
+![llmops](https://github.com/IdeaLeap/llm-ops/assets/49270362/99243bfe-daa9-43c2-a7c9-bbcb615815f4)
 
 # llm-ops
 <p>
@@ -77,8 +77,7 @@ const pipelineJson = {
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
 const res = (await pipeline.execute(
   `尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。
-我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。
-现在，请允许我分享一下我们参赛的具体信息。我们代表的是浙江省，参赛组别为本科生创意组，所属高校为杭州电子科技大学。`,
+我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。`,
 )) as Record<string, any>;
 console.log(JSON.stringify(res["subsection"]));
 ```
