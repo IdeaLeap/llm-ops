@@ -88,7 +88,7 @@ console.log(JSON.stringify(res["subsection"]));
 ```
 ## 框架设计结构
 
-![框架设计结构](https://github.com/IdeaLeap/llm-ops/assets/49270362/b4cea269-4540-4c1f-8352-d7c52c6d9d39)
+![框架设计结构](https://github.com/IdeaLeap/llm-ops/assets/49270362/8834cba4-b055-41a0-a73d-f2c3346b23c5)
 
 
 ## 🎨 技术栈
