@@ -32,7 +32,7 @@ export default defineConfig({
       },
     ],
     ["meta", { property: "twitter:url", content: "https://ops.idealeap.cn/" }],
-    ["meta", { name: "twitter:title", content: "HDU-CS-WIKI | HDU-CS-WIKI" }],
+    ["meta", { name: "twitter:title", content: "LLM-OPS | IdeaLeap" }],
     ["meta", { name: "twitter:description", content: "LLM-OPS" }],
     ["meta", { name: "twitter:image", content: "/og.jpg" }],
     [
