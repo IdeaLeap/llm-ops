@@ -4,6 +4,8 @@
 
 ## messageType type
 
+单一的OpenAI聊天请求消息类型
+
 **Signature:**
 
 ```typescript

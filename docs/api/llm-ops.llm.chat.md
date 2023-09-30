@@ -4,6 +4,8 @@
 
 ## LLM.chat() method
 
+使用LLM进行聊天。
+
 **Signature:**
 
 ```typescript
@@ -14,9 +16,11 @@ chat(params: ChatSchema): Promise<chatCompletionType>;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [ChatSchema](./llm-ops.chatschema.md) |  |
+|  params | [ChatSchema](./llm-ops.chatschema.md) | 包含聊天所需的参数。 |
 
 **Returns:**
 
 Promise&lt;[chatCompletionType](./llm-ops.chatcompletiontype.md)<!-- -->&gt;
+
+返回聊天的完成信息。
 

@@ -4,6 +4,8 @@
 
 ## LLM.exportHistory() method
 
+导出历史消息。
+
 **Signature:**
 
 ```typescript
@@ -12,4 +14,6 @@ exportHistory(): messagesType;
 **Returns:**
 
 [messagesType](./llm-ops.messagestype.md)
+
+返回聊天的历史消息。
 

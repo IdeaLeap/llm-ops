@@ -4,6 +4,8 @@
 
 ## messageFunctionCallType type
 
+OpenAI聊天完成消息中的FunctionCall类型
+
 **Signature:**
 
 ```typescript

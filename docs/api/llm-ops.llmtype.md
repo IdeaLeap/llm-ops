@@ -4,6 +4,8 @@
 
 ## llmType type
 
+LLM类型定义为OpenAI类型
+
 **Signature:**
 
 ```typescript

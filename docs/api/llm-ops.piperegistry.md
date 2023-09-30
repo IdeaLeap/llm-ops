@@ -4,6 +4,8 @@
 
 ## PipeRegistry class
 
+扩展原始的PipeRegistry类
+
 **Signature:**
 
 ```typescript
@@ -15,5 +17,5 @@ export declare class PipeRegistry extends OriginalPipeline.PipeRegistry
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)()](./llm-ops.piperegistry._constructor_.md) |  | Constructs a new instance of the <code>PipeRegistry</code> class |
+|  [(constructor)()](./llm-ops.piperegistry._constructor_.md) |  | PipeRegistry的构造函数 |
 

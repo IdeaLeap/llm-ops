@@ -4,6 +4,10 @@
 
 ## LLM\_OPS\_CONFIG.HELICONE\_AUTH\_API\_KEY property
 
+Helicone的授权API密钥。
+
+从环境变量中获取该密钥。
+
 **Signature:**
 
 ```typescript

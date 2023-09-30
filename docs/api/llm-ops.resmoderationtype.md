@@ -4,6 +4,8 @@
 
 ## resModerationType type
 
+OpenAI内容审查响应类型
+
 **Signature:**
 
 ```typescript

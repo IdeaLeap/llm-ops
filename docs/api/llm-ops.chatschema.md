@@ -4,6 +4,8 @@
 
 ## ChatSchema interface
 
+聊天参数接口
+
 **Signature:**
 
 ```typescript
@@ -16,5 +18,5 @@ export interface ChatSchema
 |  --- | --- | --- | --- |
 |  [function\_call?](./llm-ops.chatschema.function_call.md) |  | [function\_callType](./llm-ops.function_calltype.md) | _(Optional)_ |
 |  [functions?](./llm-ops.chatschema.functions.md) |  | [functionsType](./llm-ops.functionstype.md) | _(Optional)_ |
-|  [messages](./llm-ops.chatschema.messages.md) |  | [messagesType](./llm-ops.messagestype.md) |  |
+|  [messages](./llm-ops.chatschema.messages.md) |  | [messagesType](./llm-ops.messagestype.md) | 消息数组 |
 

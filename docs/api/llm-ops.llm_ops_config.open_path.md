@@ -4,6 +4,10 @@
 
 ## LLM\_OPS\_CONFIG.OPEN\_PATH property
 
+OPEN\_PATH 对象定义了与Helicone API进行通信时的基础设置。
+
+ {<!-- -->string<!-- -->} baseURL - Helicone API的基础URL。  {<!-- -->Object<!-- -->} defaultHeaders - 用于与Helicone API通信时的默认请求头。
+
 **Signature:**
 
 ```typescript

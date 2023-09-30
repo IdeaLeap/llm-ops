@@ -4,7 +4,7 @@
 
 ## Chain.(constructor)
 
-Constructs a new instance of the `Chain` class
+创建一个新的 `Chain` 实例。
 
 **Signature:**
 
@@ -16,5 +16,5 @@ constructor(params: chainSchema);
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [chainSchema](./llm-ops.chainschema.md) |  |
+|  params | [chainSchema](./llm-ops.chainschema.md) | 构造函数的参数对象。 |
 

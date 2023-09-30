@@ -4,6 +4,8 @@
 
 ## LLM.moderate() method
 
+对输入内容进行审查。
+
 **Signature:**
 
 ```typescript
@@ -14,9 +16,11 @@ moderate(input: string | string[]): Promise<resModerationType>;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  input | string \| string\[\] |  |
+|  input | string \| string\[\] | 需要审查的输入内容。 |
 
 **Returns:**
 
 Promise&lt;[resModerationType](./llm-ops.resmoderationtype.md)<!-- -->&gt;
+
+返回审查结果。
 

@@ -4,6 +4,10 @@
 
 ## LLM\_OPS\_CONFIG.MILVUS\_USERNAME property
 
+用于连接到Milvus服务的用户名。
+
+从环境变量中获取此用户名。
+
 **Signature:**
 
 ```typescript

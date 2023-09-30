@@ -4,6 +4,8 @@
 
 ## resEmbeddingType type
 
+OpenAI创建嵌入响应类型
+
 **Signature:**
 
 ```typescript

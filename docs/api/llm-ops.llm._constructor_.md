@@ -4,7 +4,7 @@
 
 ## LLM.(constructor)
 
-Constructs a new instance of the `LLM` class
+构造一个LLM客户端实例。
 
 **Signature:**
 
@@ -16,5 +16,5 @@ constructor(params: createLLMSchema);
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [createLLMSchema](./llm-ops.createllmschema.md) |  |
+|  params | [createLLMSchema](./llm-ops.createllmschema.md) | 包含创建LLM客户端所需的参数。 |
 

@@ -4,6 +4,8 @@
 
 ## createLLMSchema.OPENAI\_API\_KEY property
 
+OpenAI API密钥
+
 **Signature:**
 
 ```typescript

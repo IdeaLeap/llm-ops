@@ -4,6 +4,8 @@
 
 ## Chain class
 
+`Chain` 类用于`llm`<!-- -->类的格式化输出。
+
 **Signature:**
 
 ```typescript
@@ -14,7 +16,7 @@ export declare class Chain
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(params)](./llm-ops.chain._constructor_.md) |  | Constructs a new instance of the <code>Chain</code> class |
+|  [(constructor)(params)](./llm-ops.chain._constructor_.md) |  | 创建一个新的 <code>Chain</code> 实例。 |
 
 ## Properties
 
@@ -28,6 +30,6 @@ export declare class Chain
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [call(params)](./llm-ops.chain.call.md) |  |  |
-|  [exportHistory()](./llm-ops.chain.exporthistory.md) |  |  |
+|  [call(params)](./llm-ops.chain.call.md) |  | 调用Chain |
+|  [exportHistory()](./llm-ops.chain.exporthistory.md) |  | 导出链的历史记录。 |
 

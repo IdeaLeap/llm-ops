@@ -13,11 +13,11 @@ npm install llm-ops
 ## 创建一个简单的pipeline
 
 ```ts
-import { Pipeline,PipeRegistry } from "llm-ops";
-const funcStore = PipeRegistry.init();//将功能函数注册到funcStore中
+import { Pipeline, PipeRegistry } from "llm-ops";
+const funcStore = PipeRegistry.init(); //将功能函数注册到funcStore中
 const pipelineJson = {
-  pipes:[]
-}
+  pipes: [],
+};
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
 const res = await pipeline.execute("");
 ```
@@ -37,25 +37,29 @@ const res = await pipeline.execute("");
 > 目前通过json方式使用的`llm`不支持历史记录，如果需要历史记录，请参考相关`API`文档，使用完整的`llm`功能。
 
 ```ts
-import { Pipeline,PipeRegistry } from "llm-ops";
+import { Pipeline, PipeRegistry } from "llm-ops";
 const funcStore = PipeRegistry.init();
 const pipelineJson = {
-  pipes:[{
-        id: "polish",
-        use: "llm",
-        params: {
-          messages: [
-            {
-              role: "system",
-              content:
-                "你是一个专职PPT文稿处理的助手，将会对user输入的文稿进行润色扩写，内容补充，但是原来的一些信息要点不丢失。",
-            },
-          ],
-        },
-      }]
-}
+  pipes: [
+    {
+      id: "polish",
+      use: "llm",
+      params: {
+        messages: [
+          {
+            role: "system",
+            content:
+              "你是一个专职PPT文稿处理的助手，将会对user输入的文稿进行润色扩写，内容补充，但是原来的一些信息要点不丢失。",
+          },
+        ],
+      },
+    },
+  ],
+};
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
-const res = await pipeline.execute("尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。");
+const res = await pipeline.execute(
+  "尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。",
+);
 ```
 
 ## 设置环境变量
@@ -75,13 +79,13 @@ LLM_OPS_CONFIG.OPENAI_API_KEY = "";
 在国内，通常无法直接使用OPENAI_API_KEY，因此，需要使用代理。推荐使用`Helicone`作为代理API。手动设置代理API的方法如下：
 
 ```ts
-import { Pipeline,PipeRegistry,LLM_OPS_CONFIG } from "llm-ops";
+import { Pipeline, PipeRegistry, LLM_OPS_CONFIG } from "llm-ops";
 LLM_OPS_CONFIG.OPEN_PATH = {
   baseURL: "https://oai.hconeai.com/v1",
   defaultHeaders: {
     "Helicone-Auth": `Bearer xxx`,
   },
-}
+};
 ```
 
 ## 使用chain
@@ -91,42 +95,51 @@ LLM_OPS_CONFIG.OPEN_PATH = {
 以下是`functionCall`的使用示例：
 
 ```ts
-import { Pipeline,PipeRegistry } from "llm-ops";
+import { Pipeline, PipeRegistry } from "llm-ops";
 const funcStore = PipeRegistry.init();
 const pipelineJson = {
-  "pipes": [{
-    "id": "classify",
-    "use": "chain",
-    "params": {
-      "struct": {
-        "functions": [{
-          "name": "get_categories",
-          "description": "根据PPT文稿获取PPT类别",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "categories": {
-                "type": "string",
-                "enum": ["汇报类型", "演讲类型", "活动类型"],
-                "description": "PPT文稿属于哪一类型的PPT"
-              }
+  pipes: [
+    {
+      id: "classify",
+      use: "chain",
+      params: {
+        struct: {
+          functions: [
+            {
+              name: "get_categories",
+              description: "根据PPT文稿获取PPT类别",
+              parameters: {
+                type: "object",
+                properties: {
+                  categories: {
+                    type: "string",
+                    enum: ["汇报类型", "演讲类型", "活动类型"],
+                    description: "PPT文稿属于哪一类型的PPT",
+                  },
+                },
+                required: ["categories"],
+              },
             },
-            "required": ["categories"]
-          }
-        }],
-        "function_call": {
-          "name": "get_categories"
-        }
+          ],
+          function_call: {
+            name: "get_categories",
+          },
+        },
+        prompt: [
+          {
+            role: "system",
+            content:
+              "你是一个专职PPT文稿处理的助手，会根据user输入的PPT文稿，给出PPT的类别。",
+          },
+        ],
       },
-      "prompt": [{
-        "role": "system",
-        "content": "你是一个专职PPT文稿处理的助手，会根据user输入的PPT文稿，给出PPT的类别。"
-      }]
-    }
-  }]
-}
+    },
+  ],
+};
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
-const res = await pipeline.execute("尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。");
+const res = await pipeline.execute(
+  "尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。",
+);
 ```
 
 更复杂的用法可以学习官方的[Cook Book](https://cookbook.openai.com/examples/how_to_call_functions_with_chat_models)。
@@ -134,16 +147,17 @@ const res = await pipeline.execute("尊敬的各位评审，大家好！今天�
 以下是`typeChat`的使用示例：
 
 ```ts
-import { Pipeline,PipeRegistry } from "llm-ops";
+import { Pipeline, PipeRegistry } from "llm-ops";
 const funcStore = PipeRegistry.init();
 const pipelineJson = {
-  "pipes": [{
-    id: "subsection",
-    use: "chain",
-    params: {
-      chainName: "typeChat",
-      struct: {
-        schema:`
+  pipes: [
+    {
+      id: "subsection",
+      use: "chain",
+      params: {
+        chainName: "typeChat",
+        struct: {
+          schema: `
 export interface subsectionSchema {
   subsection: articleSchema[];
   title: string; // 整篇PPT文稿的标题
@@ -153,21 +167,24 @@ export interface articleSchema {
   content: string; //每一段的文本
   title: string; // 每一段起一个小标题，非常凝练这一段主要的内容是什么，同时与其他段落保持一个一致性的风格
 }`,
-        typeName: "subsectionSchema",
-      },
-      prompt: [
-        {
-          role: "system",
-          content:
-            "你是一个专职PPT文稿大纲处理的助手，将会对user输入的文稿进行分段，并进行中心点提取成小标题。给出整篇PPT文稿的标题,分段的理由，每段小标题和对应的内容。",
+          typeName: "subsectionSchema",
         },
-      ],
-      bound: false,
+        prompt: [
+          {
+            role: "system",
+            content:
+              "你是一个专职PPT文稿大纲处理的助手，将会对user输入的文稿进行分段，并进行中心点提取成小标题。给出整篇PPT文稿的标题,分段的理由，每段小标题和对应的内容。",
+          },
+        ],
+        bound: false,
+      },
     },
-  }]
-}
+  ],
+};
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
-const res = await pipeline.execute("尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。");
+const res = await pipeline.execute(
+  "尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。",
+);
 ```
 
 从上述示例可以看出，`chain`中的`prompt`和`llm`中的`messages`是一样的，都是用于填写`chain`的历史对话和prompt。
@@ -193,51 +210,64 @@ const pipelineJson = {
 在pipes中添加多个pipe即可执行多个步骤。默认情况下，每个pipe的输入都是上一个pipe的输出。
 
 ```ts
-import { Pipeline,PipeRegistry } from "llm-ops";
+import { Pipeline, PipeRegistry } from "llm-ops";
 const funcStore = PipeRegistry.init();
 const pipelineJson = {
-  "pipes": [{
-    "id": "polish",
-    "use": "llm",
-    "params": {
-      "messages": [{
-        "role": "system",
-        "content": "你是一个专职PPT文稿处理的助手，将会对user输入的文稿进行润色扩写，内容补充，但是原来的一些信息要点不丢失。"
-      }]
-    }
-  }, {
-    "id": "classify",
-    "use": "chain",
-    "params": {
-      "struct": {
-        "functions": [{
-          "name": "get_categories",
-          "description": "根据PPT文稿获取PPT类别",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "categories": {
-                "type": "string",
-                "enum": ["汇报类型", "演讲类型", "活动类型"],
-                "description": "PPT文稿属于哪一类型的PPT"
-              }
-            },
-            "required": ["categories"]
-          }
-        }],
-        "function_call": {
-          "name": "get_categories"
-        }
+  pipes: [
+    {
+      id: "polish",
+      use: "llm",
+      params: {
+        messages: [
+          {
+            role: "system",
+            content:
+              "你是一个专职PPT文稿处理的助手，将会对user输入的文稿进行润色扩写，内容补充，但是原来的一些信息要点不丢失。",
+          },
+        ],
       },
-      "prompt": [{
-        "role": "system",
-        "content": "你是一个专职PPT文稿处理的助手，会根据user输入的PPT文稿，给出PPT的类别。"
-      }]
-    }
-  }]
-}
+    },
+    {
+      id: "classify",
+      use: "chain",
+      params: {
+        struct: {
+          functions: [
+            {
+              name: "get_categories",
+              description: "根据PPT文稿获取PPT类别",
+              parameters: {
+                type: "object",
+                properties: {
+                  categories: {
+                    type: "string",
+                    enum: ["汇报类型", "演讲类型", "活动类型"],
+                    description: "PPT文稿属于哪一类型的PPT",
+                  },
+                },
+                required: ["categories"],
+              },
+            },
+          ],
+          function_call: {
+            name: "get_categories",
+          },
+        },
+        prompt: [
+          {
+            role: "system",
+            content:
+              "你是一个专职PPT文稿处理的助手，会根据user输入的PPT文稿，给出PPT的类别。",
+          },
+        ],
+      },
+    },
+  ],
+};
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, funcStore);
-const res = await pipeline.execute("尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。");
+const res = await pipeline.execute(
+  "尊敬的各位评审，大家好！今天我有幸站在这里，展示我们的项目：“ChatPPT”，一款赋能新时代、引领PPT制作革命的创新平台。我想强调的是，这不仅是一个创新平台，它更代表着我们对未来技术的展望和追求。",
+);
 ```
 
 ## 注册自定义函数
@@ -248,15 +278,12 @@ const res = await pipeline.execute("尊敬的各位评审，大家好！今天�
 
 ```ts
 const pipeRegistry = PipeRegistry.init();
-pipeRegistry.register(
-  "step1",
-  async (input: any, context: PipelineContext) => {
-    console.log("step1", input, context.stepParams["self_params"]);
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(input + "🚺"), 1000),
-    );
-  },
-);
+pipeRegistry.register("step1", async (input: any, context: PipelineContext) => {
+  console.log("step1", input, context.stepParams["self_params"]);
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(input + "🚺"), 1000),
+  );
+});
 
 pipeRegistry.register("step2", (input: any, context: PipelineContext) => {
   console.log(
@@ -268,13 +295,10 @@ pipeRegistry.register("step2", (input: any, context: PipelineContext) => {
   return context.stepResults["index_input"];
 });
 
-pipeRegistry.register(
-  "step3",
-  async (input: any, context: PipelineContext) => {
-    console.log("step3", input, context.stepParams["self_params"]);
-    return new Promise((resolve) => setTimeout(() => resolve(input), 1000));
-  },
-);
+pipeRegistry.register("step3", async (input: any, context: PipelineContext) => {
+  console.log("step3", input, context.stepParams["self_params"]);
+  return new Promise((resolve) => setTimeout(() => resolve(input), 1000));
+});
 
 const pipelineJson = {
   pipes: [
@@ -293,7 +317,7 @@ const pipelineJson = {
       use: "step3",
     },
   ],
-}
+};
 
 const pipeline = Pipeline.fromJSON(pipelineJson, {}, pipeRegistry);
 
@@ -310,15 +334,12 @@ await pipeline.execute("我是输入").then(console.log);
 
 ```ts
 const pipeRegistry = PipeRegistry.init();
-pipeRegistry.register(
-  "step1",
-  async (input: any, context: PipelineContext) => {
-    console.log("step1", input, context.stepParams["self_params"]);
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(input + "🚺"), 1000),
-    );
-  },
-);
+pipeRegistry.register("step1", async (input: any, context: PipelineContext) => {
+  console.log("step1", input, context.stepParams["self_params"]);
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(input + "🚺"), 1000),
+  );
+});
 
 pipeRegistry.register("step2", (input: any, context: PipelineContext) => {
   console.log(
@@ -330,13 +351,10 @@ pipeRegistry.register("step2", (input: any, context: PipelineContext) => {
   return context.stepResults["index_input"];
 });
 
-pipeRegistry.register(
-  "step3",
-  async (input: any, context: PipelineContext) => {
-    console.log("step3", input, context.stepParams["self_params"]);
-    return new Promise((resolve) => setTimeout(() => resolve(input), 1000));
-  },
-);
+pipeRegistry.register("step3", async (input: any, context: PipelineContext) => {
+  console.log("step3", input, context.stepParams["self_params"]);
+  return new Promise((resolve) => setTimeout(() => resolve(input), 1000));
+});
 
 const pipelineJson = {
   pipes: [
@@ -349,7 +367,7 @@ const pipelineJson = {
       id: "step2_",
       use: "step2",
       inputs: {
-        FetchData: "step1_",//获取pipe中id为step1_的pipe的执行结果，自动替换字符串"step1_"为对应的输出结果。
+        FetchData: "step1_", //获取pipe中id为step1_的pipe的执行结果，自动替换字符串"step1_"为对应的输出结果。
       },
       params: { test: "test22!!{{FetchData}}" }, //插槽,必须先在inputs中获取之前pipe的输出结果，然后在params中插槽引用inputs的对应字段！
     },

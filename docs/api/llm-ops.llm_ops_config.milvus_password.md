@@ -4,6 +4,10 @@
 
 ## LLM\_OPS\_CONFIG.MILVUS\_PASSWORD property
 
+用于连接到Milvus服务的密码。
+
+从环境变量中获取此密码。
+
 **Signature:**
 
 ```typescript

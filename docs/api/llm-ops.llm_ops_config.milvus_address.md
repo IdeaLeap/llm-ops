@@ -4,6 +4,10 @@
 
 ## LLM\_OPS\_CONFIG.MILVUS\_ADDRESS property
 
+Milvus的服务地址。
+
+从环境变量中获取此地址。
+
 **Signature:**
 
 ```typescript
