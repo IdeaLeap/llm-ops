@@ -6,8 +6,8 @@ export class LLM_OPS_CONFIG {
   /**
    * OPEN_PATH 对象定义了与Helicone API进行通信时的基础设置。
    *
-   * @property {string} baseURL - Helicone API的基础URL。
-   * @property {Object} defaultHeaders - 用于与Helicone API通信时的默认请求头。
+   * @typeParam {string} baseURL - Helicone API的基础URL。
+   * @typeParam {Object} defaultHeaders - 用于与Helicone API通信时的默认请求头。
    */
   static OPEN_PATH = {
     baseURL: "https://oai.hconeai.com/v1",

@@ -6,8 +6,6 @@
 
 `Chain` 构造函数的参数数据结构。
 
- {<!-- -->LLM<!-- -->} \[llm\] - 一个可选的LLM实例。  {<!-- -->createLLMSchema<!-- -->} \[llmSchema\] - 一个可选的LLM模式对象。  {<!-- -->string<!-- -->} \[chainName\] - 一个可选的链名称。
-
 **Signature:**
 
 ```typescript

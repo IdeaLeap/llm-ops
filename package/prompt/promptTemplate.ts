@@ -12,10 +12,10 @@ import {
 /**
  * 主要的模板数据结构。
  *
- * @property {string} name - 提示模板的名称。可能的值为："polishPromptTemplate"、"agentPromptTemplate" 或其他字符串。
- * @property {MultiPromptSchema[] | any[]} [prompt] - 一个可选的提示模板数组。
- * @property {Record<string, any>} [schema] - 一个可选的记录对象，用于存储额外的数据模板。
- * @property {string} [COLLECTION_NAME] - 一个可选的集合名称，用于指定向量数据库的集合。
+ * @typeParam {string} name - 提示模板的名称。可能的值为："polishPromptTemplate"、"agentPromptTemplate" 或其他字符串。
+ * @typeParam {MultiPromptSchema[] | any[]} [prompt] - 一个可选的提示模板数组。
+ * @typeParam {Record<string, any>} [schema] - 一个可选的记录对象，用于存储额外的数据模板。
+ * @typeParam {string} [COLLECTION_NAME] - 一个可选的集合名称，用于指定向量数据库的集合。
  */
 export interface PromptsSchema
   extends Omit<milvusVectorDBSchema, "COLLECTION_NAME" | "llm"> {
@@ -27,7 +27,7 @@ export interface PromptsSchema
 /**
  * 多重提示模板数据结构。
  *
- * @property {string} [COLLECTION_NAME] - 一个可选的集合名称，用于指定向量数据库的集合。
+ * @typeParam {string} [COLLECTION_NAME] - 一个可选的集合名称，用于指定向量数据库的集合。
  */
 export interface MultiPromptSchema
   extends createMessageSchema,

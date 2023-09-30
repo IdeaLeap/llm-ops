@@ -6,8 +6,6 @@
 
 `Chain`<!-- -->类的`call`<!-- -->方法的参数数据结构。
 
- {<!-- -->messageType \| string<!-- -->} request - 请求消息或字符串。  {<!-- -->messageType\[\]<!-- -->} \[prompt\] - 一个可选的消息提示数组。  {<!-- -->structSchema<!-- -->} \[struct\] - 一个可选的结构模式。  {<!-- -->boolean<!-- -->} \[verbose\] - 一个可选的详细模式标志。
-
 **Signature:**
 
 ```typescript
