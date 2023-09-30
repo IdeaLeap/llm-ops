@@ -22,5 +22,4 @@ call(params: chainCallSchema): Promise<import("llm-ops/utils").Result<any>>;
 
 Promise&lt;import("llm-ops/utils").[Result](./llm-ops.result.md)<!-- -->&lt;any&gt;&gt;
 
-{<!-- -->Promise<any>} 返回异步处理的链调用结果。
-
+Promise&lt;any&gt; 返回异步处理的链调用结果。

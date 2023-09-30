@@ -6,8 +6,6 @@
 
 多重提示模板数据结构。
 
- {<!-- -->string<!-- -->} \[COLLECTION\_NAME\] - 一个可选的集合名称，用于指定向量数据库的集合。
-
 **Signature:**
 
 ```typescript

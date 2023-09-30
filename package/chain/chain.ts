@@ -10,9 +10,9 @@ import { TypeScriptChain } from "llm-ops/chain/typechat";
 /**
  * `Chain` 构造函数的参数数据结构。
  *
- * @property {LLM} [llm] - 一个可选的LLM实例。
- * @property {createLLMSchema} [llmSchema] - 一个可选的LLM模式对象。
- * @property {string} [chainName] - 一个可选的链名称。
+ * @typeParam {LLM} [llm] - 一个可选的LLM实例。
+ * @typeParam {createLLMSchema} [llmSchema] - 一个可选的LLM模式对象。
+ * @typeParam {string} [chainName] - 一个可选的链名称。
  */
 export interface chainSchema {
   llm?: LLM;
@@ -22,10 +22,10 @@ export interface chainSchema {
 /**
  * `call` 方法的`struct`参数的数据结构。
  *
- * @property {functionsType} [functions] - 可选的函数类型。
- * @property {function_callType} [function_call] - 可选的函数调用类型。
- * @property {string} [schema] - 一个可选的模式字符串。
- * @property {string} [typeName] - 一个可选的类型名称。
+ * @typeParam {functionsType} [functions] - 可选的函数类型。
+ * @typeParam {function_callType} [function_call] - 可选的函数调用类型。
+ * @typeParam {string} [schema] - 一个可选的模式字符串。
+ * @typeParam {string} [typeName] - 一个可选的类型名称。
  */
 export interface structSchema {
   functions?: functionsType;
@@ -36,10 +36,10 @@ export interface structSchema {
 /**
  * `Chain`类的`call`方法的参数数据结构。
  *
- * @property {messageType | string} request - 请求消息或字符串。
- * @property {messageType[]} [prompt] - 一个可选的消息提示数组。
- * @property {structSchema} [struct] - 一个可选的结构模式。
- * @property {boolean} [verbose] - 一个可选的详细模式标志。
+ * @typeParam {messageType | string} request - 请求消息或字符串。
+ * @typeParam {messageType[]} [prompt] - 一个可选的消息提示数组。
+ * @typeParam {structSchema} [struct] - 一个可选的结构模式。
+ * @typeParam {boolean} [verbose] - 一个可选的详细模式标志。
  */
 export interface chainCallSchema {
   request: messageType | string;
@@ -87,7 +87,7 @@ export class Chain {
    *
    * @param {chainCallSchema} params - 调用方法的参数对象。
    *
-   * @returns {Promise<any>} 返回异步处理的链调用结果。
+   * @returns 返回异步处理的链调用结果。
    */
   async call(params: chainCallSchema) {
     const { request, prompt, struct, verbose } = params;

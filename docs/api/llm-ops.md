@@ -41,8 +41,8 @@
 |  --- | --- |
 |  [AgentPromptTemplateSchema](./llm-ops.agentprompttemplateschema.md) |  |
 |  [BaseAgentCallSchema](./llm-ops.baseagentcallschema.md) |  |
-|  [chainCallSchema](./llm-ops.chaincallschema.md) | <p><code>Chain</code>类的<code>call</code>方法的参数数据结构。</p><p> {<!-- -->messageType \| string<!-- -->} request - 请求消息或字符串。  {<!-- -->messageType\[\]<!-- -->} \[prompt\] - 一个可选的消息提示数组。  {<!-- -->structSchema<!-- -->} \[struct\] - 一个可选的结构模式。  {<!-- -->boolean<!-- -->} \[verbose\] - 一个可选的详细模式标志。</p> |
-|  [chainSchema](./llm-ops.chainschema.md) | <p><code>Chain</code> 构造函数的参数数据结构。</p><p> {<!-- -->LLM<!-- -->} \[llm\] - 一个可选的LLM实例。  {<!-- -->createLLMSchema<!-- -->} \[llmSchema\] - 一个可选的LLM模式对象。  {<!-- -->string<!-- -->} \[chainName\] - 一个可选的链名称。</p> |
+|  [chainCallSchema](./llm-ops.chaincallschema.md) | <code>Chain</code>类的<code>call</code>方法的参数数据结构。 |
+|  [chainSchema](./llm-ops.chainschema.md) | <code>Chain</code> 构造函数的参数数据结构。 |
 |  [ChatSchema](./llm-ops.chatschema.md) | 聊天参数接口 |
 |  [createLLMSchema](./llm-ops.createllmschema.md) | 创建LLM的参数接口 |
 |  [createMessageSchema](./llm-ops.createmessageschema.md) |  |
@@ -59,11 +59,11 @@
 |  [milvusVectorDBSchema](./llm-ops.milvusvectordbschema.md) |  |
 |  [milvusVectorDBSearchSchema](./llm-ops.milvusvectordbsearchschema.md) |  |
 |  [milvusVectorDBUploadSchema](./llm-ops.milvusvectordbuploadschema.md) |  |
-|  [MultiPromptSchema](./llm-ops.multipromptschema.md) | <p>多重提示模板数据结构。</p><p> {<!-- -->string<!-- -->} \[COLLECTION\_NAME\] - 一个可选的集合名称，用于指定向量数据库的集合。</p> |
+|  [MultiPromptSchema](./llm-ops.multipromptschema.md) | 多重提示模板数据结构。 |
 |  [polishPromptTemplateSchema](./llm-ops.polishprompttemplateschema.md) |  |
-|  [PromptsSchema](./llm-ops.promptsschema.md) | <p>主要的模板数据结构。</p><p> {<!-- -->string<!-- -->} name - 提示模板的名称。可能的值为："polishPromptTemplate"、"agentPromptTemplate" 或其他字符串。  {<!-- -->MultiPromptSchema\[\] \| any\[\]<!-- -->} \[prompt\] - 一个可选的提示模板数组。  {<!-- -->Record<!-- -->&lt;<!-- -->string, any<!-- -->&gt;<!-- -->} \[schema\] - 一个可选的记录对象，用于存储额外的数据模板。  {<!-- -->string<!-- -->} \[COLLECTION\_NAME\] - 一个可选的集合名称，用于指定向量数据库的集合。</p> |
+|  [PromptsSchema](./llm-ops.promptsschema.md) | 主要的模板数据结构。 |
 |  [ReflectionPromptTemplateSchema](./llm-ops.reflectionprompttemplateschema.md) |  |
-|  [structSchema](./llm-ops.structschema.md) | <p><code>call</code> 方法的<code>struct</code>参数的数据结构。</p><p> {<!-- -->functionsType<!-- -->} \[functions\] - 可选的函数类型。  {<!-- -->function\_callType<!-- -->} \[function\_call\] - 可选的函数调用类型。  {<!-- -->string<!-- -->} \[schema\] - 一个可选的模式字符串。  {<!-- -->string<!-- -->} \[typeName\] - 一个可选的类型名称。</p> |
+|  [structSchema](./llm-ops.structschema.md) | <code>call</code> 方法的<code>struct</code>参数的数据结构。 |
 |  [Success](./llm-ops.success.md) | An object representing a successful operation with a result of type <code>T</code>. |
 |  [TeacherEvaluateSchema](./llm-ops.teacherevaluateschema.md) |  |
 |  [TypeChatJsonValidator](./llm-ops.typechatjsonvalidator.md) | Represents an object that can validate JSON strings according to a given TypeScript schema. |
