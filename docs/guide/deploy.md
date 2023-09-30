@@ -71,3 +71,5 @@ export default async function (ctx: FunctionContext) {
 ```
 
 借助`laf`的能力，我们能够迅速将其部署到云函数中，实现`llm-ops`的在线调用。
+
+完整的laf函数代码可见[函数市场](https://laf.run/market/templates/6517c102d2f60c23eb96807d)
