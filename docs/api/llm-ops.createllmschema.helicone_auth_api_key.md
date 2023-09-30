@@ -4,6 +4,8 @@
 
 ## createLLMSchema.HELICONE\_AUTH\_API\_KEY property
 
+Helicone授权API密钥
+
 **Signature:**
 
 ```typescript

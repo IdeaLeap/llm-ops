@@ -4,6 +4,8 @@
 
 ## LLM.embedding() method
 
+获取输入内容的嵌入向量。
+
 **Signature:**
 
 ```typescript
@@ -14,9 +16,11 @@ embedding(input: string | string[] | number[] | number[][]): Promise<resEmbeddin
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  input | string \| string\[\] \| number\[\] \| number\[\]\[\] |  |
+|  input | string \| string\[\] \| number\[\] \| number\[\]\[\] | 需要嵌入的输入内容。 |
 
 **Returns:**
 
 Promise&lt;[resEmbeddingType](./llm-ops.resembeddingtype.md)<!-- -->&gt;
+
+返回嵌入结果。
 

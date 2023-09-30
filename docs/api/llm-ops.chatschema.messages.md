@@ -4,6 +4,8 @@
 
 ## ChatSchema.messages property
 
+消息数组
+
 **Signature:**
 
 ```typescript

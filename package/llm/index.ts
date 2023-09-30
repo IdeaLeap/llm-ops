@@ -1,9 +1,12 @@
 import OpenAI from "openai";
 import { LLM_OPS_CONFIG } from "llm-ops/utils/index";
-// only for openai-node ^4.0.0
+/** OpenAI聊天请求消息的类型数组 */
 export type messagesType = OpenAI.Chat.CreateChatCompletionRequestMessage[];
+/** 单一的OpenAI聊天请求消息类型 */
 export type messageType = OpenAI.Chat.CreateChatCompletionRequestMessage;
+/** OpenAI聊天完成的消息数组类型 */
 export type resMessagesType = OpenAI.Chat.Completions.ChatCompletion.Choice[];
+/** FunctionCall的接口 */
 export interface FunctionCallOption {
   /**
    * The name of the function to call.
@@ -35,19 +38,30 @@ export interface FunctionInterface {
    */
   description?: string;
 }
+/** FunctionInterface类型数组 */
 export type functionsType = FunctionInterface[];
+/** function_call类型 */
 export type function_callType = "none" | "auto" | FunctionCallOption;
+/** OpenAI聊天完成消息中的FunctionCall类型 */
 export type messageFunctionCallType =
   OpenAI.Chat.ChatCompletionMessage.FunctionCall;
+/** OpenAI聊天完成类型 */
 export type chatCompletionType = OpenAI.Chat.Completions.ChatCompletion;
+/** LLM类型定义为OpenAI类型 */
 export type llmType = OpenAI;
+/** OpenAI聊天参数类型 */
 export type chatParamsType = OpenAI.Chat.CompletionCreateParams;
+/** OpenAI内容审查响应类型 */
 export type resModerationType = OpenAI.ModerationCreateResponse;
+/** OpenAI创建嵌入响应类型 */
 export type resEmbeddingType = OpenAI.CreateEmbeddingResponse;
-
+/** 创建LLM的参数接口 */
 export interface createLLMSchema {
+  /** Helicone授权API密钥 */
   HELICONE_AUTH_API_KEY?: string;
+  /** OpenAI API密钥 */
   OPENAI_API_KEY?: string;
+  /** 模型名称选项 */
   modelName?:
     | (string & object)
     | "gpt-4"
@@ -69,12 +83,16 @@ export interface createLLMSchema {
   history?: messagesType;
   tokens?: number;
 }
+/** 聊天参数接口 */
 export interface ChatSchema {
   function_call?: function_callType;
+  /** 消息数组 */
   messages: messagesType;
   functions?: functionsType;
 }
-
+/**
+ * LLM类代表一个与LLM API进行交互的客户端。
+ */
 export class LLM {
   llm: llmType;
   tokens: number;
@@ -106,6 +124,10 @@ export class LLM {
   };
   user: string;
 
+  /**
+   * 构造一个LLM客户端实例。
+   * @param params - 包含创建LLM客户端所需的参数。
+   */
   constructor(params: createLLMSchema) {
     const {
       HELICONE_AUTH_API_KEY = undefined,
@@ -129,7 +151,10 @@ export class LLM {
     this.cache = cache || true;
     this.user = user || "LLM Ops";
   }
-
+  /**
+   * 导出历史消息。
+   * @returns 返回聊天的历史消息。
+   */
   exportHistory() {
     return this.messages;
   }
@@ -168,12 +193,17 @@ export class LLM {
   }
 
   /**
-   * Throws an exception for a missing environment variable.
+   * 抛出缺少环境变量的异常。
+   * @param name - 缺少的环境变量的名称。
    */
   private missingEnvironmentVariable(name: string): never {
     throw new Error(`"Missing environment variable: ${name}`);
   }
-
+  /**
+   * 使用LLM进行聊天。
+   * @param params - 包含聊天所需的参数。
+   * @returns 返回聊天的完成信息。
+   */
   async chat(params: ChatSchema): Promise<chatCompletionType> {
     const { messages, function_call, functions } = params;
     try {
@@ -234,7 +264,10 @@ export class LLM {
       throw err;
     }
   }
-
+  /**
+   * 重复最后一次的聊天。
+   * @returns 返回重复的聊天完成信息。
+   */
   async recall(): Promise<chatCompletionType> {
     try {
       if (this.messages.length == 0) {
@@ -295,14 +328,22 @@ export class LLM {
       throw err;
     }
   }
-
+  /**
+   * 对输入内容进行审查。
+   * @param input - 需要审查的输入内容。
+   * @returns 返回审查结果。
+   */
   async moderate(input: string | string[]): Promise<resModerationType> {
     return await this.llm.moderations.create({
       input: input,
       model: "text-moderation-latest",
     });
   }
-
+  /**
+   * 获取输入内容的嵌入向量。
+   * @param input - 需要嵌入的输入内容。
+   * @returns 返回嵌入结果。
+   */
   async embedding(
     input: string | string[] | number[] | number[][],
   ): Promise<resEmbeddingType> {
@@ -312,10 +353,17 @@ export class LLM {
       user: this.user,
     });
   }
-
+  /**
+   * 日志输出。
+   * @param args - 要输出的内容。
+   */
   static log(...args: string[]) {
     console.log(args);
   }
+  /**
+   * 优雅地打印请求消息。
+   * @param messages - 需要打印的消息。
+   */
   private prettyPrintReqMessage(messages: messagesType) {
     for (const message of messages) {
       if (message.role === "system") {
@@ -350,6 +398,10 @@ export class LLM {
       }
     }
   }
+  /**
+   * 优雅地打印响应消息。
+   * @param messages - 需要打印的消息。
+   */
   private prettyPrintResMessage(messages: resMessagesType) {
     for (const message_ of messages) {
       const message = message_.message;
@@ -381,7 +433,11 @@ export class LLM {
       }
     }
   }
-
+  /**
+   * 打印消息。
+   * @param resMessages - 响应消息。
+   * @param reqMessages - 请求消息。
+   */
   printMessage(resMessages?: resMessagesType, reqMessages?: messagesType) {
     !!reqMessages && this.prettyPrintReqMessage(reqMessages);
     !!resMessages && this.prettyPrintResMessage(resMessages);

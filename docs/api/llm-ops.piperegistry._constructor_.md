@@ -4,7 +4,7 @@
 
 ## PipeRegistry.(constructor)
 
-Constructs a new instance of the `PipeRegistry` class
+PipeRegistry的构造函数
 
 **Signature:**
 

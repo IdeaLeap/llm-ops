@@ -4,6 +4,8 @@
 
 ## LLM.recall() method
 
+重复最后一次的聊天。
+
 **Signature:**
 
 ```typescript
@@ -12,4 +14,6 @@ recall(): Promise<chatCompletionType>;
 **Returns:**
 
 Promise&lt;[chatCompletionType](./llm-ops.chatcompletiontype.md)<!-- -->&gt;
+
+返回重复的聊天完成信息。
 

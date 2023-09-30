@@ -4,6 +4,10 @@
 
 ## PromptsSchema interface
 
+主要的模板数据结构。
+
+ {<!-- -->string<!-- -->} name - 提示模板的名称。可能的值为："polishPromptTemplate"、"agentPromptTemplate" 或其他字符串。  {<!-- -->MultiPromptSchema\[\] \| any\[\]<!-- -->} \[prompt\] - 一个可选的提示模板数组。  {<!-- -->Record<!-- -->&lt;<!-- -->string, any<!-- -->&gt;<!-- -->} \[schema\] - 一个可选的记录对象，用于存储额外的数据模板。  {<!-- -->string<!-- -->} \[COLLECTION\_NAME\] - 一个可选的集合名称，用于指定向量数据库的集合。
+
 **Signature:**
 
 ```typescript

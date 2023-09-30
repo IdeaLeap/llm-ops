@@ -4,6 +4,10 @@
 
 ## structSchema interface
 
+`call` 方法的`struct`<!-- -->参数的数据结构。
+
+ {<!-- -->functionsType<!-- -->} \[functions\] - 可选的函数类型。  {<!-- -->function\_callType<!-- -->} \[function\_call\] - 可选的函数调用类型。  {<!-- -->string<!-- -->} \[schema\] - 一个可选的模式字符串。  {<!-- -->string<!-- -->} \[typeName\] - 一个可选的类型名称。
+
 **Signature:**
 
 ```typescript

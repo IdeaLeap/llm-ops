@@ -4,6 +4,8 @@
 
 ## chatParamsType type
 
+OpenAI聊天参数类型
+
 **Signature:**
 
 ```typescript

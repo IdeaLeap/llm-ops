@@ -4,6 +4,8 @@
 
 ## createLLMSchema interface
 
+创建LLM的参数接口
+
 **Signature:**
 
 ```typescript
@@ -16,10 +18,10 @@ export interface createLLMSchema
 |  --- | --- | --- | --- |
 |  [cache?](./llm-ops.createllmschema.cache.md) |  | boolean | _(Optional)_ |
 |  [choice\_num?](./llm-ops.createllmschema.choice_num.md) |  | number \| 1 | _(Optional)_ |
-|  [HELICONE\_AUTH\_API\_KEY?](./llm-ops.createllmschema.helicone_auth_api_key.md) |  | string | _(Optional)_ |
+|  [HELICONE\_AUTH\_API\_KEY?](./llm-ops.createllmschema.helicone_auth_api_key.md) |  | string | _(Optional)_ Helicone授权API密钥 |
 |  [history?](./llm-ops.createllmschema.history.md) |  | [messagesType](./llm-ops.messagestype.md) | _(Optional)_ |
-|  [modelName?](./llm-ops.createllmschema.modelname.md) |  | (string &amp; object) \| "gpt-4" \| "gpt-4-0314" \| "gpt-4-0613" \| "gpt-4-32k" \| "gpt-4-32k-0314" \| "gpt-4-32k-0613" \| "gpt-3.5-turbo" \| "gpt-3.5-turbo-16k" \| "gpt-3.5-turbo-0301" \| "gpt-3.5-turbo-0613" \| "gpt-3.5-turbo-16k-0613" | _(Optional)_ |
-|  [OPENAI\_API\_KEY?](./llm-ops.createllmschema.openai_api_key.md) |  | string | _(Optional)_ |
+|  [modelName?](./llm-ops.createllmschema.modelname.md) |  | (string &amp; object) \| "gpt-4" \| "gpt-4-0314" \| "gpt-4-0613" \| "gpt-4-32k" \| "gpt-4-32k-0314" \| "gpt-4-32k-0613" \| "gpt-3.5-turbo" \| "gpt-3.5-turbo-16k" \| "gpt-3.5-turbo-0301" \| "gpt-3.5-turbo-0613" \| "gpt-3.5-turbo-16k-0613" | _(Optional)_ 模型名称选项 |
+|  [OPENAI\_API\_KEY?](./llm-ops.createllmschema.openai_api_key.md) |  | string | _(Optional)_ OpenAI API密钥 |
 |  [stop?](./llm-ops.createllmschema.stop.md) |  | string \| null \| string\[\] | _(Optional)_ |
 |  [temperature?](./llm-ops.createllmschema.temperature.md) |  | number | _(Optional)_ |
 |  [tokens?](./llm-ops.createllmschema.tokens.md) |  | number | _(Optional)_ |

@@ -4,6 +4,8 @@
 
 ## LLM class
 
+LLM类代表一个与LLM API进行交互的客户端。
+
 **Signature:**
 
 ```typescript
@@ -14,7 +16,7 @@ export declare class LLM
 
 |  Constructor | Modifiers | Description |
 |  --- | --- | --- |
-|  [(constructor)(params)](./llm-ops.llm._constructor_.md) |  | Constructs a new instance of the <code>LLM</code> class |
+|  [(constructor)(params)](./llm-ops.llm._constructor_.md) |  | 构造一个LLM客户端实例。 |
 
 ## Properties
 
@@ -37,11 +39,11 @@ export declare class LLM
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [chat(params)](./llm-ops.llm.chat.md) |  |  |
-|  [embedding(input)](./llm-ops.llm.embedding.md) |  |  |
-|  [exportHistory()](./llm-ops.llm.exporthistory.md) |  |  |
-|  [log(args)](./llm-ops.llm.log.md) | <code>static</code> |  |
-|  [moderate(input)](./llm-ops.llm.moderate.md) |  |  |
-|  [printMessage(resMessages, reqMessages)](./llm-ops.llm.printmessage.md) |  |  |
-|  [recall()](./llm-ops.llm.recall.md) |  |  |
+|  [chat(params)](./llm-ops.llm.chat.md) |  | 使用LLM进行聊天。 |
+|  [embedding(input)](./llm-ops.llm.embedding.md) |  | 获取输入内容的嵌入向量。 |
+|  [exportHistory()](./llm-ops.llm.exporthistory.md) |  | 导出历史消息。 |
+|  [log(args)](./llm-ops.llm.log.md) | <code>static</code> | 日志输出。 |
+|  [moderate(input)](./llm-ops.llm.moderate.md) |  | 对输入内容进行审查。 |
+|  [printMessage(resMessages, reqMessages)](./llm-ops.llm.printmessage.md) |  | 打印消息。 |
+|  [recall()](./llm-ops.llm.recall.md) |  | 重复最后一次的聊天。 |
 

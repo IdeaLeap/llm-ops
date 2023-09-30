@@ -4,6 +4,8 @@
 
 ## LLM.log() method
 
+日志输出。
+
 **Signature:**
 
 ```typescript
@@ -14,7 +16,7 @@ static log(...args: string[]): void;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  args | string\[\] |  |
+|  args | string\[\] | 要输出的内容。 |
 
 **Returns:**
 

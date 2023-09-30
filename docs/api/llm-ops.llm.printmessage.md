@@ -4,6 +4,8 @@
 
 ## LLM.printMessage() method
 
+打印消息。
+
 **Signature:**
 
 ```typescript
@@ -14,8 +16,8 @@ printMessage(resMessages?: resMessagesType, reqMessages?: messagesType): void;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  resMessages | [resMessagesType](./llm-ops.resmessagestype.md) | _(Optional)_ |
-|  reqMessages | [messagesType](./llm-ops.messagestype.md) | _(Optional)_ |
+|  resMessages | [resMessagesType](./llm-ops.resmessagestype.md) | _(Optional)_ 响应消息。 |
+|  reqMessages | [messagesType](./llm-ops.messagestype.md) | _(Optional)_ 请求消息。 |
 
 **Returns:**
 

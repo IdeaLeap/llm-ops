@@ -4,6 +4,8 @@
 
 ## functionsType type
 
+FunctionInterface类型数组
+
 **Signature:**
 
 ```typescript

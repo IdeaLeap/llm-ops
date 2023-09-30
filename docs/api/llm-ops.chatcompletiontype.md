@@ -4,6 +4,8 @@
 
 ## chatCompletionType type
 
+OpenAI聊天完成类型
+
 **Signature:**
 
 ```typescript

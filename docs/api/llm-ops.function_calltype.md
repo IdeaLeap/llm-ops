@@ -4,6 +4,8 @@
 
 ## function\_callType type
 
+function\_call类型
+
 **Signature:**
 
 ```typescript

@@ -10,12 +10,12 @@
 |  --- | --- |
 |  [AgentPromptTemplate](./llm-ops.agentprompttemplate.md) |  |
 |  [BaseAgent](./llm-ops.baseagent.md) |  |
-|  [Chain](./llm-ops.chain.md) |  |
+|  [Chain](./llm-ops.chain.md) | <code>Chain</code> 类用于<code>llm</code>类的格式化输出。 |
 |  [FunctionChain](./llm-ops.functionchain.md) |  |
-|  [LLM\_OPS\_CONFIG](./llm-ops.llm_ops_config.md) |  |
-|  [LLM](./llm-ops.llm.md) |  |
+|  [LLM\_OPS\_CONFIG](./llm-ops.llm_ops_config.md) | <code>LLM_OPS_CONFIG</code> 是用于配置操作的类，它包含了与OpenAI、Helicone和Milvus相关的配置信息。 |
+|  [LLM](./llm-ops.llm.md) | LLM类代表一个与LLM API进行交互的客户端。 |
 |  [milvusVectorDB](./llm-ops.milvusvectordb.md) |  |
-|  [PipeRegistry](./llm-ops.piperegistry.md) |  |
+|  [PipeRegistry](./llm-ops.piperegistry.md) | 扩展原始的PipeRegistry类 |
 |  [PolishPromptTemplate](./llm-ops.polishprompttemplate.md) |  |
 |  [TypeScriptChain](./llm-ops.typescriptchain.md) | Creates an object that can translate natural language requests into JSON objects of the given type. The specified type argument <code>T</code> must be the same type as <code>typeName</code> in the given <code>schema</code>. The function creates a <code>TypeChatJsonValidator&lt;T&gt;</code> and stores it in the <code>validator</code> property of the returned instance. |
 
@@ -41,14 +41,14 @@
 |  --- | --- |
 |  [AgentPromptTemplateSchema](./llm-ops.agentprompttemplateschema.md) |  |
 |  [BaseAgentCallSchema](./llm-ops.baseagentcallschema.md) |  |
-|  [chainCallSchema](./llm-ops.chaincallschema.md) |  |
-|  [chainSchema](./llm-ops.chainschema.md) |  |
-|  [ChatSchema](./llm-ops.chatschema.md) |  |
-|  [createLLMSchema](./llm-ops.createllmschema.md) |  |
+|  [chainCallSchema](./llm-ops.chaincallschema.md) | <p><code>Chain</code>类的<code>call</code>方法的参数数据结构。</p><p> {<!-- -->messageType \| string<!-- -->} request - 请求消息或字符串。  {<!-- -->messageType\[\]<!-- -->} \[prompt\] - 一个可选的消息提示数组。  {<!-- -->structSchema<!-- -->} \[struct\] - 一个可选的结构模式。  {<!-- -->boolean<!-- -->} \[verbose\] - 一个可选的详细模式标志。</p> |
+|  [chainSchema](./llm-ops.chainschema.md) | <p><code>Chain</code> 构造函数的参数数据结构。</p><p> {<!-- -->LLM<!-- -->} \[llm\] - 一个可选的LLM实例。  {<!-- -->createLLMSchema<!-- -->} \[llmSchema\] - 一个可选的LLM模式对象。  {<!-- -->string<!-- -->} \[chainName\] - 一个可选的链名称。</p> |
+|  [ChatSchema](./llm-ops.chatschema.md) | 聊天参数接口 |
+|  [createLLMSchema](./llm-ops.createllmschema.md) | 创建LLM的参数接口 |
 |  [createMessageSchema](./llm-ops.createmessageschema.md) |  |
 |  [Error\_2](./llm-ops.error_2.md) | An object representing an operation that failed for the reason given in <code>message</code>. |
 |  [EvaluateItemSchema](./llm-ops.evaluateitemschema.md) |  |
-|  [FunctionCallOption](./llm-ops.functioncalloption.md) |  |
+|  [FunctionCallOption](./llm-ops.functioncalloption.md) | FunctionCall的接口 |
 |  [FunctionCallSchema](./llm-ops.functioncallschema.md) |  |
 |  [FunctionInterface](./llm-ops.functioninterface.md) |  |
 |  [MemoryPromptTemplateSchema](./llm-ops.memoryprompttemplateschema.md) |  |
@@ -59,11 +59,11 @@
 |  [milvusVectorDBSchema](./llm-ops.milvusvectordbschema.md) |  |
 |  [milvusVectorDBSearchSchema](./llm-ops.milvusvectordbsearchschema.md) |  |
 |  [milvusVectorDBUploadSchema](./llm-ops.milvusvectordbuploadschema.md) |  |
-|  [MultiPromptSchema](./llm-ops.multipromptschema.md) |  |
+|  [MultiPromptSchema](./llm-ops.multipromptschema.md) | <p>多重提示模板数据结构。</p><p> {<!-- -->string<!-- -->} \[COLLECTION\_NAME\] - 一个可选的集合名称，用于指定向量数据库的集合。</p> |
 |  [polishPromptTemplateSchema](./llm-ops.polishprompttemplateschema.md) |  |
-|  [PromptsSchema](./llm-ops.promptsschema.md) |  |
+|  [PromptsSchema](./llm-ops.promptsschema.md) | <p>主要的模板数据结构。</p><p> {<!-- -->string<!-- -->} name - 提示模板的名称。可能的值为："polishPromptTemplate"、"agentPromptTemplate" 或其他字符串。  {<!-- -->MultiPromptSchema\[\] \| any\[\]<!-- -->} \[prompt\] - 一个可选的提示模板数组。  {<!-- -->Record<!-- -->&lt;<!-- -->string, any<!-- -->&gt;<!-- -->} \[schema\] - 一个可选的记录对象，用于存储额外的数据模板。  {<!-- -->string<!-- -->} \[COLLECTION\_NAME\] - 一个可选的集合名称，用于指定向量数据库的集合。</p> |
 |  [ReflectionPromptTemplateSchema](./llm-ops.reflectionprompttemplateschema.md) |  |
-|  [structSchema](./llm-ops.structschema.md) |  |
+|  [structSchema](./llm-ops.structschema.md) | <p><code>call</code> 方法的<code>struct</code>参数的数据结构。</p><p> {<!-- -->functionsType<!-- -->} \[functions\] - 可选的函数类型。  {<!-- -->function\_callType<!-- -->} \[function\_call\] - 可选的函数调用类型。  {<!-- -->string<!-- -->} \[schema\] - 一个可选的模式字符串。  {<!-- -->string<!-- -->} \[typeName\] - 一个可选的类型名称。</p> |
 |  [Success](./llm-ops.success.md) | An object representing a successful operation with a result of type <code>T</code>. |
 |  [TeacherEvaluateSchema](./llm-ops.teacherevaluateschema.md) |  |
 |  [TypeChatJsonValidator](./llm-ops.typechatjsonvalidator.md) | Represents an object that can validate JSON strings according to a given TypeScript schema. |
@@ -73,28 +73,28 @@
 
 |  Variable | Description |
 |  --- | --- |
-|  [formatPromptTemplate](./llm-ops.formatprompttemplate.md) |  |
+|  [formatPromptTemplate](./llm-ops.formatprompttemplate.md) | <p>格式化提示模板函数。</p><p>此函数的主要目的是为了从提供的<code>prompts</code>对象中提取出一个格式化的提示模板。 这可以是一个单一的模板，也可以是一个模板数组。</p> |
 
 ## Type Aliases
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [chatCompletionType](./llm-ops.chatcompletiontype.md) |  |
-|  [chatParamsType](./llm-ops.chatparamstype.md) |  |
+|  [chatCompletionType](./llm-ops.chatcompletiontype.md) | OpenAI聊天完成类型 |
+|  [chatParamsType](./llm-ops.chatparamstype.md) | OpenAI聊天参数类型 |
 |  [communicationStyleType](./llm-ops.communicationstyletype.md) |  |
-|  [function\_callType](./llm-ops.function_calltype.md) |  |
-|  [functionsType](./llm-ops.functionstype.md) |  |
+|  [function\_callType](./llm-ops.function_calltype.md) | function\_call类型 |
+|  [functionsType](./llm-ops.functionstype.md) | FunctionInterface类型数组 |
 |  [InputValues](./llm-ops.inputvalues.md) |  |
 |  [languageType](./llm-ops.languagetype.md) |  |
 |  [levelType](./llm-ops.leveltype.md) |  |
-|  [llmType](./llm-ops.llmtype.md) |  |
-|  [messageFunctionCallType](./llm-ops.messagefunctioncalltype.md) |  |
-|  [messagesType](./llm-ops.messagestype.md) |  |
-|  [messageType](./llm-ops.messagetype.md) |  |
+|  [llmType](./llm-ops.llmtype.md) | LLM类型定义为OpenAI类型 |
+|  [messageFunctionCallType](./llm-ops.messagefunctioncalltype.md) | OpenAI聊天完成消息中的FunctionCall类型 |
+|  [messagesType](./llm-ops.messagestype.md) | OpenAI聊天请求消息的类型数组 |
+|  [messageType](./llm-ops.messagetype.md) | 单一的OpenAI聊天请求消息类型 |
 |  [reasoningType](./llm-ops.reasoningtype.md) |  |
-|  [resEmbeddingType](./llm-ops.resembeddingtype.md) |  |
-|  [resMessagesType](./llm-ops.resmessagestype.md) |  |
-|  [resModerationType](./llm-ops.resmoderationtype.md) |  |
+|  [resEmbeddingType](./llm-ops.resembeddingtype.md) | OpenAI创建嵌入响应类型 |
+|  [resMessagesType](./llm-ops.resmessagestype.md) | OpenAI聊天完成的消息数组类型 |
+|  [resModerationType](./llm-ops.resmoderationtype.md) | OpenAI内容审查响应类型 |
 |  [Result](./llm-ops.result.md) | An object representing a successful or failed operation of type <code>T</code>. |
 |  [toneStyleType](./llm-ops.tonestyletype.md) |  |
 

@@ -4,6 +4,10 @@
 
 ## LLM\_OPS\_CONFIG.OPENAI\_API\_KEY property
 
+OpenAI的API密钥。
+
+从环境变量中获取该密钥。
+
 **Signature:**
 
 ```typescript

@@ -4,6 +4,8 @@
 
 ## resMessagesType type
 
+OpenAI聊天完成的消息数组类型
+
 **Signature:**
 
 ```typescript

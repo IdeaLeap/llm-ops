@@ -4,6 +4,8 @@
 
 ## Chain.exportHistory() method
 
+导出链的历史记录。
+
 **Signature:**
 
 ```typescript
@@ -12,4 +14,6 @@ exportHistory(): import("llm-ops/llm/index").messagesType;
 **Returns:**
 
 import("llm-ops/llm/index").[messagesType](./llm-ops.messagestype.md)
+
+{<!-- -->any<!-- -->} 返回链的历史记录。
 

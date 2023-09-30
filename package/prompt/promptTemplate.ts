@@ -9,6 +9,14 @@ import {
   AgentPromptTemplate,
   createMessage,
 } from "llm-ops/prompt/index";
+/**
+ * 主要的模板数据结构。
+ *
+ * @property {string} name - 提示模板的名称。可能的值为："polishPromptTemplate"、"agentPromptTemplate" 或其他字符串。
+ * @property {MultiPromptSchema[] | any[]} [prompt] - 一个可选的提示模板数组。
+ * @property {Record<string, any>} [schema] - 一个可选的记录对象，用于存储额外的数据模板。
+ * @property {string} [COLLECTION_NAME] - 一个可选的集合名称，用于指定向量数据库的集合。
+ */
 export interface PromptsSchema
   extends Omit<milvusVectorDBSchema, "COLLECTION_NAME" | "llm"> {
   name: "polishPromptTemplate" | "agentPromptTemplate" | string;
@@ -16,12 +24,38 @@ export interface PromptsSchema
   schema?: Record<string, any>;
   COLLECTION_NAME?: string;
 }
+/**
+ * 多重提示模板数据结构。
+ *
+ * @property {string} [COLLECTION_NAME] - 一个可选的集合名称，用于指定向量数据库的集合。
+ */
 export interface MultiPromptSchema
   extends createMessageSchema,
     Omit<milvusVectorDBPromptTemplateSchema, "content"> {
   COLLECTION_NAME?: string;
 }
-
+/**
+ * 格式化提示模板函数。
+ *
+ * 此函数的主要目的是为了从提供的`prompts`对象中提取出一个格式化的提示模板。
+ * 这可以是一个单一的模板，也可以是一个模板数组。
+ *
+ * @param {PromptsSchema} prompts - 提供的提示模板对象。
+ *
+ * @returns {Promise<any[]>} 返回一个异步处理的格式化的提示模板数组。
+ *
+ * @example
+ * ```typescript
+ * const promptsData = {
+ *   name: "agentPromptTemplate",
+ *   schema: { role: "user" },
+ * };
+ * const formattedPrompts = await formatPromptTemplate(promptsData);
+ * ```
+ *
+ * @throws {Error} 当提示中缺少`COLLECTION_NAME`时抛出错误。
+ * @throws {Error} 当提供的提示是无效的时抛出错误。
+ */
 export const formatPromptTemplate = async (prompts: PromptsSchema) => {
   let vectorDB: milvusVectorDB | undefined = undefined;
   !!prompts.COLLECTION_NAME &&

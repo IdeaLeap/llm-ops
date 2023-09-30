@@ -4,8 +4,24 @@
 
 ## formatPromptTemplate variable
 
+格式化提示模板函数。
+
+此函数的主要目的是为了从提供的`prompts`<!-- -->对象中提取出一个格式化的提示模板。 这可以是一个单一的模板，也可以是一个模板数组。
+
 **Signature:**
 
 ```typescript
 formatPromptTemplate: (prompts: PromptsSchema) => Promise<(import("openai/resources/chat").ChatCompletionMessageParam | MultiPromptSchema | undefined)[]>
 ```
+
+## Example
+
+
+```typescript
+const promptsData = {
+  name: "agentPromptTemplate",
+  schema: { role: "user" },
+};
+const formattedPrompts = await formatPromptTemplate(promptsData);
+```
+

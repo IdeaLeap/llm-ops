@@ -4,6 +4,8 @@
 
 ## LLM\_OPS\_CONFIG class
 
+`LLM_OPS_CONFIG` 是用于配置操作的类，它包含了与OpenAI、Helicone和Milvus相关的配置信息。
+
 **Signature:**
 
 ```typescript
@@ -14,10 +16,10 @@ export declare class LLM_OPS_CONFIG
 
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
-|  [HELICONE\_AUTH\_API\_KEY](./llm-ops.llm_ops_config.helicone_auth_api_key.md) | <code>static</code> | string \| undefined |  |
-|  [MILVUS\_ADDRESS](./llm-ops.llm_ops_config.milvus_address.md) | <code>static</code> | string \| undefined |  |
-|  [MILVUS\_PASSWORD](./llm-ops.llm_ops_config.milvus_password.md) | <code>static</code> | string \| undefined |  |
-|  [MILVUS\_USERNAME](./llm-ops.llm_ops_config.milvus_username.md) | <code>static</code> | string \| undefined |  |
-|  [OPEN\_PATH](./llm-ops.llm_ops_config.open_path.md) | <code>static</code> | { baseURL: string; defaultHeaders: { "Helicone-Auth": string; }; } |  |
-|  [OPENAI\_API\_KEY](./llm-ops.llm_ops_config.openai_api_key.md) | <code>static</code> | string \| undefined |  |
+|  [HELICONE\_AUTH\_API\_KEY](./llm-ops.llm_ops_config.helicone_auth_api_key.md) | <code>static</code> | string \| undefined | <p>Helicone的授权API密钥。</p><p>从环境变量中获取该密钥。</p> |
+|  [MILVUS\_ADDRESS](./llm-ops.llm_ops_config.milvus_address.md) | <code>static</code> | string \| undefined | <p>Milvus的服务地址。</p><p>从环境变量中获取此地址。</p> |
+|  [MILVUS\_PASSWORD](./llm-ops.llm_ops_config.milvus_password.md) | <code>static</code> | string \| undefined | <p>用于连接到Milvus服务的密码。</p><p>从环境变量中获取此密码。</p> |
+|  [MILVUS\_USERNAME](./llm-ops.llm_ops_config.milvus_username.md) | <code>static</code> | string \| undefined | <p>用于连接到Milvus服务的用户名。</p><p>从环境变量中获取此用户名。</p> |
+|  [OPEN\_PATH](./llm-ops.llm_ops_config.open_path.md) | <code>static</code> | { baseURL: string; defaultHeaders: { "Helicone-Auth": string; }; } | <p>OPEN\_PATH 对象定义了与Helicone API进行通信时的基础设置。</p><p> {<!-- -->string<!-- -->} baseURL - Helicone API的基础URL。  {<!-- -->Object<!-- -->} defaultHeaders - 用于与Helicone API通信时的默认请求头。</p> |
+|  [OPENAI\_API\_KEY](./llm-ops.llm_ops_config.openai_api_key.md) | <code>static</code> | string \| undefined | <p>OpenAI的API密钥。</p><p>从环境变量中获取该密钥。</p> |
 

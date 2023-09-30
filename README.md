@@ -18,15 +18,14 @@ npm install llm-ops
 
 ## 特点
 
-  - `工厂模式设计`: 选择LLM-OPS意味着选择了简便与专业！您无需深究复杂的内部结构，只需简单几步，如同开箱即用的神器。
-  - `低代码开发`: 真正实现了一键式开发。只需简单地编写一段JSON代码，即可轻松实现您所想要的完整业务流程，大大减少了开发难度和学习成本。
-  - `全面支持TypeScript`: LLM-OPS框架不仅基于TypeScript开发，更为开发者提供了完整的TsDoc注释。这让您在开发过程中更加流畅，无需反复查询文档，一切都变得清晰明了。
-  - `AI制作的Workflow引擎`: 无论是构建复杂的企业应用还是快速打造创新项目，LLM-OPS都能为您提供稳定而高效的工作流引擎，真正做到快速开发，快速上线！
+- `工厂模式设计`: 选择LLM-OPS意味着选择了简便与专业！您无需深究复杂的内部结构，只需简单几步，如同开箱即用的神器。
+- `低代码开发`: 真正实现了一键式开发。只需简单地编写一段JSON代码，即可轻松实现您所想要的完整业务流程，大大减少了开发难度和学习成本。
+- `全面支持TypeScript`: LLM-OPS框架不仅基于TypeScript开发，更为开发者提供了完整的TsDoc注释。这让您在开发过程中更加流畅，无需反复查询文档，一切都变得清晰明了。
+- `AI制作的Workflow引擎`: 无论是构建复杂的企业应用还是快速打造创新项目，LLM-OPS都能为您提供稳定而高效的工作流引擎，真正做到快速开发，快速上线！
 
 ## 低代码workflow示意图
 
 ![pipeline示意图](https://github.com/IdeaLeap/llm-ops/assets/49270362/489d25cd-bc71-44b1-8a89-027075e3fec2)
-
 
 ## 使用例程
 
@@ -87,6 +86,7 @@ const res = (await pipeline.execute(
 )) as Record<string, any>;
 console.log(JSON.stringify(res["subsection"]));
 ```
+
 ## 框架设计结构
 
 ![框架设计结构](https://github.com/IdeaLeap/llm-ops/assets/49270362/8834cba4-b055-41a0-a73d-f2c3346b23c5)

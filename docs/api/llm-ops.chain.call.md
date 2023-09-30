@@ -4,6 +4,8 @@
 
 ## Chain.call() method
 
+调用Chain
+
 **Signature:**
 
 ```typescript
@@ -14,9 +16,11 @@ call(params: chainCallSchema): Promise<import("llm-ops/utils").Result<any>>;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [chainCallSchema](./llm-ops.chaincallschema.md) |  |
+|  params | [chainCallSchema](./llm-ops.chaincallschema.md) | 调用方法的参数对象。 |
 
 **Returns:**
 
 Promise&lt;import("llm-ops/utils").[Result](./llm-ops.result.md)<!-- -->&lt;any&gt;&gt;
+
+{<!-- -->Promise<any>} 返回异步处理的链调用结果。
 
