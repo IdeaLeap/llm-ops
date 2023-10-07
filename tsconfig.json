@@ -5,7 +5,7 @@
       "llm-ops": ["package/index.ts"]
     },
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "ES6",
     "lib": ["ES2022"],
     "declaration": true,
     "declarationMap": true,

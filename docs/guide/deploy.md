@@ -15,33 +15,32 @@
 完整项目代码可见[Github](https://github.com/MarleneJiang/llm-ops-preview)
 
 ```js
-
-'use server'
-import { Pipeline, PipeRegistry, LLM_OPS_CONFIG,EventEmitter } from "llm-ops";
+"use server";
+import { Pipeline, PipeRegistry, LLM_OPS_CONFIG, EventEmitter } from "llm-ops";
 import { useAppContext } from "@/lib/AppContext";
 export const llm_ops_run = async (
   schema,
   inputText,
   openaiKey,
-  heliconeKey
+  heliconeKey,
 ) => {
   try {
-
     LLM_OPS_CONFIG.OPENAI_API_KEY = openaiKey || "";
     !!heliconeKey && (LLM_OPS_CONFIG.HELICONE_AUTH_API_KEY = heliconeKey);
-    !!heliconeKey && (LLM_OPS_CONFIG.OPEN_PATH = {
-      baseURL: "https://oai.hconeai.com/v1",
-      defaultHeaders: {
-        "Helicone-Auth": `Bearer ${heliconeKey}`,
-      },
-    });
+    !!heliconeKey &&
+      (LLM_OPS_CONFIG.OPEN_PATH = {
+        baseURL: "https://oai.hconeai.com/v1",
+        defaultHeaders: {
+          "Helicone-Auth": `Bearer ${heliconeKey}`,
+        },
+      });
     const funcStore = PipeRegistry.init();
     const schemaJson = JSON.parse(schema);
     const pipeline = Pipeline.fromJSON(schemaJson, {}, funcStore);
     const res = await pipeline.execute(inputText);
     return res;
   } catch (e) {
-    throw e
+    throw e;
   }
 };
 ```
@@ -51,21 +50,25 @@ export const llm_ops_run = async (
 `llm-ops`可以直接部署在`serveless`云函数中，这里以`laf`为例，介绍如何在`laf`中使用`llm-ops`。
 
 ```ts
-import cloud from '@lafjs/cloud'
+import cloud from "@lafjs/cloud";
 import { Pipeline, PipeRegistry, SerializablePipelineOptions } from "llm-ops";
 export default async function (ctx: FunctionContext) {
   const { schema, input } = ctx.body;
   if (!schema || !input) {
-    return { "code": "001", "msg": "错误输入", "data": "" };
+    return { code: "001", msg: "错误输入", data: "" };
   }
-  console.log("schema", schema)
+  console.log("schema", schema);
   const funcStore = PipeRegistry.init();
   if (!!schema.pipes) {
-    const pipeline = Pipeline.fromJSON(schema as SerializablePipelineOptions, {}, funcStore);
+    const pipeline = Pipeline.fromJSON(
+      schema as SerializablePipelineOptions,
+      {},
+      funcStore,
+    );
     const res = await pipeline.execute(input);
-    return { "code": "200", "msg": "", "data": res };
+    return { code: "200", msg: "", data: res };
   } else {
-    return { "code": "002", "msg": "schema.pipes错误输入", "data": "" };
+    return { code: "002", msg: "schema.pipes错误输入", data: "" };
   }
 }
 ```

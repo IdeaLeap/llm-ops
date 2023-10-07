@@ -85,7 +85,7 @@ export default defineConfig({
             { text: "快速上手", link: "/guide/start" },
           ],
         },
-        { text: "部署", link: "/guide/deploy" }
+        { text: "部署", link: "/guide/deploy" },
       ],
     },
     editLink: {

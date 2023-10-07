@@ -7,9 +7,9 @@
 **Signature:**
 
 ```typescript
-exportHistory(): import("llm-ops/llm/index").messagesType;
+exportHistory(): import("llm-ops/llm/llm").messagesType;
 ```
 **Returns:**
 
-import("llm-ops/llm/index").[messagesType](./llm-ops.messagestype.md)
+import("llm-ops/llm/llm").[messagesType](./llm-ops.messagestype.md)
 

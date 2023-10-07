@@ -1,6 +1,6 @@
 import { LLM, messageType, createLLMSchema } from "llm-ops/llm/index";
 import { createMessage } from "llm-ops/prompt/index";
-import mermaid from "mermaid";
+import mermaid from "mermaid-ssr";
 export interface MermaidCallSchema {
   llm?: LLM;
   llmSchema?: createLLMSchema;
@@ -10,38 +10,29 @@ export interface MermaidCallSchema {
 
 export const genMermaid = async (params: MermaidCallSchema) => {
   let { llm, request, type, llmSchema } = params;
-  if (!llm) {
-    if (!llmSchema) {
-      llm = new LLM({});
-    } else {
-      llm = new LLM(llmSchema);
-    }
-  }
-  if (!request) {
-    throw new Error("request is required");
-  }
-  if (!type) {
-    type = [
-      "sequenceDiagram",
-      "flowChart",
-      "classDiagram",
-      "stateDiagram",
-      "erDiagram",
-      "gantt",
-      "journey",
-      "gitGraph",
-      "pie",
-    ].join(",");
-  }
-  if (Array.isArray(type)) {
-    type = type.join(",");
-  }
-  if (typeof request === "string") {
-    request = createMessage({
-      role: "user",
-      content: request,
-    });
-  }
+  llm = llm || (llmSchema ? new LLM(llmSchema) : new LLM({}));
+
+  if (!request) throw new Error("request is required");
+
+  type = Array.isArray(type)
+    ? type.join(",")
+    : type ||
+      [
+        "sequenceDiagram",
+        "flowChart",
+        "classDiagram",
+        "stateDiagram",
+        "erDiagram",
+        "gantt",
+        "journey",
+        "gitGraph",
+        "pie",
+      ].join(",");
+
+  request =
+    typeof request === "string"
+      ? createMessage({ role: "user", content: request })
+      : request;
   const messages = [
     {
       role: "system",
@@ -79,6 +70,12 @@ D -->G(是可持续发展的最终目的)`,
     })) == false &&
     isTry < 3
   ) {
+    console.log(
+      "Mermaid code is invalid:" + res.choices[0]?.message.content,
+      await mermaid.parse(res.choices[0]?.message.content as string, {
+        suppressErrors: true,
+      }),
+    );
     res = await llm.chat({
       messages: [
         {
@@ -90,10 +87,11 @@ D -->G(是可持续发展的最终目的)`,
     if (!res.choices[0]?.message.content) {
       throw new Error(JSON.stringify(res));
     }
+    isTry++;
   }
   if (isTry >= 3) {
     throw new Error(
-      "Mermaid code is invalid:" + res.choices[0]?.message.content
+      "Mermaid code is invalid:" + res.choices[0]?.message.content,
     );
   }
   return res.choices[0]?.message.content;
