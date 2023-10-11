@@ -2,8 +2,8 @@ lockfileVersion: "6.0"
 
 dependencies:
   "@idealeap/pipeline":
-    specifier: ^1.1.6
-    version: 1.1.6
+    specifier: ^1.1.7
+    version: 1.1.7
   "@zilliz/milvus2-sdk-node":
     specifier: ^2.2.24
     version: 2.2.24
@@ -1201,10 +1201,10 @@ packages:
       }
     dev: true
 
-  /@idealeap/pipeline@1.1.6:
+  /@idealeap/pipeline@1.1.7:
     resolution:
       {
-        integrity: sha512-FcW9ZHx0/7dKh9/eSQVtem1RLKjJM4vRFMOYqfBwzxxWTlRbl5rqIL+FPlux8DKysoW+adsThPxZ7M0cL7Fghw==,
+        integrity: sha512-G34LkCAYcGQnnakc1L8wK1PZlAMx7jfu93dV+TEqf/785N1gRX7y5D/BpSGMiBR7krKqHEmim1Cuok9DDPzT+w==,
       }
     engines: { node: ">=18" }
     dependencies:

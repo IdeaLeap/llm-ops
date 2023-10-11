@@ -1,6 +1,6 @@
 {
   "name": "llm-ops",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "高效制作llm workflow的低代码框架",
   "main": "package/index.js",
   "author": "Marlene && IdeaLeap",
@@ -33,7 +33,7 @@
     "publish": "cd dist && npm publish --access public"
   },
   "dependencies": {
-    "@idealeap/pipeline": "^1.1.6",
+    "@idealeap/pipeline": "^1.1.7",
     "@zilliz/milvus2-sdk-node": "^2.2.24",
     "dotenv": "^16.3.1",
     "mermaid-ssr": "^10.5.0",
