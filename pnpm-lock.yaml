@@ -5,8 +5,8 @@ dependencies:
     specifier: ^1.1.7
     version: 1.1.7
   "@zilliz/milvus2-sdk-node":
-    specifier: ^2.2.24
-    version: 2.2.24
+    specifier: ^2.3.2
+    version: 2.3.2
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -2456,10 +2456,10 @@ packages:
       - vue
     dev: true
 
-  /@zilliz/milvus2-sdk-node@2.2.24:
+  /@zilliz/milvus2-sdk-node@2.3.2:
     resolution:
       {
-        integrity: sha512-gsT7taStOrl/7ca1IeC9mtskqUb88fCfVhurDTBiZYb1R6k4JUZoFwugmIAjbKl62cvbleiI54edIevcyM4u5g==,
+        integrity: sha512-2V9wvJl76oAwCZZzRZl03nCSOc392/u4Obk1jRmmgBUiQ8E5lfncvQgQfd+Meg++fgpEb3m4sRhyFUVSTZRK5g==,
       }
     dependencies:
       "@grpc/grpc-js": 1.8.17

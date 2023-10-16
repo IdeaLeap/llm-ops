@@ -14,6 +14,16 @@ export interface milvusVectorDBQuerySchema {
   output_fields: string[];
   limit?: number;
 }
+export interface milvusVectorDBUpsertSchema {
+  partition_name?: string;
+  fields_data?: {
+    [x: string]: any;
+  }[];
+  data?: {
+    [x: string]: any;
+  }[];
+  hash_keys?: Number[];
+}
 export interface milvusVectorDBSearchSchema {
   vector: number[];
   filter?: string;
@@ -62,6 +72,19 @@ export class milvusVectorDB {
     });
     console.timeEnd("Query time");
     return query;
+  }
+  async upsert(params: milvusVectorDBUpsertSchema) {
+    const { partition_name, fields_data, data, hash_keys } = params;
+    console.time("Upsert time");
+    const upsert = await this.milvusClient.upsert({
+      collection_name: this.COLLECTION_NAME,
+      partition_name: partition_name || undefined,
+      fields_data: fields_data || undefined,
+      data: data || undefined,
+      hash_keys: hash_keys || undefined,
+    });
+    console.timeEnd("Upsert time");
+    return upsert;
   }
   async search(params: milvusVectorDBSearchSchema) {
     const { vector, output_fields, limit, consistency_level, filter } = params;

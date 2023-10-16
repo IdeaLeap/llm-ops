@@ -60,6 +60,7 @@
 |  [milvusVectorDBSchema](./llm-ops.milvusvectordbschema.md) |  |
 |  [milvusVectorDBSearchSchema](./llm-ops.milvusvectordbsearchschema.md) |  |
 |  [milvusVectorDBUploadSchema](./llm-ops.milvusvectordbuploadschema.md) |  |
+|  [milvusVectorDBUpsertSchema](./llm-ops.milvusvectordbupsertschema.md) |  |
 |  [MultiPromptSchema](./llm-ops.multipromptschema.md) | 多重提示模板数据结构。 |
 |  [polishPromptTemplateSchema](./llm-ops.polishprompttemplateschema.md) |  |
 |  [PromptsSchema](./llm-ops.promptsschema.md) | 主要的模板数据结构。 |

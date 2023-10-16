@@ -34,4 +34,5 @@ export declare class milvusVectorDB
 |  [query(params)](./llm-ops.milvusvectordb.query.md) |  |  |
 |  [search(params)](./llm-ops.milvusvectordb.search.md) |  |  |
 |  [upload(params)](./llm-ops.milvusvectordb.upload.md) |  |  |
+|  [upsert(params)](./llm-ops.milvusvectordb.upsert.md) |  |  |
 
