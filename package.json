@@ -1,6 +1,6 @@
 {
   "name": "llm-ops",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "高效制作llm workflow的低代码框架",
   "main": "package/index.js",
   "author": "Marlene && IdeaLeap",
@@ -36,7 +36,7 @@
     "@idealeap/pipeline": "^1.1.7",
     "@zilliz/milvus2-sdk-node": "^2.3.2",
     "dotenv": "^16.3.1",
-    "mermaid-ssr": "^10.5.0",
+    "mermaid-ssr": "11.46.16",
     "openai": "4.8.0",
     "typescript": "^5.1.6"
   },

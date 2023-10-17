@@ -18,7 +18,7 @@ module.exports = {
   transformIgnorePatterns: [
     "/node_modules/",
     "node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)",
-    "/node_modules/(?!mermaid)",
+    "/node_modules/(?!mermaid-ssr)",
   ],
   setupFiles: ["dotenv/config"],
   testTimeout: 20_000,
