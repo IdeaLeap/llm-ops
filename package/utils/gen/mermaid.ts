@@ -7,26 +7,29 @@ export interface MermaidCallSchema {
   request: messageType | string;
   type?: string | string[];
 }
-export const replaceContentWithSequence = (text:string) => {
+export const replaceContentWithSequence = (text: string) => {
   let index = 1;
-  return text.replace(/(\[).*?(\])|(\().*?(\))|(\{).*?(\})|(\").*?(\")|(\|).*?(\|)/g, (match, p1, p2, p3, p4, p5, p6, p7, p8,p9,p10) => {
-    if (p1 && p2) {
-      return `${p1}#${index++}${p2}`;
-    }
-    if (p3 && p4) {
-      return `${p3}#${index++}${p4}`;
-    }
-    if (p5 && p6) {
-      return `${p5}#${index++}${p6}`;
-    }
-    if (p7 && p8) {
-      return `${p7}#${index++}${p8}`;
-    }
-    if (p9 && p10) {
-      return `${p9}#${index++}${p10}`;
-    }
-    return match;
-  });
+  return text.replace(
+    /(\[).*?(\])|(\().*?(\))|(\{).*?(\})|(\").*?(\")|(\|).*?(\|)/g,
+    (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) => {
+      if (p1 && p2) {
+        return `${p1}#${index++}${p2}`;
+      }
+      if (p3 && p4) {
+        return `${p3}#${index++}${p4}`;
+      }
+      if (p5 && p6) {
+        return `${p5}#${index++}${p6}`;
+      }
+      if (p7 && p8) {
+        return `${p7}#${index++}${p8}`;
+      }
+      if (p9 && p10) {
+        return `${p9}#${index++}${p10}`;
+      }
+      return match;
+    },
+  );
 };
 export const genMermaid = async (params: MermaidCallSchema) => {
   let { llm, request, type, llmSchema } = params;
@@ -97,7 +100,7 @@ D -->G("是可持续发展的最终目的")`,
       isValid = mermaid.parse(res.choices[0]?.message.content as string);
       if (isValid) break;
     } catch (error) {
-      const err = error  as Error;
+      const err = error as Error;
       console.log(
         "Mermaid code is invalid:",
         res.choices[0]?.message.content,

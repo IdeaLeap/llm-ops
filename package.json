@@ -1,6 +1,6 @@
 {
   "name": "llm-ops",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "高效制作llm workflow的低代码框架",
   "main": "package/index.js",
   "author": "Marlene && IdeaLeap",
