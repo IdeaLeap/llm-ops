@@ -151,11 +151,15 @@ export class milvusVectorDB {
   async upload(params: milvusVectorDBUploadSchema) {
     const { fields_data, index, partition_name } = params;
     console.time("Upload time");
-    await this.milvusClient.insert({
+    const insertRes = await this.milvusClient.insert({
       collection_name: this.COLLECTION_NAME,
       fields_data: fields_data,
       partition_name: partition_name || undefined,
     });
+    if (insertRes.status.error_code != "Success") {
+      console.error(insertRes.status.reason);
+      throw new Error(insertRes.status.reason);
+    }
     await this.milvusClient.createIndex({
       collection_name: this.COLLECTION_NAME,
       field_name: index.field_name,
@@ -172,7 +176,7 @@ export class milvusVectorDB {
       this.llm = new LLM({});
     }
     const vector = await this.llm?.embedding(data);
-    if (!vector?.data[0]?.embedding) {
+    if (!vector|| !vector?.data[0] || !vector?.data[0]?.embedding) {
       throw new Error("生成向量失败");
     }
     return vector?.data[0]?.embedding;
