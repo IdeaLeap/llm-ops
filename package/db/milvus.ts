@@ -71,6 +71,10 @@ export class milvusVectorDB {
       limit: limit || 100,
     });
     console.timeEnd("Query time");
+    // if (query.status.error_code != "Success") {
+    //   console.error(query.status.reason);
+    //   throw new Error(query.status.reason);
+    // }
     return query;
   }
   async upsert(params: milvusVectorDBUpsertSchema) {
@@ -84,7 +88,25 @@ export class milvusVectorDB {
       hash_keys: hash_keys || undefined,
     });
     console.timeEnd("Upsert time");
+    if (upsert.status.error_code != "Success") {
+      console.error(upsert.status.reason);
+      throw new Error(upsert.status.reason);
+    }
     return upsert;
+  }
+  async delete(params: {expr:string}) {
+    const { expr } = params;
+    console.time("Upsert time");
+    const res = await this.milvusClient.deleteEntities({
+      collection_name: this.COLLECTION_NAME,
+      expr
+    });
+    console.timeEnd("Upsert time");
+    // if (res.status.error_code != "Success") {
+    //   console.error(res.status.reason);
+    //   throw new Error(res.status.reason);
+    // }
+    return res;
   }
   async search(params: milvusVectorDBSearchSchema) {
     const { vector, output_fields, limit, consistency_level, filter } = params;
@@ -104,6 +126,10 @@ export class milvusVectorDB {
       consistency_level: consistency_level || undefined,
     });
     console.timeEnd("Search time");
+    // if (search.status.error_code != "Success") {
+    //   console.error(search.status.reason);
+    //   throw new Error(search.status.reason);
+    // }
     return search;
   }
   async generatePromptTemplate(params: milvusVectorDBPromptTemplateSchema) {
@@ -157,8 +183,9 @@ export class milvusVectorDB {
       partition_name: partition_name || undefined,
     });
     if (insertRes.status.error_code != "Success") {
-      console.error(insertRes.status.reason);
-      throw new Error(insertRes.status.reason);
+      // console.error(insertRes.status.reason);
+      // throw new Error(insertRes.status.reason);
+      return insertRes;
     }
     await this.milvusClient.createIndex({
       collection_name: this.COLLECTION_NAME,
