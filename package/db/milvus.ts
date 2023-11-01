@@ -94,12 +94,12 @@ export class milvusVectorDB {
     }
     return upsert;
   }
-  async delete(params: {expr:string}) {
+  async delete(params: { expr: string }) {
     const { expr } = params;
     console.time("Upsert time");
     const res = await this.milvusClient.deleteEntities({
       collection_name: this.COLLECTION_NAME,
-      expr
+      expr,
     });
     console.timeEnd("Upsert time");
     // if (res.status.error_code != "Success") {
@@ -203,7 +203,7 @@ export class milvusVectorDB {
       this.llm = new LLM({});
     }
     const vector = await this.llm?.embedding(data);
-    if (!vector|| !vector?.data[0] || !vector?.data[0]?.embedding) {
+    if (!vector || !vector?.data[0] || !vector?.data[0]?.embedding) {
       throw new Error("生成向量失败");
     }
     return vector?.data[0]?.embedding;
