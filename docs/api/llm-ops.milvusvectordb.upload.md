@@ -7,7 +7,7 @@
 **Signature:**
 
 ```typescript
-upload(params: milvusVectorDBUploadSchema): Promise<import("@zilliz/milvus2-sdk-node").ResStatus>;
+upload(params: milvusVectorDBUploadSchema): Promise<import("@zilliz/milvus2-sdk-node").MutationResult | import("@zilliz/milvus2-sdk-node").ResStatus>;
 ```
 
 ## Parameters
@@ -18,5 +18,5 @@ upload(params: milvusVectorDBUploadSchema): Promise<import("@zilliz/milvus2-sdk-
 
 **Returns:**
 
-Promise&lt;import("@zilliz/milvus2-sdk-node").ResStatus&gt;
+Promise&lt;import("@zilliz/milvus2-sdk-node").MutationResult \| import("@zilliz/milvus2-sdk-node").ResStatus&gt;
 

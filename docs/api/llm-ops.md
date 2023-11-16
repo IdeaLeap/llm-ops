@@ -60,6 +60,7 @@
 |  [milvusVectorDBSchema](./llm-ops.milvusvectordbschema.md) |  |
 |  [milvusVectorDBSearchSchema](./llm-ops.milvusvectordbsearchschema.md) |  |
 |  [milvusVectorDBUploadSchema](./llm-ops.milvusvectordbuploadschema.md) |  |
+|  [milvusVectorDBUpsertSchema](./llm-ops.milvusvectordbupsertschema.md) |  |
 |  [MultiPromptSchema](./llm-ops.multipromptschema.md) | 多重提示模板数据结构。 |
 |  [polishPromptTemplateSchema](./llm-ops.polishprompttemplateschema.md) |  |
 |  [PromptsSchema](./llm-ops.promptsschema.md) | 主要的模板数据结构。 |
@@ -76,6 +77,7 @@
 |  --- | --- |
 |  [formatPromptTemplate](./llm-ops.formatprompttemplate.md) | <p>格式化提示模板函数。</p><p>此函数的主要目的是为了从提供的<code>prompts</code>对象中提取出一个格式化的提示模板。 这可以是一个单一的模板，也可以是一个模板数组。</p> |
 |  [genMermaid](./llm-ops.genmermaid.md) |  |
+|  [replaceContentWithSequence](./llm-ops.replacecontentwithsequence.md) |  |
 
 ## Type Aliases
 

@@ -14,6 +14,16 @@ export interface milvusVectorDBQuerySchema {
   output_fields: string[];
   limit?: number;
 }
+export interface milvusVectorDBUpsertSchema {
+  partition_name?: string;
+  fields_data?: {
+    [x: string]: any;
+  }[];
+  data?: {
+    [x: string]: any;
+  }[];
+  hash_keys?: Number[];
+}
 export interface milvusVectorDBSearchSchema {
   vector: number[];
   filter?: string;
@@ -61,7 +71,42 @@ export class milvusVectorDB {
       limit: limit || 100,
     });
     console.timeEnd("Query time");
+    // if (query.status.error_code != "Success") {
+    //   console.error(query.status.reason);
+    //   throw new Error(query.status.reason);
+    // }
     return query;
+  }
+  async upsert(params: milvusVectorDBUpsertSchema) {
+    const { partition_name, fields_data, data, hash_keys } = params;
+    console.time("Upsert time");
+    const upsert = await this.milvusClient.upsert({
+      collection_name: this.COLLECTION_NAME,
+      partition_name: partition_name || undefined,
+      fields_data: fields_data || undefined,
+      data: data || undefined,
+      hash_keys: hash_keys || undefined,
+    });
+    console.timeEnd("Upsert time");
+    if (upsert.status.error_code != "Success") {
+      console.error(upsert.status.reason);
+      throw new Error(upsert.status.reason);
+    }
+    return upsert;
+  }
+  async delete(params: { expr: string }) {
+    const { expr } = params;
+    console.time("Upsert time");
+    const res = await this.milvusClient.deleteEntities({
+      collection_name: this.COLLECTION_NAME,
+      expr,
+    });
+    console.timeEnd("Upsert time");
+    // if (res.status.error_code != "Success") {
+    //   console.error(res.status.reason);
+    //   throw new Error(res.status.reason);
+    // }
+    return res;
   }
   async search(params: milvusVectorDBSearchSchema) {
     const { vector, output_fields, limit, consistency_level, filter } = params;
@@ -81,6 +126,10 @@ export class milvusVectorDB {
       consistency_level: consistency_level || undefined,
     });
     console.timeEnd("Search time");
+    // if (search.status.error_code != "Success") {
+    //   console.error(search.status.reason);
+    //   throw new Error(search.status.reason);
+    // }
     return search;
   }
   async generatePromptTemplate(params: milvusVectorDBPromptTemplateSchema) {
@@ -128,11 +177,16 @@ export class milvusVectorDB {
   async upload(params: milvusVectorDBUploadSchema) {
     const { fields_data, index, partition_name } = params;
     console.time("Upload time");
-    await this.milvusClient.insert({
+    const insertRes = await this.milvusClient.insert({
       collection_name: this.COLLECTION_NAME,
       fields_data: fields_data,
       partition_name: partition_name || undefined,
     });
+    if (insertRes.status.error_code != "Success") {
+      // console.error(insertRes.status.reason);
+      // throw new Error(insertRes.status.reason);
+      return insertRes;
+    }
     await this.milvusClient.createIndex({
       collection_name: this.COLLECTION_NAME,
       field_name: index.field_name,
@@ -149,7 +203,7 @@ export class milvusVectorDB {
       this.llm = new LLM({});
     }
     const vector = await this.llm?.embedding(data);
-    if (!vector?.data[0]?.embedding) {
+    if (!vector || !vector?.data[0] || !vector?.data[0]?.embedding) {
       throw new Error("生成向量失败");
     }
     return vector?.data[0]?.embedding;

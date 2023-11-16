@@ -29,9 +29,11 @@ export declare class milvusVectorDB
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
 |  [createCollection(params)](./llm-ops.milvusvectordb.createcollection.md) |  |  |
+|  [delete(params)](./llm-ops.milvusvectordb.delete.md) |  |  |
 |  [generatePromptTemplate(params)](./llm-ops.milvusvectordb.generateprompttemplate.md) |  |  |
 |  [generateVector(data)](./llm-ops.milvusvectordb.generatevector.md) |  |  |
 |  [query(params)](./llm-ops.milvusvectordb.query.md) |  |  |
 |  [search(params)](./llm-ops.milvusvectordb.search.md) |  |  |
 |  [upload(params)](./llm-ops.milvusvectordb.upload.md) |  |  |
+|  [upsert(params)](./llm-ops.milvusvectordb.upsert.md) |  |  |
 
